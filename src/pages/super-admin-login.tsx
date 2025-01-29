@@ -10,15 +10,12 @@ import {
   useMediaQuery, // Import useMediaQuery hook
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { SelectChangeEvent } from "@mui/material/Select";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import ReactGA from "react-ga4";
-import Checkbox from "@mui/material/Checkbox";
 import Image from "next/image";
 import Loader from "../components/Loader";
-import MenuItem from "@mui/material/MenuItem";
 import appLogo from "../../public/logo.png";
-import config from "../../config.json";
 import { getUserId, login } from "../services/LoginService";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
@@ -27,14 +24,12 @@ import { useTranslation } from "next-i18next";
 import { telemetryFactory } from "@/utils/telemetry";
 import { logEvent } from "@/utils/googleAnalytics";
 import { showToastMessage } from "@/components/Toastify";
-import Link from "@mui/material/Link";
 // import loginImage from "../../public/loginImage.jpg";
 import loginImage from "../../public/all-saas-login.png";
 import { useUserIdStore } from "@/store/useUserIdStore";
 import { getUserDetailsInfo } from "@/services/UserList";
 import { Storage } from "@/utils/app.constant";
 import useSubmittedButtonStore from "@/utils/useSharedState";
-import { Role } from "@/utils/app.constant";
 import PersonIcon from "@mui/icons-material/Person";
 import KeyIcon from "@mui/icons-material/VpnKey";
 
@@ -43,14 +38,8 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
   const [usernameError, setUsernameError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [lang, setLang] = useState("");
-  const [selectedLanguage, setSelectedLanguage] = useState(lang);
-  const [language, setLanguage] = useState(selectedLanguage);
-  const [adminInfo, setAdminInfo] = useState();
 
   const theme = useTheme<any>();
   const router = useRouter();
@@ -59,7 +48,6 @@ const LoginPage = () => {
     (state: any) => state.setAdminInformation
   );
 
-  // Use useMediaQuery to detect screen size
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isMedium = useMediaQuery(theme.breakpoints.between("sm", "md"));
 
@@ -69,8 +57,8 @@ const LoginPage = () => {
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
       const preferredLang = localStorage.getItem("preferredLanguage") || "en";
-      setLanguage(preferredLang);
-      setLang(preferredLang);
+      // setLanguage(preferredLang);
+      // setLang(preferredLang);
 
       const token = localStorage.getItem("token");
       if (token) {
@@ -106,29 +94,6 @@ const LoginPage = () => {
     event.preventDefault();
   };
 
-  // const fetchUserDetail = async () => {
-  //   let userId;
-  //   try {
-  //     if (typeof window !== "undefined" && window.localStorage) {
-  //       userId = localStorage.getItem(Storage.USER_ID);
-  //     }
-  //     const fieldValue = true;
-  //     if (userId) {
-  //       console.log("true");
-  //       const response = await getUserDetailsInfo(userId, fieldValue);
-
-  //       const userInfo = response?.userData;
-  //       //set user info in zustand store
-  //       setAdminInformation(userInfo);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchUserDetail();
-  // }, []);
   const fetchUserDetail = async () => {
     let userId;
     try {
@@ -140,7 +105,7 @@ const LoginPage = () => {
         const response = await getUserDetailsInfo(userId, fieldValue);
 
         const userInfo = response?.userData;
-        setAdminInfo(userInfo);
+        // setAdminInfo(userInfo);
         if (typeof window !== "undefined" && window.localStorage) {
           localStorage.setItem("adminInfo", JSON.stringify(userInfo));
           localStorage.setItem("stateName", userInfo?.customFields[0]?.value);
@@ -169,7 +134,7 @@ const LoginPage = () => {
       category: "Login Page",
       label: "Login Button Clicked",
     });
-    if (!usernameError && !passwordError) {
+    if (!usernameError) {
       setLoading(true);
       try {
         const response = await login({ username, password });
@@ -178,9 +143,7 @@ const LoginPage = () => {
             const token = response?.result?.access_token;
             const refreshToken = response?.result?.refresh_token;
             localStorage.setItem("token", token);
-            rememberMe
-              ? localStorage.setItem("refreshToken", refreshToken)
-              : localStorage.removeItem("refreshToken");
+            localStorage.setItem("refreshToken", refreshToken);
 
             const userResponse = await getUserId();
             localStorage.setItem("userId", userResponse?.userId);
@@ -211,14 +174,13 @@ const LoginPage = () => {
     }
   };
 
-  const isButtonDisabled =
-    !username || !password || usernameError || passwordError;
+  const isButtonDisabled = !username || !password || usernameError;
 
   const handleChange = (event: SelectChangeEvent) => {
     const newLocale = event.target.value;
     if (typeof window !== "undefined" && window.localStorage) {
       localStorage.setItem("preferredLanguage", newLocale);
-      setLanguage(newLocale);
+      // setLanguage(newLocale);
       ReactGA.event("select-language-login-page", {
         selectedLanguage: newLocale,
       });
@@ -373,7 +335,6 @@ const LoginPage = () => {
               placeholder={t("LOGIN_PAGE.PASSWORD_PLACEHOLDER")}
               value={password}
               onChange={handlePasswordChange}
-              error={passwordError}
               margin="normal"
               inputRef={passwordRef}
               sx={{
