@@ -8,9 +8,7 @@ import {
   useMediaQuery, // Import useMediaQuery hook
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
-import { SelectChangeEvent } from "@mui/material/Select";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import ReactGA from "react-ga4";
 import Image from "next/image";
 import Loader from "../components/Loader";
 import appLogo from "../../public/logo.png";
@@ -22,7 +20,6 @@ import { useTranslation } from "next-i18next";
 import { telemetryFactory } from "@/utils/telemetry";
 import { logEvent } from "@/utils/googleAnalytics";
 import { showToastMessage } from "@/components/Toastify";
-// import loginImage from "../../public/loginImage.jpg";
 import loginImage from "../../public/all-saas-login.png";
 import { useUserIdStore } from "@/store/useUserIdStore";
 import { getUserDetailsInfo } from "@/services/UserList";
@@ -99,7 +96,6 @@ const LoginPage = () => {
         const response = await getUserDetailsInfo(userId, fieldValue);
 
         const userInfo = response?.userData;
-        // setAdminInfo(userInfo);
         if (typeof window !== "undefined" && window.localStorage) {
           localStorage.setItem("adminInfo", JSON.stringify(userInfo));
           localStorage.setItem("stateName", userInfo?.customFields[0]?.value);
@@ -219,7 +215,6 @@ const LoginPage = () => {
               fullWidth
               id="username"
               InputLabelProps={{ shrink: true }}
-              // label={t("LOGIN_PAGE.USERNAME")}
               placeholder={t("LOGIN_PAGE.USERNAME_PLACEHOLDER")}
               value={username}
               onChange={handleUsernameChange}
@@ -234,7 +229,7 @@ const LoginPage = () => {
               }}
               sx={{
                 "& .MuiOutlinedInput-root": {
-                  borderRadius: "20px", // Adjust the value as needed for more or less rounding
+                  borderRadius: "20px",
                 },
               }}
             />
@@ -263,7 +258,6 @@ const LoginPage = () => {
                   </InputAdornment>
                 ),
               }}
-              // label={t("LOGIN_PAGE.PASSWORD")}
               placeholder={t("LOGIN_PAGE.PASSWORD_PLACEHOLDER")}
               value={password}
               onChange={handlePasswordChange}
@@ -271,7 +265,7 @@ const LoginPage = () => {
               inputRef={passwordRef}
               sx={{
                 "& .MuiOutlinedInput-root": {
-                  borderRadius: "20px", // Adjust the value as needed for more or less rounding
+                  borderRadius: "20px",
                 },
               }}
             />
