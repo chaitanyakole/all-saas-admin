@@ -54,10 +54,6 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
-      const preferredLang = localStorage.getItem("preferredLanguage") || "en";
-      // setLanguage(preferredLang);
-      // setLang(preferredLang);
-
       const token = localStorage.getItem("token");
       if (token) {
         router.push("/tenant");
@@ -173,27 +169,6 @@ const LoginPage = () => {
   };
 
   const isButtonDisabled = !username || !password || usernameError;
-
-  const handleChange = (event: SelectChangeEvent) => {
-    const newLocale = event.target.value;
-    if (typeof window !== "undefined" && window.localStorage) {
-      localStorage.setItem("preferredLanguage", newLocale);
-      // setLanguage(newLocale);
-      ReactGA.event("select-language-login-page", {
-        selectedLanguage: newLocale,
-      });
-      router.push("/login", undefined, { locale: newLocale });
-    }
-  };
-
-  const handleForgotPasswordClick = () => {
-    logEvent({
-      action: "forgot-password-link-clicked",
-      category: "Login Page",
-      label: "Forgot Password Link Clicked",
-    });
-  };
-
   return (
     <Grid container sx={{}}>
       {!(isMobile || isMedium) && ( // Render only on desktop view
