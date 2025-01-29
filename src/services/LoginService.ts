@@ -47,6 +47,16 @@ export const logout = async (refreshToken: string): Promise<any> => {
     throw error;
   }
 };
+export const registerUser = async (): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.USER_REGISTER}`;
+  try {
+    const response = await post(apiUrl, {});
+    return response;
+  } catch (error) {
+    console.error("error in register user", error);
+    throw error;
+  }
+};
 
 export const getUserId = async (): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.AUTH}`;

@@ -59,7 +59,16 @@ const Profile = () => {
 
   const handleLogout = async () => {
     if (typeof window !== "undefined" && window.localStorage) {
-      router.replace("/logout");
+      const localData = JSON.parse(localStorage.getItem("adminInfo") || "{}");
+
+      if (localData?.isSuperAdmin) {
+        localStorage.clear();
+        router.replace("/");
+      } else {
+        router.replace("/logout");
+      }
+    } else {
+      console.error("LocalStorage is not available.");
     }
   };
 
