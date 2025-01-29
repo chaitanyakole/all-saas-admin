@@ -33,6 +33,7 @@
     "ROLE_CREATE": "rbac/roles/create",
     "ROLES_LIST": "rbac/roles/list/roles",
     "USER_CREATE": "create",
-    "USER_DELETE": "delete"
+    "USER_DELETE": "delete",
+    "USER_REGISTER": "auth/validateAndRegister"
   }
 }

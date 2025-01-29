@@ -1,4 +1,3 @@
-// import "@/styles/globals.css";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { appWithTranslation } from "next-i18next";
@@ -16,12 +15,14 @@ import keycloak from "../utils/keycloak";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "react-circular-progressbar/dist/styles.css";
-import { getUserId } from "@/services/LoginService";
+import { getUserId, registerUser } from "@/services/LoginService";
 import { getUserDetailsInfo } from "@/services/UserList";
+import { useRouter } from "next/router";
 
 function App({ Component, pageProps }: AppProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const hasFetchedUserDetails = useRef(false);
+  const router = useRouter();
 
   // Analytics initialization
   useEffect(() => {
@@ -39,16 +40,31 @@ function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     const initializeKeycloak = async () => {
       try {
+        if (router.pathname === "/super-admin-login")
+          return localStorage.setItem("superAdminLoggedIn", "true");
+        const superAdminLoggedIn =
+          localStorage.getItem("superAdminLoggedIn") === "true";
+        if (superAdminLoggedIn) {
+          setIsAuthenticated(false);
+          return;
+        }
+
         if (!keycloak || keycloak.authenticated) return;
+
+        const redirectUri = `${window.location.origin}/tenant`;
 
         const authenticated = await keycloak.init({
           onLoad: "login-required",
-          redirectUri: `${window.location.origin}/tenant`,
+          redirectUri,
         });
 
         if (!authenticated) return;
         setIsAuthenticated(true);
-        if (keycloak.token) localStorage.setItem("token", keycloak.token);
+
+        if (keycloak.token) {
+          localStorage.setItem("token", keycloak.token);
+          await registerUser();
+        }
         if (keycloak.refreshToken)
           localStorage.setItem("refreshToken", keycloak.refreshToken);
       } catch (error) {
@@ -57,7 +73,8 @@ function App({ Component, pageProps }: AppProps) {
     };
 
     initializeKeycloak();
-  }, []);
+  }, [router.pathname, keycloak]);
+
   useEffect(() => {
     if (!isAuthenticated || hasFetchedUserDetails.current) return;
 
