@@ -51,7 +51,8 @@ function App({ Component, pageProps }: AppProps) {
 
         if (!keycloak || keycloak.authenticated) return;
 
-        const redirectUri = `${window.location.origin}/tenant`;
+        const redirectUri = `${window.location.protocol}//${window.location.hostname}/tenant`;
+        console.log({ redirectUri });
 
         const authenticated = await keycloak.init({
           onLoad: "login-required",
@@ -62,11 +63,15 @@ function App({ Component, pageProps }: AppProps) {
         setIsAuthenticated(true);
 
         if (keycloak.token) {
+          console.log("Get keycloak token");
+
           localStorage.setItem("token", keycloak.token);
           await registerUser();
         }
-        if (keycloak.refreshToken)
+        if (keycloak.refreshToken) {
+          console.log("Get keycloak token");
           localStorage.setItem("refreshToken", keycloak.refreshToken);
+        }
       } catch (error) {
         console.error("Failed to initialize Keycloak:", error);
       }
