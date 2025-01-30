@@ -1260,7 +1260,7 @@ const Tenant: React.FC = () => {
     handleSortChange: handleSortChange,
     handleFilterChange: handleFilterChange,
     handleSearch: handleSearch,
-    showAddNew: true,
+    showAddNew: adminRole == true ? true : false,
     // showAddNew: true,
     showSearch: false,
     statusArchived: false,
