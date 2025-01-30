@@ -111,7 +111,6 @@ const AddNewCenters: React.FC<AddLearnerModalProps> = ({
 
   const handleChange = (data: IChangeEvent<any>) => {
     setUpdateBtnDisabled(false);
-    console.log("Form changed:", data.formData);
   };
 
   const handleError = (errors: any) => {
