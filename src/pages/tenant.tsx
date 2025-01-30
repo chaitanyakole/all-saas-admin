@@ -175,7 +175,7 @@ const Tenant: React.FC = () => {
     name: {
       "ui:widget": "text",
       "ui:placeholder": "Enter your full name",
-      "ui:help": "Only letters and spaces are allowed.",
+      "ui:help": "",
     },
     status: {
       "ui:widget": "CustomRadioWidget",
@@ -1260,7 +1260,7 @@ const Tenant: React.FC = () => {
     handleSortChange: handleSortChange,
     handleFilterChange: handleFilterChange,
     handleSearch: handleSearch,
-    showAddNew: adminRole == true ? true : false,
+    showAddNew: true,
     // showAddNew: true,
     showSearch: false,
     statusArchived: false,
