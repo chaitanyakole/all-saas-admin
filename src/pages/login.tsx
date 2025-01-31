@@ -1,8 +1,9 @@
-import { Box } from "@mui/material";
-import React, { useEffect } from "react";
-import Loader from "../components/Loader";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
+import keycloak from "../utils/keycloak";
+import Loader from "../components/Loader";
+import { Box } from "@mui/material";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 
 const LoginPage = () => {
@@ -10,12 +11,30 @@ const LoginPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.localStorage) {
-      const token = localStorage.getItem("token");
-      if (token) {
-        router.push("/tenant");
+    const loginWithKeycloak = async () => {
+      if (typeof window === "undefined" || !keycloak) return;
+      try {
+        const token = localStorage.getItem("token");
+        if (token) {
+          router.push("/tenant");
+          return;
+        }
+
+        // Initialize Keycloak and login
+        const authenticated = await keycloak.init({
+          onLoad: "login-required",
+          redirectUri: `${window.location.origin}/tenant`,
+        });
+
+        if (authenticated) {
+          localStorage.setItem("token", keycloak.token || "");
+        }
+      } catch (error) {
+        console.error("Error logging in with Keycloak:", error);
       }
-    }
+    };
+
+    loginWithKeycloak();
   }, []);
 
   return (
