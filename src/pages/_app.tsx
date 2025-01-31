@@ -15,7 +15,7 @@ import keycloak, { initKeycloak } from "../utils/keycloak";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "react-circular-progressbar/dist/styles.css";
-import { getUserId } from "@/services/LoginService";
+import { getUserId, registerUser } from "@/services/LoginService";
 import { getUserDetailsInfo } from "@/services/UserList";
 import { useRouter } from "next/router";
 
@@ -55,6 +55,8 @@ function App({ Component, pageProps }: AppProps) {
         }
 
         const authenticated = await initKeycloak();
+        await registerUser();
+
         setIsAuthenticated(authenticated);
       } catch (error) {
         console.error("Failed to initialize Keycloak:", error);
