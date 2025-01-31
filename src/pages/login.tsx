@@ -33,6 +33,7 @@ const LoginPage = () => {
         console.error("Error logging in with Keycloak:", error);
       }
     };
+    console.log("login page called");
 
     loginWithKeycloak();
   }, []);
