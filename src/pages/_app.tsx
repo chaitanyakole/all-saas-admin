@@ -15,7 +15,7 @@ import keycloak, { initKeycloak } from "../utils/keycloak";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "react-circular-progressbar/dist/styles.css";
-import { getUserId, registerUser } from "@/services/LoginService";
+import { getUserId } from "@/services/LoginService";
 import { getUserDetailsInfo } from "@/services/UserList";
 import { useRouter } from "next/router";
 

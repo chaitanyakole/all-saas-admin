@@ -5,6 +5,7 @@ import Loader from "../components/Loader";
 import { Box } from "@mui/material";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
+import { registerUser } from "@/services/LoginService";
 
 const LoginPage = () => {
   const { t } = useTranslation();
@@ -17,6 +18,7 @@ const LoginPage = () => {
         const token = localStorage.getItem("token");
         if (token) {
           router.push("/tenant");
+          await registerUser();
           return;
         }
 
