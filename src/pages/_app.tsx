@@ -42,8 +42,7 @@ function App({ Component, pageProps }: AppProps) {
       try {
         if (router.pathname === "/super-admin-login")
           return localStorage.setItem("superAdminLoggedIn", "true");
-        const superAdminLoggedIn =
-          localStorage.getItem("superAdminLoggedIn") === "true";
+        localStorage.getItem("superAdminLoggedIn") === "true";
         setIsAuthenticated(false);
         if (!keycloak || keycloak.authenticated) return;
 
