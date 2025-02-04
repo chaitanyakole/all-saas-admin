@@ -11,11 +11,11 @@ import FullLayout from "@/components/layouts/FullLayout";
 import { Experimental_CssVarsProvider as CssVarsProvider } from "@mui/material/styles";
 import customTheme from "../styles/customTheme";
 import "./../styles/style.css";
-import keycloak, { initKeycloak } from "../utils/keycloak";
+import keycloak from "../utils/keycloak";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "react-circular-progressbar/dist/styles.css";
-import { getUserId } from "@/services/LoginService";
+import { getUserId, registerUser } from "@/services/LoginService";
 import { getUserDetailsInfo } from "@/services/UserList";
 import { useRouter } from "next/router";
 
@@ -38,15 +38,10 @@ function App({ Component, pageProps }: AppProps) {
 
   // Keycloak initialization
   useEffect(() => {
-    if (typeof window === "undefined" || !keycloak) return;
-
     const initializeKeycloak = async () => {
       try {
-        if (router.pathname === "/super-admin-login") {
-          localStorage.setItem("superAdminLoggedIn", "true");
-          return;
-        }
-
+        if (router.pathname === "/super-admin-login")
+          return localStorage.setItem("superAdminLoggedIn", "true");
         const superAdminLoggedIn =
           localStorage.getItem("superAdminLoggedIn") === "true";
         if (superAdminLoggedIn) {
@@ -54,16 +49,36 @@ function App({ Component, pageProps }: AppProps) {
           return;
         }
 
-        const authenticated = await initKeycloak();
+        if (!keycloak || keycloak.authenticated) return;
 
-        setIsAuthenticated(authenticated);
+        const redirectUri = `${window.location.protocol}//${window.location.hostname}/tenant`;
+        console.log({ redirectUri });
+
+        const authenticated = await keycloak.init({
+          onLoad: "login-required",
+          redirectUri,
+        });
+
+        if (!authenticated) return;
+        setIsAuthenticated(true);
+
+        if (keycloak.token) {
+          console.log("Get keycloak token");
+
+          localStorage.setItem("token", keycloak.token);
+          await registerUser();
+        }
+        if (keycloak.refreshToken) {
+          console.log("Get keycloak token");
+          localStorage.setItem("refreshToken", keycloak.refreshToken);
+        }
       } catch (error) {
         console.error("Failed to initialize Keycloak:", error);
       }
     };
 
     initializeKeycloak();
-  }, [router.pathname]);
+  }, [router.pathname, keycloak]);
 
   useEffect(() => {
     if (!isAuthenticated || hasFetchedUserDetails.current) return;
