@@ -29,12 +29,12 @@ function App({ Component, pageProps }: AppProps) {
     telemetryFactory.init();
   }, []);
 
-  useEffect(() => {
-    if (!window.GA_INITIALIZED) {
-      initGA(`G-6NVMB20J4Z`);
-      window.GA_INITIALIZED = true;
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!window.GA_INITIALIZED) {
+  //     initGA(`G-6NVMB20J4Z`);
+  //     window.GA_INITIALIZED = true;
+  //   }
+  // }, []);
 
   // Keycloak initialization
   useEffect(() => {
@@ -44,16 +44,10 @@ function App({ Component, pageProps }: AppProps) {
           return localStorage.setItem("superAdminLoggedIn", "true");
         const superAdminLoggedIn =
           localStorage.getItem("superAdminLoggedIn") === "true";
-        if (superAdminLoggedIn) {
-          setIsAuthenticated(false);
-          return;
-        }
-
+        setIsAuthenticated(false);
         if (!keycloak || keycloak.authenticated) return;
 
-        const redirectUri = `${window.location.protocol}//${window.location.hostname}/tenant`;
-        console.log({ redirectUri });
-
+        const redirectUri = `${window.location.origin}/tenant`;
         const authenticated = await keycloak.init({
           onLoad: "login-required",
           redirectUri,
@@ -63,8 +57,6 @@ function App({ Component, pageProps }: AppProps) {
         setIsAuthenticated(true);
 
         if (keycloak.token) {
-          console.log("Get keycloak token");
-
           localStorage.setItem("token", keycloak.token);
           await registerUser();
         }
