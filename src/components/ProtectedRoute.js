@@ -9,16 +9,17 @@ const ProtectedRoute = ({ children }) => {
   const router = useRouter();
   const { loading } = useAuth();
 
-  console.log(user, loading);
   useEffect(() => {
     let user;
     if (typeof window !== "undefined" && window.localStorage) {
       user = localStorage.getItem("token");
     }
-
-    if (!loading && !user) {
-      router.push("/login");
-    }
+    //Need to updated
+    setTimeout(() => {
+      if (!loading && !user) {
+        router.push("/login");
+      }
+    }, 1000);
   }, [loading, router]);
 
   if (loading) {
