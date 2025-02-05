@@ -11,11 +11,14 @@ const keycloakInstance =
     : null;
 export const logout = async () => {
   try {    
-    if (keycloakInstance) {
+    if (keycloakInstance) {      
       await keycloakInstance.logout({
         redirectUri: window.location.origin + "/login",
       });
       localStorage.clear();
+      sessionStorage.clear();
+      document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });        
+      
     }
 
   } catch (error) {

@@ -39,6 +39,7 @@ const ActionIcon: React.FC<ActionCellProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
+
   return (
     <Box
       sx={{
@@ -100,7 +101,7 @@ const ActionIcon: React.FC<ActionCellProps> = ({
           </Box>
         </Tooltip>
       )}
-      {!allowEditIcon && (
+      {allowEditIcon && (
         <>
           <Tooltip title={t("COMMON.EDIT")}>
             <Box
