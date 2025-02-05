@@ -35,32 +35,7 @@ interface Cohort {
   label: string;
 }
 interface DropdownBoxProps {
-  // states: State[];
-  // districts: District[];
-  // blocks: Block[];
-  // allCenters?: Centers[];
-  // selectedState: string[];
-  // selectedDistrict: string[];
-  // selectedBlock: string[];
-  // selectedCenter?: any;
   inModal?: boolean;
-  // handleStateChangeWrapper: (
-  //   selectedNames: string[],
-  //   selectedCodes: string[]
-  // ) => Promise<void>;
-  // handleDistrictChangeWrapper: (
-  //   selected: string[],
-  //   selectedCodes: string[]
-  // ) => Promise<void>;
-  // handleBlockChangeWrapper: (
-  //   selected: string[],
-  //   selectedCodes: string[]
-  // ) => void;
-  // handleCenterChangeWrapper?: (
-  //   selected: string[],
-  //   selectedCodes: string[]
-  // ) => void;
-
   isMobile: boolean;
   isMediumScreen: boolean;
   isCenterSelection?: boolean;
@@ -82,25 +57,10 @@ interface DropdownBoxProps {
 }
 
 const AreaSelection: React.FC<DropdownBoxProps> = ({
-  // states,
-  // districts,
-  // blocks,
-  // allCenters = [],
-  // selectedState,
-  // selectedDistrict,
-  // selectedBlock,
-  // selectedCenter = [],
-  // handleStateChangeWrapper,
-  // handleDistrictChangeWrapper,
-  // handleBlockChangeWrapper,
   isMobile,
   isMediumScreen,
   isCenterSelection = false,
   inModal = false,
-  // handleCenterChangeWrapper = () => {},
-  // stateDefaultValue,
-  // blockDefaultValue,
-  // districtDefaultValue,
   tenants,
   cohorts,
   selectedTenant,
@@ -116,9 +76,6 @@ const AreaSelection: React.FC<DropdownBoxProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
-  const [singleState, setSingleState] = useState<boolean>(true);
-  const [stateValue, setStateValue] = useState<string>("");
-  const [stateCode, setStateCode] = useState<string>("");
   let isSmallScreen = useMediaQuery((theme: any) =>
     theme.breakpoints.down("sm")
   );
@@ -239,76 +196,3 @@ const AreaSelection: React.FC<DropdownBoxProps> = ({
 };
 
 export default AreaSelection;
-
-{
-  /* <Grid
-  item
-  xs={12}
-  sm={inModal ? 12 : 6}
-  md={inModal ? 12 : 4}
-  lg={inModal ? 12 : isCenterSelection ? 3 : 4}
->
-  {shouldRenderSelectCheckmarks && (
-    <MultipleSelectCheckmarks
-      names={capitalizeFirstLetterOfEachWordInArray(
-        blocks?.length > 0 ? blocks.map((block) => block.label) : []
-        //  blocks.map((block) => block.label)
-      )}
-      codes={
-        blocks?.length > 0
-          ? blocks?.map((block) => block.value)
-          : []
-        // blocks?.map((block) => block.value)
-      }
-      tagName={t("FACILITATORS.BLOCK")}
-      selectedCategories={capitalizeFirstLetterOfEachWordInArray(
-        selectedBlock
-      )}
-      onCategoryChange={handleBlockChangeWrapper}
-      disabled={
-        blocks?.length <= 0 ||
-        selectedDistrict?.length === 0 ||
-        selectedDistrict[0] === t("COMMON.ALL_DISTRICTS")
-      }
-      overall={!inModal}
-      defaultValue={
-        selectedDistrict?.length > 0 && blocks?.length === 0
-          ? t("COMMON.NO_BLOCKS")
-          : t("COMMON.ALL_BLOCKS")
-      }
-    />
-  )}
-</Grid> */
-}
-{
-  /* {isCenterSelection && (
-  <Grid
-    item
-    xs={12}
-    sm={inModal ? 12 : 6}
-    md={inModal ? 12 : 4}
-    lg={inModal ? 12 : isCenterSelection ? 3 : 4}
-  >
-    <MultipleSelectCheckmarks
-      names={capitalizeFirstLetterOfEachWordInArray(
-        allCenters?.map((center) => center.name)
-      )}
-      codes={allCenters?.map((center) => center.cohortId)}
-      tagName={t("CENTERS.CENTERS")}
-      selectedCategories={selectedCenter}
-      onCategoryChange={handleCenterChangeWrapper}
-      disabled={
-        selectedBlock.length === 0 ||
-        selectedBlock[0] === t("COMMON.ALL_BLOCKS") ||
-        (selectedBlock?.length > 0 && allCenters?.length === 0)
-      }
-      overall={!inModal}
-      defaultValue={
-        selectedBlock?.length > 0 && allCenters?.length === 0
-          ? t("COMMON.NO_CENTERS")
-          : t("COMMON.ALL_CENTERS")
-      }
-    />
-  </Grid>
-)} */
-}

@@ -1,40 +1,31 @@
-import DeleteUserModal from "@/components/DeleteUserModal";
 import HeaderComponent from "@/components/HeaderComponent";
 import PageSizeSelector from "@/components/PageSelector";
-import { FormContextType, Numbers, SORT, Status } from "@/utils/app.constant";
+import { Numbers, SORT, Status } from "@/utils/app.constant";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import Box from "@mui/material/Box";
 import Pagination from "@mui/material/Pagination";
 import { SelectChangeEvent } from "@mui/material/Select";
 import Typography from "@mui/material/Typography";
-import { DataType, SortDirection } from "ka-table/enums";
 import { useTranslation } from "next-i18next";
 import React, { useEffect, useState } from "react";
 import KaTableComponent from "./KaTableComponent";
 import Loader from "./Loader";
 import { userList } from "../services/UserList";
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
-import { Role, apiCatchingDuration } from "@/utils/app.constant";
-import { getFormRead, updateUser } from "@/services/CreateUserService";
+import { apiCatchingDuration } from "@/utils/app.constant";
+import { updateUser } from "@/services/CreateUserService";
 import { showToastMessage } from "./Toastify";
-import {
-  capitalizeFirstLetterOfEachWordInArray,
-  firstLetterInUpperCase,
-} from "../utils/Helper";
+import { firstLetterInUpperCase } from "../utils/Helper";
 import { getTLTableColumns } from "@/data/tableColumns";
 import { Button, useMediaQuery } from "@mui/material";
 import { Theme } from "@mui/system";
-import CommonUserModal from "./CommonUserModal";
 import { useQuery } from "@tanstack/react-query";
-import ReassignCenterModal from "./ReassignCenterModal";
 import {
   deleteUser,
   getCohortList,
   getTenantLists,
   rolesList,
-  updateCohortMemberStatus,
-  updateCohortUpdate,
 } from "@/services/CohortService/cohortService";
 import useSubmittedButtonStore from "@/utils/useSharedState";
 import { useRouter } from "next/router";
@@ -44,7 +35,6 @@ import DynamicForm from "@/components/DynamicForm";
 import { IChangeEvent } from "@rjsf/core";
 import { RJSFSchema } from "@rjsf/utils";
 import { customFields } from "./GeneratedSchemas";
-import { tenantId } from "../../app.config";
 import ConfirmationModal from "./ConfirmationModal";
 
 type UserDetails = {
@@ -70,12 +60,6 @@ type UserDetails = {
   email: string;
   status: string;
 };
-type UserDetailParam = {
-  // Expected properties of UserDetailParam
-  id: string;
-  role: string;
-  status: string;
-};
 
 type FilterDetails = {
   role: any;
@@ -87,19 +71,7 @@ type FilterDetails = {
   cohortId?: any;
   tenantId?: any;
 };
-interface CenterProp {
-  cohortId: string;
-  name: string;
-}
-interface Cohort {
-  cohortId: string;
-  name: string;
-  parentId: string | null;
-  type: string;
-  customField: any[];
-  cohortMemberStatus?: string;
-  cohortMembershipId?: string;
-}
+
 interface UserTableProps {
   role: string;
   userType: string;
@@ -107,41 +79,21 @@ interface UserTableProps {
   handleAddUserClick: any;
   parentState?: boolean;
 }
-interface FieldProp {
-  value: string;
-  label: string;
-}
 
 const UserTable: React.FC<UserTableProps> = ({
   role,
   userType,
   searchPlaceholder,
   handleAddUserClick,
-  parentState,
 }) => {
   const [selectedState, setSelectedState] = React.useState<string[]>([]);
-  const [blockMembershipIdList, setBlockMembershipIdList] = React.useState<
-    string[]
-  >([]);
-  const [centerMembershipIdList, setCenterMembershipIdList] = React.useState<
-    string[]
-  >([]);
   const router = useRouter();
 
-  const selectedBlockStore = useSubmittedButtonStore(
-    (state: any) => state.selectedBlockStore
-  );
   const setSelectedBlockStore = useSubmittedButtonStore(
     (state: any) => state.setSelectedBlockStore
   );
-  const selectedDistrictStore = useSubmittedButtonStore(
-    (state: any) => state.selectedDistrictStore
-  );
   const setSelectedDistrictStore = useSubmittedButtonStore(
     (state: any) => state.setSelectedDistrictStore
-  );
-  const selectedCenterStore = useSubmittedButtonStore(
-    (state: any) => state.selectedCenterStore
   );
   const setSelectedCenterStore = useSubmittedButtonStore(
     (state: any) => state.setSelectedCenterStore
@@ -165,25 +117,8 @@ const UserTable: React.FC<UserTableProps> = ({
   const { t } = useTranslation();
   const [pageSize, setPageSize] = React.useState<number>(10);
   const [sortBy, setSortBy] = useState(["createdAt", "asc"]);
-  const [sortByForCohortMemberList, setsortByForCohortMemberList] = useState([
-    "name",
-    SORT.ASCENDING,
-  ]);
   const [statusValue, setStatusValue] = useState(Status.ACTIVE);
   const [pageCount, setPageCount] = useState(1);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isReassignCohortModalOpen, setIsReassignCohortModalOpen] =
-    useState(false);
-  const [centers, setCenters] = useState<CenterProp[]>([]);
-  const [blocks, setBlocks] = useState<FieldProp[]>([]);
-  const [userCohort, setUserCohorts] = useState("");
-  const [assignedCenters, setAssignedCenters] = useState<any>();
-  const [selectedUserId, setSelectedUserId] = useState("");
-  const [cohortId, setCohortId] = useState([]);
-  const [block, setBlock] = useState("");
-  const [district, setDistrict] = useState("");
-  const [blockCode, setBlockCode] = useState("");
-  const [districtCode, setDistrictCode] = useState("");
   const [deleteUserState, setDeleteUserState] = useState(false);
   const [editUserState, setEditUserState] = useState(false);
   const [selectedCenter, setSelectedCenter] = useState<string[]>([]);
@@ -204,7 +139,6 @@ const UserTable: React.FC<UserTableProps> = ({
   const [formData, setFormData] = useState<any>();
 
   const [loading, setLoading] = useState<boolean | undefined>(undefined);
-  const [openAddLearnerModal, setOpenAddLearnerModal] = React.useState(false);
   const [userId, setUserId] = useState();
   const [submitValue, setSubmitValue] = useState<boolean>(false);
   const [isEditForm, setIsEditForm] = useState<boolean>(false);
@@ -243,39 +177,7 @@ const UserTable: React.FC<UserTableProps> = ({
       "ui:options": {},
     },
   };
-  const reassignButtonStatus = useSubmittedButtonStore(
-    (state: any) => state.reassignButtonStatus
-  );
-  const {
-    data: teacherFormData,
-    isLoading: teacherFormDataLoading,
-    error: teacherFormDataErrror,
-  } = useQuery<any[]>({
-    queryKey: ["teacherFormData"],
-    queryFn: () => Promise.resolve([]),
-    staleTime: apiCatchingDuration.GETREADFORM,
-    enabled: false,
-  });
-  const {
-    data: studentFormData,
-    isLoading: studentFormDataLoading,
-    error: studentFormDataErrror,
-  } = useQuery<any[]>({
-    queryKey: ["studentFormData"],
-    queryFn: () => Promise.resolve([]),
-    staleTime: apiCatchingDuration.GETREADFORM,
-    enabled: false,
-  });
-  const {
-    data: teamLeaderFormData,
-    isLoading: teamLeaderFormDataLoading,
-    error: teamLeaderFormDataErrror,
-  } = useQuery<any[]>({
-    queryKey: ["teamLeaderFormData"],
-    queryFn: () => Promise.resolve([]),
-    staleTime: apiCatchingDuration.GETREADFORM,
-    enabled: false,
-  });
+
   const handleOpenAddLearnerModal = () => {
     setIsEditForm(true);
   };
@@ -283,13 +185,7 @@ const UserTable: React.FC<UserTableProps> = ({
     setIsEditForm(false);
     // setFormData({});
   };
-  const handleModalSubmit = (value: boolean) => {
-    submitValue ? setSubmitValue(false) : setSubmitValue(true);
-  };
-  const handleCloseAddLearnerModal = () => {
-    setOpenAddLearnerModal(false);
-    setUpdateBtnDisabled(true);
-  };
+
   const [filters, setFilters] = useState<FilterDetails>({
     role: "learner",
     status: [statusValue],
@@ -316,7 +212,7 @@ const UserTable: React.FC<UserTableProps> = ({
           setListOfCohorts(cohortList?.results);
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        // console.error("Error fetching data:", error);
       }
     };
 
@@ -325,64 +221,6 @@ const UserTable: React.FC<UserTableProps> = ({
     }
   }, [filters, selectedCohort]);
 
-  const handleStateChange = async (selected: string[], code: string[]) => {
-    const newQuery = { ...router.query };
-
-    if (newQuery.center) {
-      delete newQuery.center;
-    }
-    if (newQuery.district) {
-      delete newQuery.district;
-    }
-    if (newQuery.block) {
-      delete newQuery.block;
-    }
-    router.replace({
-      pathname: router.pathname,
-      query: {
-        ...newQuery,
-        state: code?.join(","),
-      },
-    });
-    setSelectedCenterCode([]);
-
-    // setEnableCenterFilter(false);
-    setSelectedDistrict([]);
-    setSelectedCenter([]);
-
-    setSelectedBlock([]);
-    setSelectedBlockCode("");
-    setSelectedDistrictCode("");
-    setSelectedState(selected);
-
-    if (selected[0] === "" || selected[0] === t("COMMON.ALL_STATES")) {
-      if (filters.status)
-        setFilters({
-          status: [filters.status],
-          role: "learner",
-        });
-      // else setFilters({ role: role });
-      else
-        setFilters({
-          role: "learner",
-          status: [statusValue],
-        });
-    } else {
-      const stateCodes = code?.join(",");
-      setSelectedStateCode(stateCodes);
-      if (filters.status)
-        setFilters({
-          states: stateCodes,
-          role: "learner",
-          status: filters.status,
-        });
-      else
-        setFilters({
-          states: stateCodes,
-          role: "learner",
-        });
-    }
-  };
   const handleFilterChange = async (
     event: React.SyntheticEvent,
     newValue: any
@@ -624,70 +462,6 @@ const UserTable: React.FC<UserTableProps> = ({
     setSelectedSort(event.target.value);
   };
 
-  const mapFields = (formFields: any, response: any) => {
-    let initialFormData: any = {};
-    formFields.fields.forEach((item: any) => {
-      const userData = response?.userData;
-      const customFieldValue = userData?.customFields?.find(
-        (field: any) => field.fieldId === item.fieldId
-      );
-
-      const getValue = (data: any, field: any) => {
-        if (item.default) {
-          return item.default;
-        }
-        if (item?.isMultiSelect) {
-          if (data[item.name] && item?.maxSelections > 1) {
-            return [field?.value];
-          } else if (item?.type === "checkbox") {
-            return String(field?.value).split(",");
-          } else {
-            return field?.value?.toLowerCase();
-          }
-        } else {
-          if (item?.type === "numeric") {
-            return parseInt(String(field?.value));
-          } else if (item?.type === "text") {
-            return String(field?.value);
-          } else {
-            if (field?.value === "FEMALE" || field?.value === "MALE") {
-              return field?.value?.toLowerCase();
-            }
-            return field?.value?.toLowerCase();
-          }
-        }
-      };
-
-      if (item.coreField) {
-        if (item?.isMultiSelect) {
-          if (userData[item.name] && item?.maxSelections > 1) {
-            initialFormData[item.name] = [userData[item.name]];
-          } else if (item?.type === "checkbox") {
-            initialFormData[item.name] = String(userData[item.name]).split(",");
-          } else {
-            initialFormData[item.name] = userData[item.name];
-          }
-        } else if (item?.type === "numeric") {
-          initialFormData[item.name] = Number(userData[item.name]);
-        } else if (item?.type === "text" && userData[item.name]) {
-          initialFormData[item.name] = String(userData[item.name]);
-        } else {
-          if (userData[item.name]) {
-            initialFormData[item.name] = userData[item.name];
-          }
-        }
-      } else {
-        const fieldValue = getValue(userData, customFieldValue);
-
-        if (fieldValue) {
-          initialFormData[item.name] = fieldValue;
-        }
-      }
-    });
-
-    return initialFormData;
-  };
-
   // useEffect(() => {
   //   const fetchRoles = async () => {
   //     const obj = {
@@ -758,7 +532,6 @@ const UserTable: React.FC<UserTableProps> = ({
       name: keyword,
     }));
   };
-
   useEffect(() => {
     const fetchUserList = async () => {
       setLoading(true);
@@ -780,6 +553,7 @@ const UserTable: React.FC<UserTableProps> = ({
           filters: {
             role: filters.role,
             status: filters.status,
+            name: filters?.name,
           },
           tenantCohortRoleMapping: {
             ...(selectedTenantOrNot ? {} : { tenantId: tenantId }),
@@ -890,18 +664,16 @@ const UserTable: React.FC<UserTableProps> = ({
 
     fetchUserList();
   }, [
-    pageOffset,
-    submitValue,
+    // pageOffset,
+    // submitValue,
     pageLimit,
     sortBy,
     filters,
-    parentState,
-    deleteUserState,
-    reassignButtonStatus,
-    userType,
-    editUserState,
-    selectedTenant,
-    selectedCohort,
+    // parentState,
+    // userType,
+    // editUserState,
+    // selectedTenant,
+    // selectedCohort,
   ]);
 
   const handleTenantChange = (
@@ -912,24 +684,14 @@ const UserTable: React.FC<UserTableProps> = ({
       const tenantId = selectedCodes.join(",");
       setSelectedTenant(selectedNames);
       if (selectedNames?.[0] == "All") {
-        setFilters(
-          (prevFilter) => (
-            console.log({ prevFilter }),
-            {
-              ...prevFilter,
-            }
-          )
-        );
+        setFilters((prevFilter) => ({
+          ...prevFilter,
+        }));
       } else {
-        setFilters(
-          (prevFilter) => (
-            console.log({ prevFilter }),
-            {
-              ...prevFilter,
-              tenantId: tenantId,
-            }
-          )
-        );
+        setFilters((prevFilter) => ({
+          ...prevFilter,
+          tenantId: tenantId,
+        }));
       }
     } else {
       console.log("No valid tenants selected");
@@ -1013,14 +775,6 @@ const UserTable: React.FC<UserTableProps> = ({
     }
   };
 
-  const handleCloseReassignModal = () => {
-    // setSelectedReason("");
-    // setOtherReason("");
-    setIsReassignCohortModalOpen(false);
-    setSelectedUserId("");
-    // setConfirmButtonDisable(true);
-  };
-
   const extraActions: any = [
     { name: "Edit", onClick: handleEdit, icon: EditIcon },
     { name: "Delete", onClick: handleDelete, icon: DeleteIcon },
@@ -1098,7 +852,7 @@ const UserTable: React.FC<UserTableProps> = ({
     tenants: listOfTenants,
     cohorts: listOfCohorts,
     showAddNew: false,
-    showSort: true,
+    showSort: false,
     userType: userType,
     searchPlaceHolder: searchPlaceholder,
     selectedState: selectedState,
@@ -1156,7 +910,6 @@ const UserTable: React.FC<UserTableProps> = ({
             getTLTableColumns(t, isMobile, filters)
             // : getUserTableColumns(t, isMobile)
           }
-          // reassignCohort={handleReassignCohort}
           data={data}
           limit={pageLimit}
           offset={pageOffset}
@@ -1170,9 +923,7 @@ const UserTable: React.FC<UserTableProps> = ({
           onDelete={handleDelete}
           pagination={pagination}
           allowEditIcon={true}
-          // reassignCohort={reassignCohort}
           noDataMessage={data?.length === 0 ? t("COMMON.NO_USER_FOUND") : ""}
-          // reassignType={userType===Role.TEAM_LEADERS?  t("COMMON.REASSIGN_BLOCKS"):  t("COMMON.REASSIGN_CENTERS")}
         />
       ) : (
         loading === false &&
@@ -1262,21 +1013,6 @@ const UserTable: React.FC<UserTableProps> = ({
         handleCloseModal={() => setConfirmationModalOpen(false)}
         modalOpen={confirmationModalOpen}
       />
-      {/* 
-      <ReassignCenterModal
-        open={isReassignCohortModalOpen}
-        onClose={handleCloseReassignModal}
-        userType={userType}
-        cohortData={centers}
-        blockList={blocks}
-        userId={selectedUserId}
-        blockName={block}
-        districtName={district}
-        blockCode={blockCode}
-        districtCode={districtCode}
-        cohortId={cohortId}
-        centers={assignedCenters}
-      /> */}
     </HeaderComponent>
   );
 };

@@ -74,14 +74,9 @@ const MultipleSelectCheckmarks: React.FC<MultipleSelectCheckmarksProps> = ({
           labelId="multiple-checkbox-label"
           id="multiple-checkbox"
           value={
-            // If no categories are selected (empty or invalid selection), show default value or the first name from 'names'
             selectedCategories?.length <= 0 || selectedCategories[0] === ""
-              ? names?.length >= 1
-                ? [names[0]]
-                : defaultValue
-                  ? [defaultValue]
-                  : []
-              : selectedCategories // If categories are selected, use selectedCategories
+              ? ["All"]
+              : selectedCategories
           }
           onChange={handleChange} // Handle the change event for the selection
           input={<OutlinedInput label={tagName} />}

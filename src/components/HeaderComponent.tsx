@@ -5,9 +5,7 @@ import {
   Button,
   FormControl,
   MenuItem,
-  Typography,
   useMediaQuery,
-  Divider,
 } from "@mui/material";
 import Select from "@mui/material/Select";
 import { useTheme } from "@mui/material/styles";
@@ -26,7 +24,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { formatedBlocks, formatedDistricts } from "@/services/formatedCohorts";
 import { useRouter } from "next/router";
 import useSubmittedButtonStore from "@/utils/useSharedState";
-import { userAgent } from "next/server";
 
 interface State {
   value: string;
@@ -53,17 +50,7 @@ const HeaderComponent = ({
   children,
   userType,
   searchPlaceHolder,
-  selectedState,
-  selectedStateCode,
-  selectedDistrictCode,
-  selectedBlockCode,
-  selectedDistrict,
-  selectedBlock,
   selectedSort,
-  selectedFilter,
-  handleStateChange,
-  handleDistrictChange,
-  handleBlockChange,
   handleSortChange,
   handleFilterChange,
   showSort = false,
@@ -84,7 +71,6 @@ const HeaderComponent = ({
   setSelectedBlockCode,
   setSelectedBlock,
   setSelectedCenter,
-  selectedCenterCode,
   setSelectedCenterCode,
   setSelectedStateCode,
   showTenantCohortDropDown = true,
@@ -111,10 +97,6 @@ const HeaderComponent = ({
   const [districts, setDistricts] = useState<District[]>([]);
   const [stateDefaultValue, setStateDefaultValue] = useState<string>("");
   const [allCenters, setAllCenters] = useState<CenterProp[]>([]);
-  const [initialDistrict, setInitialDistrict] = useState<any>("");
-  const [initialBlock, setInitialBlock] = useState<string>("");
-  const [initialized, setInitialized] = useState(false);
-
   const [blocks, setBlocks] = useState<Block[]>([]);
   const selectedBlockStore = useSubmittedButtonStore(
     (state: any) => state.selectedBlockStore
@@ -134,123 +116,6 @@ const HeaderComponent = ({
   const setSelectedCenterStore = useSubmittedButtonStore(
     (state: any) => state.setSelectedCenterStore
   );
-  const handleStateChangeWrapper = async (
-    selectedNames: string[],
-    selectedCodes: string[]
-  ) => {
-    if (selectedNames[0] === "") {
-      // if(districts.length!==0)
-      // {
-      //   handleDistrictChange([], []);
-      //   handleBlockChange([], []);
-      // }
-    }
-    try {
-      const response = await queryClient.fetchQuery({
-        queryKey: [QueryKeys.FIELD_OPTION_READ, selectedCodes[0], "districts"],
-        queryFn: () =>
-          getStateBlockDistrictList({
-            controllingfieldfk: selectedCodes[0],
-            fieldName: "districts",
-          }),
-      });
-
-      // const object = {
-      //   controllingfieldfk: selectedCodes[0],
-
-      //   fieldName: "districts",
-      // };
-      // const response = await getStateBlockDistrictList(object);
-      const result = response?.result?.values;
-
-      setDistricts(result);
-    } catch (error) {
-      console.log(error);
-    }
-    handleStateChange(selectedNames, selectedCodes);
-  };
-
-  const handleDistrictChangeWrapper = async (
-    selected: string[],
-    selectedCodes: string[]
-  ) => {
-    setBlocks([]);
-    if (selected[0] === "") {
-      handleBlockChange([], []);
-    }
-    try {
-      const response = await queryClient.fetchQuery({
-        queryKey: [QueryKeys.FIELD_OPTION_READ, selectedCodes[0], "blocks"],
-        queryFn: () =>
-          getStateBlockDistrictList({
-            controllingfieldfk: selectedCodes[0],
-            fieldName: "blocks",
-          }),
-      });
-
-      // const object = {
-      //   controllingfieldfk: selectedCodes[0],
-
-      //   fieldName: "blocks",
-      // };
-      // const response = await getStateBlockDistrictList(object);
-      const result = response?.result?.values;
-      const blockResult = await formatedBlocks(selectedCodes[0]);
-
-      setBlocks(blockResult);
-    } catch (error) {
-      console.log(error);
-    }
-    handleDistrictChange(selected, selectedCodes);
-  };
-
-  const handleBlockChangeWrapper = async (
-    selected: string[],
-    selectedCodes: string[]
-  ) => {
-    const getCentersObject = {
-      limit: 0,
-      offset: 0,
-      filters: {
-        // "type":"COHORT",
-        status: ["active"],
-        // states: selectedStateCode,
-        // districts: selectedDistrictCode,
-        // blocks: selectedCodes[0],
-        // "name": selected[0]
-      },
-    };
-    const response = await queryClient.fetchQuery({
-      queryKey: [
-        QueryKeys.FIELD_OPTION_READ,
-        getCentersObject.limit,
-        getCentersObject.offset,
-        getCentersObject.filters,
-      ],
-      queryFn: () => getCenterList(getCentersObject),
-    });
-    // const response = await getCenterList(getCentersObject);
-    // setSelectedBlockCohortId(
-    //   response?.result?.results?.cohortDetails[0].cohortId
-    // );
-    //   const result = response?.result?.cohortDetails;
-    const dataArray = response?.result?.results?.cohortDetails;
-
-    const cohortInfo = dataArray
-      ?.filter((cohort: any) => cohort.type !== "BLOCK")
-      .map((item: any) => ({
-        cohortId: item?.cohortId,
-        name: item?.name,
-      }));
-    setAllCenters(cohortInfo);
-    handleBlockChange(selected, selectedCodes);
-  };
-  const handleCenterChangeWrapper = (
-    selected: string[],
-    selectedCodes: string[]
-  ) => {
-    handleCenterChange(selected, selectedCodes);
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -436,7 +301,7 @@ const HeaderComponent = ({
         }
         //  setStates(result);
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     };
 
@@ -447,22 +312,6 @@ const HeaderComponent = ({
   const handleChange = (event: React.SyntheticEvent, newValue: any) => {
     setStatusValue(newValue);
   };
-
-  // useEffect(() => {
-  //   if (districts && districts.length > 0 && !selectedDistrict.length) {
-  //     const firstDistrictCode = districts?.[0].value;
-  //     setInitialDistrict(firstDistrictCode);
-  //     handleDistrictChangeWrapper([districts?.[0].label], [firstDistrictCode]);
-  //   }
-  // }, [districts, selectedDistrict, handleDistrictChangeWrapper]);
-
-  // useEffect(() => {
-  //   if (blocks && blocks.length > 0 && !selectedBlock.length) {
-  //     const firstBlockCode = blocks[0].value;
-  //     setInitialBlock(firstBlockCode);
-  //     handleBlockChangeWrapper([blocks[0].label], [firstBlockCode]);
-  //   }
-  // }, [blocks, selectedBlock, handleBlockChangeWrapper]);
 
   useEffect(() => {
     const handleRouteparam = async () => {
@@ -525,30 +374,6 @@ const HeaderComponent = ({
         </Typography>
       )} */}
 
-      {/* {showStateDropdown && (
-        <AreaSelection
-          states={transformArray(states)}
-          districts={transformArray(districts)}
-          blocks={transformArray(blocks)}
-          selectedState={selectedState}
-          selectedDistrict={selectedDistrict}
-          selectedBlock={selectedBlock}
-          handleStateChangeWrapper={handleStateChangeWrapper}
-          handleDistrictChangeWrapper={handleDistrictChangeWrapper}
-          handleBlockChangeWrapper={handleBlockChangeWrapper}
-          isMobile={isMobile}
-          isMediumScreen={isMediumScreen}
-          inModal={false}
-          isCenterSelection={
-            userType === Role.FACILITATORS || userType === Role.LEARNERS
-          }
-          stateDefaultValue={stateDefaultValue}
-          allCenters={allCenters}
-          selectedCenter={selectedCenter}
-          handleCenterChangeWrapper={handleCenterChangeWrapper}
-          userType={userType}
-        />
-      )} */}
       {showTenantCohortDropDown && (
         <AreaSelection
           tenants={transformArray(tenants)}
