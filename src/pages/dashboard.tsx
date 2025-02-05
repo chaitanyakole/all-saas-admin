@@ -1,4 +1,3 @@
-import HeaderComponent from "@/components/HeaderComponent";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -30,6 +29,7 @@ const Dashboard = () => {
           height="600px"
           style={{ border: "none" }}
           onError={() => setIsError(true)} // Handle iframe load failure
+          title="metabase-dashboard"
         />
       )}
 
