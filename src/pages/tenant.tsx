@@ -359,7 +359,7 @@ const Tenant: React.FC = () => {
       if (resp) {
         const resultData: TenantData[] = [];
 
-        resp.forEach((item: any) => {
+        resp?.forEach((item: any) => {
           const requiredData: TenantData = {
             name: item.name || "-",
             status: item?.status ? item?.status : "Active",
@@ -1260,7 +1260,7 @@ const Tenant: React.FC = () => {
     handleSortChange: handleSortChange,
     handleFilterChange: handleFilterChange,
     handleSearch: handleSearch,
-    showAddNew: adminRole == true ? true : false,
+    showAddNew: true,
     // showAddNew: true,
     showSearch: false,
     statusArchived: false,
@@ -1390,7 +1390,7 @@ const Tenant: React.FC = () => {
             pageSizes={pageSizeArray}
             extraActions={extraActions}
             showIcons={true}
-            allowEditIcon={adminRole == true ? false : true}
+            allowEditIcon={true}
             onEdit={handleEdit}
             onAdd={handleAdd}
             onDelete={handleDelete}

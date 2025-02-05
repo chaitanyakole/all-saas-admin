@@ -1411,6 +1411,7 @@ const Center: React.FC = () => {
             pageSizes={pageSizeArray}
             extraActions={extraActions}
             showIcons={true}
+            allowEditIcon={true}
             onAdd={handleAdd}
             onEdit={handleEdit}
             onDelete={handleDelete}

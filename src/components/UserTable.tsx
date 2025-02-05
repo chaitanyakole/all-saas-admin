@@ -1169,6 +1169,7 @@ const UserTable: React.FC<UserTableProps> = ({
           onEdit={handleEdit}
           onDelete={handleDelete}
           pagination={pagination}
+          allowEditIcon={true}
           // reassignCohort={reassignCohort}
           noDataMessage={data?.length === 0 ? t("COMMON.NO_USER_FOUND") : ""}
           // reassignType={userType===Role.TEAM_LEADERS?  t("COMMON.REASSIGN_BLOCKS"):  t("COMMON.REASSIGN_CENTERS")}
