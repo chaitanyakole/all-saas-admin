@@ -12,6 +12,7 @@ import { firstLetterInUpperCase } from "@/utils/Helper";
 import useSubmittedButtonStore from "@/utils/useSharedState";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MailIcon from "@mui/icons-material/Mail";
+import DatasetIcon from "@mui/icons-material/Dataset";
 import PhoneIcon from "@mui/icons-material/Phone";
 import { Box, Button, Divider, Menu, Typography } from "@mui/material";
 import { useRouter } from "next/router";
@@ -205,6 +206,12 @@ const Profile = () => {
     }
   })();
 
+  const handleDashboard = () => {
+    const id = localStorage.getItem("userId");
+    setAnchorEl4(null);
+    router.push(`/dashboard?userId=${id}`);
+  };
+
   return (
     <>
       <Button
@@ -353,6 +360,21 @@ const Profile = () => {
             <MailIcon sx={{ marginRight: "10px" }} />
             <Typography variant="body1" sx={{ fontSize: "14px" }}>
               {adminInfo?.email}
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "20px",
+              px: "20px",
+              cursor: "pointer",
+            }}
+            onClick={handleDashboard}
+          >
+            <DatasetIcon sx={{ marginRight: "10px" }} />
+            <Typography variant="body1" sx={{ fontSize: "14px" }}>
+              Dashboard
             </Typography>
           </Box>
 
