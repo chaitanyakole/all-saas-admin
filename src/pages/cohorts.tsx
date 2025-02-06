@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import KaTableComponent from "../components/KaTableComponent";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import HeaderComponent from "@/components/HeaderComponent";
@@ -14,15 +14,7 @@ import {
   updateCohortUpdate,
   userCreate,
 } from "@/services/CohortService/cohortService";
-import {
-  CohortTypes,
-  Numbers,
-  QueryKeys,
-  Role,
-  SORT,
-  Status,
-  Storage,
-} from "@/utils/app.constant";
+import { CohortTypes, Numbers, SORT, Status } from "@/utils/app.constant";
 
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -40,7 +32,6 @@ import { IChangeEvent } from "@rjsf/core";
 import { RJSFSchema } from "@rjsf/utils";
 import DynamicForm from "@/components/DynamicForm";
 import useSubmittedButtonStore from "@/utils/useSharedState";
-import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import cohortSchema from "./cohortSchema.json";
 import AddIcon from "@mui/icons-material/Add";
@@ -72,18 +63,10 @@ const Center: React.FC = () => {
   const router = useRouter();
 
   const { t } = useTranslation();
-  const adminInformation = useSubmittedButtonStore(
-    (state: any) => state.adminInformation
-  );
-  const state = adminInformation?.customFields?.find(
-    (item: any) => item?.label === "STATES"
-  );
 
   // handle states
   const [cohortAdminSchema] = useState(cohortASchema);
   const [selectedTenant, setSelectedTenant] = React.useState<string[]>([]);
-  const [selectedDistrict, setSelectedDistrict] = React.useState<string[]>([]);
-  const [selectedBlock, setSelectedBlock] = React.useState<string[]>([]);
   const [selectedSort, setSelectedSort] = useState("Sort");
   const [selectedFilter, setSelectedFilter] = useState("Active");
   const [cohortData, setCohortData] = useState<cohortFilterDetails[]>([]);
@@ -91,9 +74,6 @@ const Center: React.FC = () => {
   const [confirmationModalOpen, setConfirmationModalOpen] =
     React.useState<boolean>(false);
   const [selectedCohortId, setSelectedCohortId] = React.useState<string>("");
-  const [editModelOpen, setIsEditModalOpen] = React.useState<boolean>(false);
-  const [confirmButtonDisable, setConfirmButtonDisable] =
-    React.useState<boolean>(false);
   const [inputName, setInputName] = React.useState<string>("");
   const [loading, setLoading] = useState<boolean | undefined>(undefined);
   const [userId, setUserId] = useState("");
@@ -110,9 +90,6 @@ const Center: React.FC = () => {
   const [pageSizeArray, setPageSizeArray] = React.useState<number[]>([]);
   const [pagination, setPagination] = useState(true);
   const [sortBy, setSortBy] = useState(["createdAt", "asc"]);
-  const [selectedStateCode, setSelectedStateCode] = useState("");
-  const [selectedDistrictCode, setSelectedDistrictCode] = useState("");
-  const [selectedBlockCode, setSelectedBlockCode] = useState("");
   const [formdata, setFormData] = useState<any>();
   const [totalCount, setTotalCound] = useState<number>(0);
   const [editFormData, setEditFormData] = useState<any>([]);
@@ -404,14 +381,7 @@ const Center: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (
-        selectedBlockCode !== "" ||
-        (selectedDistrictCode !== "" && selectedBlockCode === "")
-      ) {
-        await fetchUserList();
-      }
       await fetchUserList();
-      // getFormData();
     };
 
     fetchData();
@@ -619,7 +589,6 @@ const Center: React.FC = () => {
       setIsEditForm(true);
     }
     setLoading(false);
-    setConfirmButtonDisable(false);
   };
 
   const handleDelete = (rowData: any) => {
@@ -660,17 +629,12 @@ const Center: React.FC = () => {
   ];
 
   const onCloseEditMOdel = () => {
-    setIsEditModalOpen(false);
     setUpdateBtnDisabled(true);
   };
 
   const onCloseEditForm = () => {
     setIsEditForm(false);
     setUpdateBtnDisabled(true);
-  };
-  const handleInputName = (event: ChangeEvent<HTMLInputElement>) => {
-    const updatedName = event.target.value;
-    setInputName(updatedName);
   };
 
   const handleChangeForm = (event: IChangeEvent<any>) => {
@@ -727,7 +691,6 @@ const Center: React.FC = () => {
       showToastMessage(errorMessage, "error");
     } finally {
       setLoading(false);
-      setConfirmButtonDisable(false);
       onCloseEditMOdel();
       fetchUserList();
       setIsEditForm(false);
@@ -816,7 +779,6 @@ const Center: React.FC = () => {
     const formData = data?.formData;
     try {
       setLoading(true);
-      setConfirmButtonDisable(true);
 
       interface UserCreateData {
         name: string;
@@ -864,7 +826,6 @@ const Center: React.FC = () => {
       showToastMessage(errorMessage, "error");
     } finally {
       setLoading(false);
-      setConfirmButtonDisable(false);
       handleAddmodal();
       onCloseEditMOdel();
       setError([]);
@@ -910,7 +871,6 @@ const Center: React.FC = () => {
 
     try {
       setLoading(true);
-      setConfirmButtonDisable(true);
 
       const cohortAdminRole = roleList?.result.find(
         (item: any) => item.code === "cohort_admin"
@@ -948,7 +908,6 @@ const Center: React.FC = () => {
       showToastMessage(errorMessage, "error");
     } finally {
       setLoading(false);
-      setConfirmButtonDisable(false);
       handleCloseModal();
       onCloseEditMOdel();
       fetchUserList();
@@ -962,9 +921,6 @@ const Center: React.FC = () => {
     searchPlaceHolder: t("COHORTS.SEARCH_COHORT"),
     showTenantCohortDropDown: true,
     isTenantShow: true,
-    selectedStateCode: selectedStateCode,
-    selectedDistrict: selectedDistrict,
-    selectedBlock: selectedBlock,
     selectedSort: selectedSort,
     selectedFilter: selectedFilter,
     statusArchived: true,
@@ -979,13 +935,6 @@ const Center: React.FC = () => {
     statusValue: statusValue,
     setStatusValue: setStatusValue,
     showSort: true,
-    selectedBlockCode: selectedBlockCode,
-    setSelectedBlockCode: setSelectedBlockCode,
-    selectedDistrictCode: selectedDistrictCode,
-    setSelectedDistrictCode: setSelectedDistrictCode,
-    setSelectedStateCode: setSelectedStateCode,
-    setSelectedDistrict: setSelectedDistrict,
-    setSelectedBlock: setSelectedBlock,
   };
 
   return (
