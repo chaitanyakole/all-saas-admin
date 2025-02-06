@@ -4,52 +4,30 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import HeaderComponent from "@/components/HeaderComponent";
 import { useTranslation } from "next-i18next";
 import Pagination from "@mui/material/Pagination";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { SelectChangeEvent } from "@mui/material/Select";
 import PageSizeSelector from "@/components/PageSelector";
 import {
   cohortCreate,
   createUser,
   deleteTenant,
-  fetchCohortMemberList,
-  getCohortList,
   roleCreate,
   rolesList,
-  updateCohortUpdate,
   updateTenant,
 } from "@/services/CohortService/cohortService";
-import {
-  CohortTypes,
-  Numbers,
-  QueryKeys,
-  Role,
-  SORT,
-  Status,
-  Storage,
-} from "@/utils/app.constant";
+import { CohortTypes, Numbers, Role, SORT, Status } from "@/utils/app.constant";
 
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ConfirmationModal from "@/components/ConfirmationModal";
-import {
-  Box,
-  Button,
-  MenuItem,
-  Typography,
-  useMediaQuery,
-} from "@mui/material";
+import { Box, Button, Typography, useMediaQuery } from "@mui/material";
 import Loader from "@/components/Loader";
 import { customFields } from "@/components/GeneratedSchemas";
-import { CustomField } from "@/utils/Interfaces";
 import { showToastMessage } from "@/components/Toastify";
 import AddNewTenant from "@/components/AddNewTenant";
 import { getTenantTableData } from "@/data/tableColumns";
 import { Theme } from "@mui/system";
-import {
-  firstLetterInUpperCase,
-  mapFields,
-  transformLabel,
-} from "@/utils/Helper";
+import { mapFields } from "@/utils/Helper";
 import SimpleModal from "@/components/SimpleModal";
 import { IChangeEvent } from "@rjsf/core";
 import { RJSFSchema } from "@rjsf/utils";
@@ -61,6 +39,7 @@ import tenantSchema from "../components/TenantSchema.json";
 import { getTenantLists } from "@/services/CohortService/cohortService";
 import cohortSchemajson from "./cohortSchema.json";
 import userJsonSchema from "./tenantAdminSchema.json";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 type cohortFilterDetails = {
   type?: string;
@@ -73,15 +52,6 @@ type cohortFilterDetails = {
   archivedMembers?: string;
 };
 
-interface centerData {
-  name?: string;
-  status?: string;
-  updatedBy?: string;
-  createdBy?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  customFieldValues?: string;
-}
 interface TenantData {
   name: string;
   status: string;
@@ -95,20 +65,6 @@ interface RowData {
   cohortId: string;
   totalActiveMembers: number;
   [key: string]: any;
-}
-interface Schema {
-  properties: {
-    [key: string]: {
-      title?: string;
-      type: string;
-    };
-  };
-}
-
-interface Field {
-  name: string;
-  label: string;
-  type: string;
 }
 
 const Tenant: React.FC = () => {
@@ -127,8 +83,6 @@ const Tenant: React.FC = () => {
   const stateCode = state ? state?.code : null;
   // handle states
   const [selectedTenant, setSelectedTenant] = React.useState<string[]>([]);
-  const [selectedDistrict, setSelectedDistrict] = React.useState<string[]>([]);
-  const [selectedBlock, setSelectedBlock] = React.useState<string[]>([]);
   const [selectedSort, setSelectedSort] = useState("Sort");
   const [selectedFilter, setSelectedFilter] = useState("Active");
   const [cohortData, setCohortData] = useState<cohortFilterDetails[]>([]);
@@ -153,9 +107,6 @@ const Tenant: React.FC = () => {
   const [pageSizeArray, setPageSizeArray] = React.useState<number[]>([]);
   const [pagination, setPagination] = useState(true);
   const [sortBy, setSortBy] = useState(["createdAt", "asc"]);
-  const [selectedStateCode, setSelectedStateCode] = useState("");
-  const [selectedDistrictCode, setSelectedDistrictCode] = useState("");
-  const [selectedBlockCode, setSelectedBlockCode] = useState("");
   const [formdata, setFormData] = useState<any>();
   const [editFormData, setEditFormData] = useState<any>([]);
   const [isEditForm, setIsEditForm] = useState(false);
@@ -264,25 +215,8 @@ const Tenant: React.FC = () => {
     },
   };
 
-  const selectedBlockStore = useSubmittedButtonStore(
-    (state: any) => state.selectedBlockStore
-  );
-  const setSelectedBlockStore = useSubmittedButtonStore(
-    (state: any) => state.setSelectedBlockStore
-  );
-  const selectedDistrictStore = useSubmittedButtonStore(
-    (state: any) => state.selectedDistrictStore
-  );
-  const setSelectedDistrictStore = useSubmittedButtonStore(
-    (state: any) => state.setSelectedDistrictStore
-  );
-
   const setSubmittedButtonStatus = useSubmittedButtonStore(
     (state: any) => state.setSubmittedButtonStatus
-  );
-
-  const setAdminInformation = useSubmittedButtonStore(
-    (state: any) => state.setAdminInformation
   );
 
   const [filters, setFilters] = useState<cohortFilterDetails>({
@@ -515,186 +449,6 @@ const Tenant: React.FC = () => {
       />
     </Box>
   );
-
-  const handleStateChange = async (selected: string[], code: string[]) => {
-    const newQuery = { ...router.query };
-
-    if (newQuery.center) {
-      delete newQuery.center;
-    }
-    if (newQuery.district) {
-      delete newQuery.district;
-    }
-    if (newQuery.block) {
-      delete newQuery.block;
-    }
-    router.replace({
-      pathname: router.pathname,
-      query: {
-        ...newQuery,
-        state: "",
-      },
-    });
-    // setSelectedDistrict([]);
-    // setSelectedBlock([]);
-    // setSelectedState(selected);
-
-    // setSelectedCenterCode([])
-
-    setSelectedBlockCode("");
-    setSelectedDistrictCode("");
-
-    if (selected[0] === "") {
-      if (filters.status)
-        setFilters({ type: "COHORT", status: filters.status });
-      // else setFilters({ role: role });
-    } else {
-      const stateCodes = code?.join(",");
-      setSelectedStateCode(stateCodes);
-      if (filters.status)
-        setFilters({
-          type: "COHORT",
-          states: "",
-          status: filters.status,
-        });
-      else setFilters({ type: "COHORT", states: "" });
-    }
-  };
-
-  const handleDistrictChange = (selected: string[], code: string[]) => {
-    const newQuery = { ...router.query };
-    if (newQuery.center) {
-      delete newQuery.center;
-    }
-    if (newQuery.block) {
-      delete newQuery.block;
-    }
-    setSelectedBlock([]);
-    setSelectedDistrict(selected);
-    setSelectedBlockCode("");
-    // localStorage.setItem('selectedDistrict', selected[0])
-
-    setSelectedDistrictStore(selected[0]);
-    if (selected[0] === "" || selected[0] === t("COMMON.ALL_DISTRICTS")) {
-      if (filters.status) {
-        setFilters({
-          states: "",
-          status: filters.status,
-          type: "COHORT",
-        });
-      } else {
-        setFilters({
-          states: "",
-          type: "COHORT",
-        });
-      }
-      if (newQuery.district) {
-        delete newQuery.district;
-      }
-      router.replace({
-        pathname: router.pathname,
-        query: {
-          ...newQuery,
-          state: "",
-        },
-      });
-    } else {
-      router.replace({
-        pathname: router.pathname,
-        query: {
-          ...newQuery,
-          // state: selectedStateCode,
-          // district: code?.join(",")
-        },
-      });
-      const districts = code?.join(",");
-      setSelectedDistrictCode(districts);
-      if (filters.status) {
-        setFilters({
-          states: "",
-          districts: "",
-          status: filters.status,
-          //type:"COHORT",
-        });
-      } else {
-        setFilters({
-          states: "",
-          districts: "",
-          // type:"COHORT",
-        });
-      }
-    }
-    setPageOffset(Numbers.ZERO);
-    // fetchUserList();
-  };
-  const handleBlockChange = (selected: string[], code: string[]) => {
-    setSelectedBlock(selected);
-    const newQuery = { ...router.query };
-    if (newQuery.center) {
-      delete newQuery.center;
-    }
-    if (newQuery.block) {
-      delete newQuery.block;
-    }
-
-    localStorage.setItem("selectedBlock", selected[0]);
-    setSelectedBlockStore(selected[0]);
-    if (selected[0] === "" || selected[0] === t("COMMON.ALL_BLOCKS")) {
-      if (newQuery.block) {
-        delete newQuery.block;
-      }
-      router.replace({
-        pathname: router.pathname,
-        query: {
-          ...newQuery,
-          // state: selectedStateCode,
-          // district: selectedDistrictCode,
-        },
-      });
-      if (filters.status) {
-        setFilters({
-          states: "",
-          districts: "",
-          status: filters.status,
-          type: "COHORT",
-        });
-      } else {
-        setFilters({
-          states: "",
-          districts: "",
-          type: "COHORT",
-        });
-      }
-    } else {
-      router.replace({
-        pathname: router.pathname,
-        query: {
-          ...newQuery,
-          // state: selectedStateCode,
-          // district: selectedDistrictCode,
-          // block: code?.join(",")
-        },
-      });
-      // const blocks = code?.join(",");
-      // setSelectedBlockCode(blocks);
-      if (filters.status) {
-        setFilters({
-          states: "",
-          districts: "",
-          blocks: "",
-          status: filters.status,
-          type: "COHORT",
-        });
-      } else {
-        setFilters({
-          states: "",
-          districts: "",
-          blocks: "",
-          type: "COHORT",
-        });
-      }
-    }
-  };
 
   const handleCloseModal = () => {
     setConfirmationModalOpen(false);
@@ -1013,60 +767,60 @@ const Tenant: React.FC = () => {
     setAddFormData({});
   };
 
-  useEffect(() => {
-    const fetchData = () => {
-      try {
-        const object = {
-          // "limit": 20,
-          // "offset": 0,
-          fieldName: "states",
-        };
-        // const response = await getStateBlockDistrictList(object);
-        // const result = response?.result?.values;
-        if (typeof window !== "undefined" && window.localStorage) {
-          const admin = localStorage.getItem("adminInfo");
-          if (admin) {
-            const stateField = JSON.parse(admin).customFields?.find(
-              (field: any) => field?.label === "STATES"
-            );
-            if (!stateField?.value?.includes(",")) {
-              // setSelectedState([stateField.value]);
-              setSelectedStateCode(stateField?.code);
-              if (
-                selectedDistrictCode &&
-                selectedDistrict.length !== 0 &&
-                selectedDistrict[0] !== t("COMMON.ALL_DISTRICTS")
-              ) {
-                setFilters({
-                  states: "",
-                  districts: "",
-                  status: filters.status,
-                  type: CohortTypes.COHORT,
-                });
-              }
-              if (
-                selectedBlockCode &&
-                selectedBlock.length !== 0 &&
-                selectedBlock[0] !== t("COMMON.ALL_BLOCKS")
-              ) {
-                setFilters({
-                  states: "",
-                  districts: "",
-                  blocks: "",
-                  status: filters.status,
-                  type: CohortTypes.COHORT,
-                });
-              }
-            }
-          }
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchData = () => {
+  //     try {
+  //       const object = {
+  //         // "limit": 20,
+  //         // "offset": 0,
+  //         fieldName: "states",
+  //       };
+  //       // const response = await getStateBlockDistrictList(object);
+  //       // const result = response?.result?.values;
+  //       if (typeof window !== "undefined" && window.localStorage) {
+  //         const admin = localStorage.getItem("adminInfo");
+  //         if (admin) {
+  //           const stateField = JSON.parse(admin).customFields?.find(
+  //             (field: any) => field?.label === "STATES"
+  //           );
+  //           if (!stateField?.value?.includes(",")) {
+  //             // setSelectedState([stateField.value]);
+  //             setSelectedStateCode(stateField?.code);
+  //             if (
+  //               selectedDistrictCode &&
+  //               selectedDistrict.length !== 0 &&
+  //               selectedDistrict[0] !== t("COMMON.ALL_DISTRICTS")
+  //             ) {
+  //               setFilters({
+  //                 states: "",
+  //                 districts: "",
+  //                 status: filters.status,
+  //                 type: CohortTypes.COHORT,
+  //               });
+  //             }
+  //             if (
+  //               selectedBlockCode &&
+  //               selectedBlock.length !== 0 &&
+  //               selectedBlock[0] !== t("COMMON.ALL_BLOCKS")
+  //             ) {
+  //               setFilters({
+  //                 states: "",
+  //                 districts: "",
+  //                 blocks: "",
+  //                 status: filters.status,
+  //                 type: CohortTypes.COHORT,
+  //               });
+  //             }
+  //           }
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
 
-    fetchData();
-  }, [selectedBlockCode, selectedDistrictCode]);
+  //   fetchData();
+  // }, [selectedBlockCode, selectedDistrictCode]);
 
   const handleMemberClick = async (
     type: "active" | "archived",
@@ -1245,18 +999,9 @@ const Tenant: React.FC = () => {
   const userProps = {
     userType: t("TENANT.TENANT"),
     searchPlaceHolder: t("TENANT.SEARCH"),
-    // selectedState: selectedState,
     selectedTenant: selectedTenant,
-    selectedStateCode: selectedStateCode,
-    selectedDistrict: selectedDistrict,
-    // selectedDistrictCode: selectedDistrictCode,
-    // selectedBlockCode: selectedBlockCode,
-    selectedBlock: selectedBlock,
     selectedSort: selectedSort,
     selectedFilter: selectedFilter,
-    handleStateChange: handleStateChange,
-    handleDistrictChange: handleDistrictChange,
-    handleBlockChange: handleBlockChange,
     handleSortChange: handleSortChange,
     handleFilterChange: handleFilterChange,
     handleSearch: handleSearch,
@@ -1268,17 +1013,10 @@ const Tenant: React.FC = () => {
     statusValue: statusValue,
     setStatusValue: setStatusValue,
     showSort: false,
-    selectedBlockCode: selectedBlockCode,
-    setSelectedBlockCode: setSelectedBlockCode,
-    selectedDistrictCode: selectedDistrictCode,
-    setSelectedDistrictCode: setSelectedDistrictCode,
-    setSelectedStateCode: setSelectedStateCode,
-    setSelectedDistrict: setSelectedDistrict,
-    setSelectedBlock: setSelectedBlock,
   };
 
   return (
-    <>
+    <ProtectedRoute>
       <ConfirmationModal
         message={
           t("CENTERS.SURE_DELETE_CENTER") +
@@ -1600,7 +1338,7 @@ const Tenant: React.FC = () => {
           )}
         </SimpleModal>
       </HeaderComponent>
-    </>
+    </ProtectedRoute>
   );
 };
 

@@ -1,17 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Card,
-  Typography,
-  Button,
-  useMediaQuery,
-  useTheme,
-  Grid,
-} from "@mui/material";
+import { Box, Typography, Button, useTheme, Grid } from "@mui/material";
 import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
-import InsertLinkOutlinedIcon from "@mui/icons-material/InsertLinkOutlined";
-import CustomStepper from "@/components/Steper";
-import FilterSearchBar from "@/components/FilterSearchBar";
 import { useRouter } from "next/router";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
@@ -21,23 +10,13 @@ import Loader from "@/components/Loader";
 import { getChannelDetails } from "@/services/coursePlanner";
 import { getOptionsByCategory } from "@/utils/Helper";
 import coursePlannerStore from "@/store/coursePlannerStore";
-import taxonomyStore from "@/store/tanonomyStore"
+import taxonomyStore from "@/store/tanonomyStore";
 
 const Foundation = () => {
   const router = useRouter();
   const { t } = useTranslation();
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const isMediumScreen = useMediaQuery(theme.breakpoints.between("sm", "md"));
-  const store = coursePlannerStore();
-  const tStore = taxonomyStore();
-  // State management
   const [selectedCardId, setSelectedCardId] = useState(null);
-  const [grade, setGrade] = useState("");
-  const [medium, setMedium] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedOption, setSelectedOption] = useState("");
-  const [selectFilter, setSelectFilter] = useState("");
+  const store = coursePlannerStore();
   const [loading, setLoading] = useState(true);
   const [framework, setFramework] = useState<any[]>([]);
   const setState = taxonomyStore((state) => state.setState);
@@ -117,26 +96,6 @@ const Foundation = () => {
 
   const handleCardClick = (id: any) => {
     router.push(`/stateDetails?cardId=${id}`);
-  };
-
-  const handleGradeChange = (event: any) => {
-    setGrade(event.target.value);
-  };
-
-  const handleMediumChange = (event: any) => {
-    setMedium(event.target.value);
-  };
-
-  const handleSearchChange = (event: any) => {
-    setSearchQuery(event.target.value);
-  };
-
-  const handleDropdownChange = (event: any) => {
-    setSelectedOption(event.target.value);
-  };
-
-  const handleFilter = (value: string) => {
-    setSelectFilter(value);
   };
 
   const handleCopyLink = (state: string) => {
@@ -227,8 +186,7 @@ const Foundation = () => {
                             handleCopyLink(card.state);
                           }}
                           sx={{ minWidth: "auto", padding: 0 }}
-                        >
-                        </Button>
+                        ></Button>
                       </Box>
                     </Box>
                   </Grid>

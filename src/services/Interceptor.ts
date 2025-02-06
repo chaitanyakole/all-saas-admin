@@ -1,4 +1,3 @@
-import { tenantId } from './../../app.config';
 import axios from "axios";
 import { refresh } from "./LoginService";
 
