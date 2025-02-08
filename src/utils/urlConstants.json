@@ -34,6 +34,10 @@
     "ROLES_LIST": "rbac/roles/list/roles",
     "USER_CREATE": "create",
     "USER_DELETE": "delete",
-    "USER_REGISTER": "auth/validateAndRegister"
+    "USER_REGISTER": "auth/validateAndRegister",
+    "FETCH_INVITATIONS":"invitation/getall",
+    "UPDATE_INVITATIONS_STATUS":"invitation/update?id=",
+    "SEND_INVITATION_REQUEST":"invitation/sendinvite",
+    "DELETE_INVITATION_REQUEST":""
   }
 }

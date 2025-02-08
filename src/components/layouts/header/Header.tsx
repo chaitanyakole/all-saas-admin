@@ -1,20 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 import FeatherIcon from "feather-icons-react";
-import { AppBar, Box, IconButton, Toolbar } from "@mui/material";
+import { AppBar, Badge, Box, IconButton, Toolbar } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import config from "../../../../config.json";
 import PropTypes from "prop-types";
 import Image from "next/image";
-import TranslateIcon from '@mui/icons-material/Translate';
-import Menu from '@mui/material/Menu';
+import TranslateIcon from "@mui/icons-material/Translate";
+import Menu from "@mui/material/Menu";
 import SearchBar from "./SearchBar";
-import { useRouter } from 'next/router';
-
-
+import { useRouter } from "next/router";
+import MailIcon from "@mui/icons-material/Mail";
 import { useTranslation } from "next-i18next";
 import { createTheme } from "@mui/material/styles";
 import Profile from "./Profile";
+import { Mail } from "@mui/icons-material";
+import InvitationMenu from "./Invitation";
 
 const Header = ({ sx, customClass, toggleMobileSidebar, position }: any) => {
   const { t } = useTranslation();
@@ -28,26 +29,24 @@ const Header = ({ sx, customClass, toggleMobileSidebar, position }: any) => {
 
   const [language, setLanguage] = useState(selectedLanguage);
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const lang = localStorage.getItem('preferredLanguage') || 'en';
+    if (typeof window !== "undefined" && window.localStorage) {
+      const lang = localStorage.getItem("preferredLanguage") || "en";
       setLanguage(lang);
-   
     }
   }, [setLanguage]);
 
   const handleChange = (event: SelectChangeEvent) => {
     const newLocale = event.target.value;
     setLanguage(newLocale);
-    if (typeof window !== 'undefined' && window.localStorage) {
-      localStorage.setItem('preferredLanguage', newLocale);
+    if (typeof window !== "undefined" && window.localStorage) {
+      localStorage.setItem("preferredLanguage", newLocale);
       router.replace(router.pathname, router.asPath, { locale: newLocale });
     }
   };
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    console.log(event)
+    console.log(event);
     setAnchorEl(event.currentTarget);
-    console.log(anchorEl)
-
+    console.log(anchorEl);
   };
   const handleClose = () => {
     setAnchorEl(null);
@@ -55,12 +54,13 @@ const Header = ({ sx, customClass, toggleMobileSidebar, position }: any) => {
   const handleMenuItemClick = (newLocale: any) => {
     console.log(newLocale);
     setLanguage(newLocale);
-    if (typeof window !== 'undefined' && window.localStorage) {
-      localStorage.setItem('preferredLanguage', newLocale);
+    if (typeof window !== "undefined" && window.localStorage) {
+      localStorage.setItem("preferredLanguage", newLocale);
       router.replace(router.pathname, router.asPath, { locale: newLocale });
     }
     handleClose();
   };
+
   return (
     <AppBar sx={sx} position={position} elevation={0} className={customClass}>
       <Toolbar>
@@ -76,7 +76,6 @@ const Header = ({ sx, customClass, toggleMobileSidebar, position }: any) => {
             },
           }}
         >
-
           <FeatherIcon icon="menu" size="20" />
         </IconButton>
         {/* ------------------------------------------- */}
@@ -90,8 +89,7 @@ const Header = ({ sx, customClass, toggleMobileSidebar, position }: any) => {
 
         <Box flexGrow={1} />
 
-        
-<Box
+        {/* <Box
         
         sx={{
           display: "flex",
@@ -116,38 +114,45 @@ const Header = ({ sx, customClass, toggleMobileSidebar, position }: any) => {
       >
         <TranslateIcon />
       </IconButton>
-      </Box>
-      <Menu
-        id="long-menu"
-        MenuListProps={{
-          'aria-labelledby': 'long-button',
-        }}
+      </Box> */}
 
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        PaperProps={{
-          style: {
-           // maxHeight: ITEM_HEIGHT * 4.5,
-            width: '20ch',
-          },
-        }}
-      >
-       {config.languages.map((lang) => (
-                  <MenuItem value={lang.code} key={lang.code}             onClick={() => handleMenuItemClick(lang.code)}
-
-                  sx={{
-                    backgroundColor: lang.code === language ? 'rgba(0, 0, 0, 0.08)' : 'inherit',
-                    '&:hover': {
-                      backgroundColor: lang.code === language ? 'rgba(0, 0, 0, 0.12)' : 'rgba(0, 0, 0, 0.08)',
-                    },
-                  }}
-                  >
-                    {lang.label}
-                  </MenuItem>
-                ))}
-      </Menu>
-              <Profile />
+        <InvitationMenu />
+        <Menu
+          id="long-menu"
+          MenuListProps={{
+            "aria-labelledby": "long-button",
+          }}
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          PaperProps={{
+            style: {
+              // maxHeight: ITEM_HEIGHT * 4.5,
+              width: "20ch",
+            },
+          }}
+        >
+          {config.languages.map((lang) => (
+            <MenuItem
+              value={lang.code}
+              key={lang.code}
+              onClick={() => handleMenuItemClick(lang.code)}
+              sx={{
+                backgroundColor:
+                  lang.code === language ? "rgba(0, 0, 0, 0.08)" : "inherit",
+                "&:hover": {
+                  backgroundColor:
+                    lang.code === language
+                      ? "rgba(0, 0, 0, 0.12)"
+                      : "rgba(0, 0, 0, 0.08)",
+                },
+              }}
+            >
+              {lang.label}
+            </MenuItem>
+          ))}
+        </Menu>
+        <Profile />
         {/* ------------------------------------------- */}
         {/* Profile Dropdown */}
         {/* ------------------------------------------- */}

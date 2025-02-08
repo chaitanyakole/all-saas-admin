@@ -26,7 +26,9 @@
     "DELETE": "ହଟାନ୍ତୁ",
     "NO_DATA_FOUND": "ତଥ୍ୟ ମିଳିଲା ନାହିଁ",
     "SUBMIT": "ଦାଖଲ କରନ୍ତୁ",
-    "BACK": "ପଛକୁ ଯାଆନ୍ତୁ"
+    "BACK": "ପଛକୁ ଯାଆନ୍ତୁ",
+    "SEND_INVITATION_TO_NEW_ADMIN": "ନୂତନ କୋହୋର୍ଟ ଏଡମିନ୍ କୁ ନିମନ୍ତ୍ରଣ ପଠାନ୍ତୁ",
+    "SEND_INVITATION": "ନିମନ୍ତ୍ରଣ ପଠାନ୍ତୁ"
   },
   "LOGIN_PAGE": {
     "USERNAME": "ଉପଭୋକ୍ତା ନାମ",
@@ -158,5 +160,25 @@
     "EMAIL": "ଇମେଲ୍",
     "YEAR_OF_ JOINING_SCP": "SCP ମଧ୍ୟରେ ସାମିଲ ହେବାର ବର୍ଷ",
     "ASSIGN_CENTERS": "କେନ୍ଦ୍ର ସୁପର୍ଦ୍ଦ କରନ୍ତୁ"
+  },
+  "COHORTINVITATION": {
+    "TAKE_ACTION": "କାର୍ଯ୍ୟ କରନ୍ତୁ",
+    "INVITED_AS_ADMIN": "ଆପଣ କୋହୋର୍ଟର ଏଡମିନ୍ ହେବାକୁ ନିମନ୍ତ୍ରିତ ହୋଇଛନ୍ତି",
+    "ACCEPT_INVITATION": "ନିମନ୍ତ୍ରଣ ଗ୍ରହଣ କରନ୍ତୁ",
+    "REJECT_INVITATION": "ନିମନ୍ତ୍ରଣ ଅସ୍ଵୀକାର କରନ୍ତୁ",
+    "NO_PENDING_REQUESTS_SENT": "କୌଣସି ଅପେକ୍ଷିତ ଅନୁରୋଧ ନାହିଁ",
+    "NO_PENDING_INVITATIONS": "କୌଣସି ଅପେକ୍ଷିତ ନିମନ୍ତ୍ରଣ ନାହିଁ",
+    "INVITED_TO_JOIN_COHORT": "କୋହୋର୍ଟ ଯୋଗଦେବାକୁ ନିମନ୍ତ୍ରିତ କରାଯାଇଛି",
+    "INVITED_BY": "ନିମନ୍ତ୍ରିତ କରିଛନ୍ତି",
+    "DELETE_INVITATION": "ନିମନ୍ତ୍ରଣ ବିଲୋପ କରନ୍ତୁ",
+    "DELETE_CONFIRMATION": "କୁ ପଠାଯାଇଥିବା ନିମନ୍ତ୍ରଣ ବିଲୋପ କରନ୍ତୁ",
+    "CANCEL": "ବାତିଲ୍ କରନ୍ତୁ",
+   "REVOKE": "ନିମନ୍ତ୍ରଣ ବାତିଲ୍ କରନ୍ତୁ",
+    "ACCEPTED_SUCCESS": "ଅନୁରୋଧ ସଫଳତାର ସହିତ ଗ୍ରହଣ କରାଯାଇଛି",
+    "REJECTED_SUCCESS": "ଅନୁରୋଧ ଅସ୍ଵୀକାର କରାଯାଇଛି",
+    "ERROR_UPDATING_REQUEST": "ଅନୁରୋଧ ଅଦ୍ୟତନ କରିବାରେ ତ୍ରୁଟି",
+    "INVITATION_DELETED_SUCCESS": "ନିମନ୍ତ୍ରଣ ସଫଳତାର ସହିତ ବିଲୋପ କରାଯାଇଛି",
+    "INVITATION_DELETED_ERROR": "ନିମନ୍ତ୍ରଣ ବିଲୋପ କରିପାରିଲେ ନାହିଁ",
+    "FETCH_INVITATIONS_ERROR": "ନିମନ୍ତ୍ରଣ ପ୍ରାପ୍ତି ଉପରେ ତ୍ରୁଟି"
   }
 }

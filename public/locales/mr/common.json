@@ -26,7 +26,9 @@
     "DELETE": "हटवा",
     "NO_DATA_FOUND": "डेटा सापडला नाही",
     "SUBMIT": "सबमिट करा",
-    "BACK": "परत जा"
+    "BACK": "परत जा",
+    "SEND_INVITATION_TO_NEW_ADMIN": "नवीन कोहोर्ट प्रशासकाला आमंत्रण पाठवा",
+    "SEND_INVITATION": "आमंत्रण पाठवा"
   },
   "LOGIN_PAGE": {
     "USERNAME": "वापरकर्ता नाव",
@@ -158,5 +160,25 @@
     "EMAIL": "ईमेल",
     "YEAR_OF_ JOINING_SCP": "एससीपीमध्ये सामील होण्याचे वर्ष",
     "ASSIGN_CENTERS": "केंद्रे नियुक्त करा"
+  },
+  "COHORTINVITATION": {
+   "TAKE_ACTION": "कारवाई करा",
+   "INVITED_AS_ADMIN": "आपण कोहोर्टचे प्रशासक होण्यासाठी आमंत्रित आहात",
+    "ACCEPT_INVITATION": "निमंत्रण स्वीकारा",
+    "REJECT_INVITATION": "निमंत्रण नाकार करा",
+    "NO_PENDING_REQUESTS_SENT": "कोणतीही प्रलंबित विनंती नाही",
+    "NO_PENDING_INVITATIONS": "कोणतीही प्रलंबित निमंत्रणे नाहीत",
+    "INVITED_TO_JOIN_COHORT": "कोहोर्टमध्ये सामील होण्यासाठी आमंत्रित केले",
+    "INVITED_BY": "आमंत्रित करणारे",
+    "DELETE_INVITATION": "निमंत्रण हटवा",
+    "DELETE_CONFIRMATION": "याला पाठवलेले निमंत्रण हटवा",
+    "CANCEL": "रद्द करा",
+    "REVOKE": "निमंत्रण रद्द करा",
+    "ACCEPTED_SUCCESS": "विनंती यशस्वीरित्या स्वीकारली",
+    "REJECTED_SUCCESS": "विनंती नाकारली",
+    "ERROR_UPDATING_REQUEST": "विनंती अद्यतनित करताना त्रुटी",
+    "INVITATION_DELETED_SUCCESS": "निमंत्रण यशस्वीरित्या हटवले",
+    "INVITATION_DELETED_ERROR": "निमंत्रण हटवता आले नाही",
+    "FETCH_INVITATIONS_ERROR": "निमंत्रणे प्राप्त करताना त्रुटी"
   }
 }

@@ -142,7 +142,9 @@
     "CREATE_ROLE": "Create Role",
     "USER_DELETE_FAILED": "User deletion failed",
     "ASSIGN_ROLE": "Assign Role",
-    "ENABLE_ROLE": "Enable Role"
+    "ENABLE_ROLE": "Enable Role",
+    "SEND_INVITATION_TO_NEW_ADMIN": "Send Invitation to new cohort admin",
+    "SEND_INVITATION": "Send Invitation"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -474,5 +476,27 @@
     "DELETE_USER_DETAILS": "Delete User Details",
     "DELETE_USER_CONFIRMATION_MESSAGE": "Are you sure you want to Archived this user?",
     "NO_CHANGES_TO_UPDATE": "No Changes to Update"
-  }
+  },
+  "COHORTINVITATION": {
+      "TAKE_ACTION": "Take Action",
+      "INVITED_AS_ADMIN": "You have been invited to be the Admin of the cohort",
+      "SENT":"Sent",
+      "RECEIVED":"Received",
+      "ACCEPT_INVITATION": "Accept Invitation",
+      "REJECT_INVITATION": "Reject Invitation",
+      "NO_PENDING_REQUESTS_SENT": "No pending requests sent",
+      "NO_PENDING_INVITATIONS": "No pending invitations",
+      "INVITED_TO_JOIN_COHORT": "Invited to join cohort",
+      "INVITED_BY": "Invited by",
+      "REVOKE_INVITATION": "Revoke Invitation",
+      "DELETE_CONFIRMATION": "Revoke request of ",
+      "CANCEL": "Cancel",
+      "REVOKE": "Revoke",
+      "ACCEPTED_SUCCESS": "Accepted request successfully",
+      "REJECTED_SUCCESS": "Rejected request",
+      "ERROR_UPDATING_REQUEST": "Error in updating request",
+      "INVITATION_DELETED_SUCCESS": "Invitation deleted successfully",
+      "INVITATION_DELETED_ERROR": "Failed to delete invitation",
+      "FETCH_INVITATIONS_ERROR": "Failed to fetch invitations"
+    }
 }
