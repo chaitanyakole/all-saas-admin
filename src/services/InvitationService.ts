@@ -1,5 +1,5 @@
 import { updateInvitationStatusParams } from "@/utils/Interfaces";
-import { post, get } from "./RestClient";
+import { get } from "./RestClient";
 import config from "@/utils/urlConstants.json";
 import axios from "axios";
 import { cohortListData } from "./CohortService/cohortService";
@@ -33,24 +33,6 @@ export const updateInvitation = async ({
   }
 };
 
-// export const updateUser = async (
-//   userId: string,
-//   userData: any,
-//   tenantId: string
-// ): Promise<any> => {
-//   const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.UPDATE}/${userId}`;
-
-//   } catch (error: unknown) {
-//     let errorMessage = "An unexpected error occurred.";
-
-//     if (axios.isAxiosError(error) && error.response) {
-//       errorMessage = error.response.data?.params?.err || "Error from API.";
-//     }
-
-//     console.error("Error in updating user:", error);
-//     throw new Error(errorMessage);
-//   }
-// };
 export const fetchInvitationsRequest = async (): Promise<any> => {
   const token = localStorage.getItem("token");
   const headers = {

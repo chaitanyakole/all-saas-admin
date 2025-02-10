@@ -67,7 +67,6 @@ const InvitationMenu = () => {
   const fetchInitialInvitations = async () => {
     try {
       const response = await fetchInvitationsRequest();
-      console.log("response", response);
 
       const received = response.receivedInvitations.filter(
         (inv: Invitation) => inv.invitationStatus === "Pending"
