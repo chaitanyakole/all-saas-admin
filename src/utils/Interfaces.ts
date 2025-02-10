@@ -96,12 +96,11 @@ export interface CoursePlannerMetaData {
   medium: string;
 }
 
-
 export interface GetTargetedSolutionsParams {
-  subject:string,
+  subject: string;
   state: string;
- 
-  medium: string
+
+  medium: string;
   class: string;
   board: string;
   type: string;
@@ -118,3 +117,8 @@ export interface GetUserProjectTemplateParams {
   role: string;
 }
 
+export interface updateInvitationStatusParams {
+  invitationId: string | undefined;
+  invitationStatus: string | undefined;
+  tenantId: string | undefined;
+}

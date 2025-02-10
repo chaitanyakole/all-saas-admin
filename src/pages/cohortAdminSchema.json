@@ -1,66 +1,13 @@
 {
   "type": "object",
-  "required": ["name", "username", "password"],
+  "required": ["email"],
   "properties": {
-    "name": {
-      "title": "Cohort Admin Name",
-      "type": "string",
-      "fieldId": null,
-      "validation": [],
-      "description": "Enter Full Name."
-    },
-    "mobileNo": {
-      "title": "Mobile Number",
-      "fieldId": null,
-      "type": "string",
-      "pattern": "^[6-9]\\d{9}$",
-      "validation": ["mobile"]
-    },
     "email": {
       "title": "Email Address",
       "type": "string",
       "format": "email",
       "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$",
       "validation": ["required"]
-    },
-    "username": {
-      "title": "Username",
-      "fieldId": null,
-      "type": "string",
-      "minLength": 3,
-      "pattern": "^[a-zA-Z0-9!@#$%^&*()_+={}:;<>?,./~`|\\-]+$",
-      "validation": [],
-      "ui:options": {
-        "inputProps": {
-          "autoComplete": "off"
-        }
-      }
-    },
-    "password": {
-      "title": "Password",
-      "fieldId": null,
-      "type": "string",
-      "pattern": "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
-      "validation": [],
-      "ui:options": {
-        "inputProps": {
-          "autoComplete": "new-password"
-        }
-      }
-    },
-
-    "role": {
-      "title": "Role",
-      "type": "string",
-      "readOnly": true,
-      "oneOf": [
-        {
-          "title": "Cohort Admin",
-          "const": "cohort_admin"
-        }
-      ],
-      "default": "cohort_admin",
-      "validation": []
     }
   },
   "dependencies": {}

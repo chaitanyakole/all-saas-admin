@@ -26,7 +26,9 @@
     "DELETE": "हटाएं",
     "NO_DATA_FOUND": "कोई डेटा नहीं मिला",
     "SUBMIT": "जमा करें",
-    "BACK": "वापस"
+    "BACK": "वापस",
+    "SEND_INVITATION_TO_NEW_ADMIN": "नए समूह एडमिन को आमंत्रण भेजें",
+    "SEND_INVITATION": "आमंत्रण भेजें"
   },
   "LOGIN_PAGE": {
     "USERNAME": "उपयोगकर्ता नाम",
@@ -158,5 +160,25 @@
     "EMAIL": "ईमेल",
     "YEAR_OF_ JOINING_SCP": "एससीपी में शामिल होने का वर्ष",
     "ASSIGN_CENTERS": "केंद्र आवंटित करें"
+  },
+  "COHORTINVITATION": {
+    "TAKE_ACTION": "कार्रवाई करें",
+    "INVITED_AS_ADMIN": "आपण कोहोर्टचे प्रशासक होण्यासाठी आमंत्रित आहात",
+    "ACCEPT_INVITATION": "निमंत्रण स्वीकारें",
+    "REJECT_INVITATION": "निमंत्रण अस्वीकारें",
+    "NO_PENDING_REQUESTS_SENT": "कोई लंबित अनुरोध नहीं",
+    "NO_PENDING_INVITATIONS": "कोई लंबित निमंत्रण नहीं",
+    "INVITED_TO_JOIN_COHORT": "कोहोर्ट में शामिल होने के लिए आमंत्रित किया गया",
+    "INVITED_BY": "द्वारा आमंत्रित",
+    "DELETE_INVITATION": "निमंत्रण हटाएं",
+    "DELETE_CONFIRMATION": "को भेजा गया निमंत्रण हटाएं",
+    "CANCEL": "रद्द करें",
+    "REVOKE": " निमंत्रण रद्द करें",
+    "ACCEPTED_SUCCESS": "अनुरोध सफलतापूर्वक स्वीकारा गया",
+    "REJECTED_SUCCESS": "अनुरोध अस्वीकार किया गया",
+    "ERROR_UPDATING_REQUEST": "अनुरोध अपडेट करने में त्रुटि",
+    "INVITATION_DELETED_SUCCESS": "निमंत्रण सफलतापूर्वक हटाया गया",
+    "INVITATION_DELETED_ERROR": "निमंत्रण हटाने में विफल",
+    "FETCH_INVITATIONS_ERROR": "निमंत्रण लाने में विफल"
   }
 }

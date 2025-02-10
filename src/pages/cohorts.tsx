@@ -38,6 +38,7 @@ import AddIcon from "@mui/icons-material/Add";
 import userJsonSchema from "./userSchema.json";
 import cohortASchema from "./cohortAdminSchema.json";
 import updateCohortSchema from "./cohortUpdateSchema.json";
+import { sendRequest } from "@/services/InvitationService";
 
 type cohortFilterDetails = {
   type?: string;
@@ -186,47 +187,47 @@ const Center: React.FC = () => {
     // },
   };
   const cohortAdminUiSchema = {
-    name: {
-      "ui:widget": "text",
-      "ui:placeholder": "Enter your full name",
-      "ui:help": "Full name, numbers, letters and spaces are allowed.",
-    },
-    username: {
-      "ui:widget": "text",
-      "ui:placeholder": "Enter your username",
-      "ui:help": "Username must be at least 3 characters long.",
-      "ui:options": {
-        autocomplete: false,
-        value: "",
-      },
-      "ui:inputProps": {
-        autocomplete: false,
-        value: "",
-      },
-    },
-    password: {
-      "ui:widget": "password",
-      "ui:placeholder": "Enter a secure password",
-      "ui:help":
-        "Password must be at least 8 characters long and contain one uppercase letter, one lowercase letter, one number, and one special character.",
-      "ui:options": {
-        autocomplete: false,
-      },
-      "ui:inputProps": {
-        autocomplete: false,
-        name: "password",
-      },
-    },
-    role: {
-      "ui:widget": "select",
-      "ui:placeholder": "Select a role",
-      // "ui:help": "Select a role.",
-    },
-    mobileNo: {
-      "ui:widget": "text",
-      "ui:placeholder": "Mobile number",
-      "ui:help": "Enter a valid 10-digit mobile number.",
-    },
+    // name: {
+    //   "ui:widget": "text",
+    //   "ui:placeholder": "Enter your full name",
+    //   "ui:help": "Full name, numbers, letters and spaces are allowed.",
+    // },
+    // username: {
+    //   "ui:widget": "text",
+    //   "ui:placeholder": "Enter your username",
+    //   "ui:help": "Username must be at least 3 characters long.",
+    //   "ui:options": {
+    //     autocomplete: false,
+    //     value: "",
+    //   },
+    //   "ui:inputProps": {
+    //     autocomplete: false,
+    //     value: "",
+    //   },
+    // },
+    // password: {
+    //   "ui:widget": "password",
+    //   "ui:placeholder": "Enter a secure password",
+    //   "ui:help":
+    //     "Password must be at least 8 characters long and contain one uppercase letter, one lowercase letter, one number, and one special character.",
+    //   "ui:options": {
+    //     autocomplete: false,
+    //   },
+    //   "ui:inputProps": {
+    //     autocomplete: false,
+    //     name: "password",
+    //   },
+    // },
+    // role: {
+    //   "ui:widget": "select",
+    //   "ui:placeholder": "Select a role",
+    //   // "ui:help": "Select a role.",
+    // },
+    // mobileNo: {
+    //   "ui:widget": "text",
+    //   "ui:placeholder": "Mobile number",
+    //   "ui:help": "Enter a valid 10-digit mobile number.",
+    // },
     email: {
       // "ui:widget": "text",
       "ui:placeholder": "Enter your email address",
@@ -861,7 +862,6 @@ const Center: React.FC = () => {
     };
     fetchData();
   }, [isCreateCohortAdminModalOpen, Addmodalopen]);
-
   const handleAddCohortAdminAction = async (
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
@@ -877,21 +877,12 @@ const Center: React.FC = () => {
       );
 
       let obj = {
-        name: formData?.name.replace(/\s/g, ""),
-        username: formData?.username.replace(/\s/g, ""),
-        password: formData?.password,
-        mobile: formData?.mobileNo,
-        email: formData?.email,
-
-        tenantCohortRoleMapping: [
-          {
-            roleId: cohortAdminRole?.roleId,
-            tenantId: selectedRowData?.tenantId,
-            cohortId: [selectedRowData?.cohortId],
-          },
-        ],
+        invitedTo: formData?.email,
+        tenantId: selectedRowData?.tenantId,
+        cohortId: selectedRowData?.cohortId,
       };
-      const resp = await userCreate(obj as any, selectedRowData?.tenantId);
+      ///sent invitation
+      const resp = await sendRequest(obj as any, selectedRowData?.tenantId);
 
       if (resp?.responseCode === 200 || resp?.responseCode === 201) {
         showToastMessage(
@@ -914,7 +905,6 @@ const Center: React.FC = () => {
       setIsEditForm(false);
     }
   };
-
   const userProps = {
     tenants: listOfTenants,
     userType: t("COHORTS.COHORTS"),
@@ -1202,7 +1192,7 @@ const Center: React.FC = () => {
                     setSubmittedButtonStatus(true);
                   }}
                 >
-                  {t("COMMON.ADD")}
+                  {t("COMMON.SUBMIT")}
                 </Button>
               </Box>
             </DynamicForm>
