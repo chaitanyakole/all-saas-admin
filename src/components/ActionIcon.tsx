@@ -9,6 +9,7 @@ import cohortIcon from "../../public/images/apartment.svg";
 import addIcon from "../../public/images/addIcon.svg";
 
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 interface ActionCellProps {
   onEdit: (rowData: any) => void;
@@ -39,7 +40,11 @@ const ActionIcon: React.FC<ActionCellProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
+  const router = useRouter();
 
+  const isCohortAdmin = rowData?.userRoleTenantMapping?.code === "cohort_admin";
+  const isLearnersPage = router.pathname === "/learners";
+  const isActionAllowed = isCohortAdmin && !isLearnersPage;
   return (
     <Box
       sx={{
@@ -47,29 +52,26 @@ const ActionIcon: React.FC<ActionCellProps> = ({
         flexDirection: "row",
         gap: "20px",
         alignItems: "center",
-        pointerEvents: disable ? "none" : "auto",
+        pointerEvents: isActionAllowed ? "none" : "auto",
+        opacity: isActionAllowed ? 0.5 : 1,
       }}
     >
       {roleButton && (
         <Tooltip title={t("COMMON.ADD")}>
           <Button
             onClick={() => {
-              onAdd(rowData);
+              if (!isActionAllowed) onAdd(rowData);
             }}
+            disabled={isActionAllowed}
             sx={{
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              cursor: "pointer",
-              color: disable ? theme?.palette?.secondary.contrastText : "",
-              backgroundColor: "#EAF2FF",
+              cursor: isActionAllowed ? "not-allowed" : "pointer",
+              backgroundColor: isActionAllowed ? "#d3d3d3" : "#EAF2FF",
               p: "10px",
-              "&:hover": {
-                backgroundColor: "#d0e5ff", // Optional: adjust hover color
-              },
             }}
           >
-            {/* Optional typography or icon within the button */}
             <Typography variant="body2" fontFamily={"Poppins"}>
               {t("COMMON.ADD")}
             </Typography>
@@ -81,7 +83,7 @@ const ActionIcon: React.FC<ActionCellProps> = ({
         <Tooltip title={t("COMMON.ADD")}>
           <Box
             onClick={() => {
-              onAdd(rowData);
+              if (!isActionAllowed) onAdd(rowData);
             }}
             sx={{
               display: "flex",
@@ -106,45 +108,36 @@ const ActionIcon: React.FC<ActionCellProps> = ({
           <Tooltip title={t("COMMON.EDIT")}>
             <Box
               onClick={() => {
-                onEdit(rowData);
+                if (!isActionAllowed) onEdit(rowData);
               }}
               sx={{
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                cursor: "pointer",
-                color: disable ? theme?.palette?.secondary.contrastText : "",
-                backgroundColor: "#E3EAF0",
+                cursor: isActionAllowed ? "not-allowed" : "pointer",
+                backgroundColor: isActionAllowed ? "#d3d3d3" : "#E3EAF0",
                 p: "10px",
               }}
             >
               <Image src={editIcon} alt="" />
-              {/* <Typography variant="body2" fontFamily={"Poppins"}>
-            {t("COMMON.EDIT")}
-          </Typography> */}
             </Box>
           </Tooltip>
 
           <Tooltip title={t("COMMON.DELETE")}>
             <Box
               onClick={() => {
-                onDelete(rowData);
+                if (!isActionAllowed) onDelete(rowData);
               }}
               sx={{
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                cursor: "pointer",
-                color: disable ? theme?.palette?.secondary.contrastText : "",
-                backgroundColor: "#EAF2FF",
+                cursor: isActionAllowed ? "not-allowed" : "pointer",
+                backgroundColor: isActionAllowed ? "#d3d3d3" : "#EAF2FF",
                 p: "10px",
               }}
             >
               <Image src={deleteIcon} alt="" />
-              {/* 
-          <Typography variant="body2" fontFamily={"Poppins"}>
-            {t("COMMON.DELETE")}
-          </Typography> */}
             </Box>
           </Tooltip>
         </>
@@ -154,23 +147,18 @@ const ActionIcon: React.FC<ActionCellProps> = ({
         <Tooltip title={reassignType}>
           <Box
             onClick={() => {
-              if (reassignCohort) reassignCohort(rowData);
+              if (!isActionAllowed && reassignCohort) reassignCohort(rowData);
             }}
             sx={{
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              cursor: "pointer",
-              color: disable ? theme?.palette?.secondary.contrastText : "",
-              backgroundColor: "#E5E5E5",
+              cursor: isActionAllowed ? "not-allowed" : "pointer",
+              backgroundColor: isActionAllowed ? "#d3d3d3" : "#E5E5E5",
               p: "10px",
             }}
           >
             <Image src={cohortIcon} alt="" />
-            {/* 
-          <Typography variant="body2" fontFamily={"Poppins"}>
-            {t("COMMON.DELETE")}
-          </Typography> */}
           </Box>
         </Tooltip>
       )}

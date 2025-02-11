@@ -347,6 +347,7 @@ const Center: React.FC = () => {
           createdAt: item?.createdAt,
           updatedAt: item?.updatedAt,
           cohortId: item?.cohortId,
+          userRoleTenantMapping: { code: item?.role },
         }));
 
         setCohortData(resultData || []);
