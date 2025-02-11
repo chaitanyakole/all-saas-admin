@@ -90,7 +90,13 @@ const InvitationMenu = () => {
   };
   // Fetch initial invitations on component mount
   useEffect(() => {
-    fetchInitialInvitations();
+    const timeoutId = setTimeout(() => {
+      fetchInitialInvitations();
+    }, 1000);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   // Notification cycling logic
