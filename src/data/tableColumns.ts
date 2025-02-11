@@ -47,7 +47,7 @@ export const getUserTableColumns = (t: any, isMobile: boolean) => {
   return generateColumns(t, configs, isMobile);
 };
 
-export const getTLTableColumns = (t: any, isMobile: boolean, filter:any) => {
+export const getTLTableColumns = (t: any, isMobile: boolean, filter: any) => {
   const configs: ColumnConfig[] = [
     { key: "name", titleKey: "TABLE_TITLE.NAME", width: 130 },
     { key: "mobile", titleKey: "TABLE_TITLE.MOBILE", width: 130 },
@@ -60,30 +60,34 @@ export const getTLTableColumns = (t: any, isMobile: boolean, filter:any) => {
     { key: "createdAt", titleKey: "TABLE_TITLE.CREATED_DATE", width: 130 },
     { key: "updatedAt", titleKey: "TABLE_TITLE.UPDATED_DATE", width: 130 },
     // { key: "roleDefine", titleKey: "TABLE_TITLE.ROLE", width: 130 },
-    ...(filter?.status?.[0]!=="archived"?[{
-      key: "actions",
-      titleKey: "TABLE_TITLE.ACTIONS",
-      width: 170,
-      isSortable: false,
-    }]:[]),
+    ...(filter?.status?.[0] !== "archived"
+      ? [
+          {
+            key: "actions",
+            titleKey: "TABLE_TITLE.ACTIONS",
+            width: 170,
+            isSortable: false,
+          },
+        ]
+      : []),
   ];
 
   return generateColumns(t, configs, isMobile);
 };
 
-export const getTenantTableData = (t: any, isMobile: boolean,role:any) => {
-  console.log({role});
-  const adminInfo = JSON.parse(localStorage.getItem("adminInfo") ?? '{}');
+export const getTenantTableData = (t: any, isMobile: boolean, role: any) => {
+  console.log({ role });
+  const adminInfo = JSON.parse(localStorage.getItem("adminInfo") ?? "{}");
   // const localRoleCheck = adminInfo?.tenantData?.[0]?.roleName === "cohort admin";
-  const isCohortAdmin = adminInfo?.tenantData?.[0]?.roleName === "cohort admin" ? true : false;
-  
+  // const isCohortAdmin = adminInfo?.tenantData?.[0]?.roleName === "cohort admin" ? true : false;
+
   const configs: ColumnConfig[] = [
     { key: "name", titleKey: "TABLE_TITLE.NAME", width: 130 },
     // { key: "updatedBy", titleKey: "TABLE_TITLE.UPDATED_BY", width: 130 },
     // { key: "createdBy", titleKey: "TABLE_TITLE.CREATED_BY", width: 130 },
     { key: "createdAt", titleKey: "TABLE_TITLE.CREATED_DATE", width: 130 },
     // { key: "updatedAt", titleKey: "TABLE_TITLE.UPDATED_DATE", width: 130 },
-  
+
     // {
     //   key: "totalActiveMembers",
     //   titleKey: "TABLE_TITLE.ACTIVE_LEARNERS",
@@ -95,16 +99,28 @@ export const getTenantTableData = (t: any, isMobile: boolean,role:any) => {
     //   width: 130,
     // },
     { key: "status", titleKey: "TABLE_TITLE.STATUS", width: 90 },
-    
-    ...(role == true ? [{ key: "roleDefine", titleKey: "TABLE_TITLE.CREATE_TENANT_ADMIN", width: 130 }] : []),
-    ...(isCohortAdmin ==false?[{ key: "actions", titleKey: "TABLE_TITLE.ACTIONS", width: 125 }]:[]),
+
+    ...(role == true
+      ? [
+          {
+            key: "roleDefine",
+            titleKey: "TABLE_TITLE.CREATE_TENANT_ADMIN",
+            width: 130,
+          },
+        ]
+      : []),
+    { key: "actions", titleKey: "TABLE_TITLE.ACTIONS", width: 125 },
     // ...(role== true ?[{ key: "actions", titleKey: "TABLE_TITLE.ACTIONS", width: 125 }]:[]),
   ];
-  
 
   return generateColumns(t, configs, isMobile);
 };
-export const getCohortTableData = (t: any, isMobile: boolean,role:any,filter:any) => {
+export const getCohortTableData = (
+  t: any,
+  isMobile: boolean,
+  role: any,
+  filter: any
+) => {
   const configs: ColumnConfig[] = [
     { key: "name", titleKey: "TABLE_TITLE.NAME", width: 130 },
     { key: "type", titleKey: "TABLE_TITLE.TYPE", width: 90 },
@@ -124,16 +140,20 @@ export const getCohortTableData = (t: any, isMobile: boolean,role:any,filter:any
     //   width: 130,
     // },
     // { key: "roleDefine", titleKey: "TABLE_TITLE.ROLE", width: 130 },
-    
-    
-    ...(
-      role == true && !(filter?.status?.[0] === "inactive" || filter?.status?.[0] === "archived")
-        ? [{ key: "cohortAdmin", titleKey: "TABLE_TITLE.CREATE_COHORT_ADMIN", width: 130 }]
-        : []
-    )
-    
-,    
-    ...(filter?.status?.[0]!="archived"?[{ key: "actions", titleKey: "TABLE_TITLE.ACTIONS", width: 125 }]:[]),
+
+    ...(role == true &&
+    !(filter?.status?.[0] === "inactive" || filter?.status?.[0] === "archived")
+      ? [
+          {
+            key: "cohortAdmin",
+            titleKey: "TABLE_TITLE.CREATE_COHORT_ADMIN",
+            width: 130,
+          },
+        ]
+      : []),
+    ...(filter?.status?.[0] != "archived"
+      ? [{ key: "actions", titleKey: "TABLE_TITLE.ACTIONS", width: 125 }]
+      : []),
   ];
 
   return generateColumns(t, configs, isMobile);

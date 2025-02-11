@@ -60,6 +60,7 @@ interface TenantData {
   domain: string;
   tenantId: string;
   type: string;
+  userRoleTenantMapping: string;
 }
 interface RowData {
   cohortId: string;
@@ -302,6 +303,7 @@ const Tenant: React.FC = () => {
             createdAt: item.createdAt || "-",
             domain: item.domain || "-",
             tenantId: item.tenantId || "-",
+            userRoleTenantMapping: item.userRoleTenantMapping || "-",
           };
 
           resultData.push(requiredData);
