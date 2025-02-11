@@ -195,7 +195,7 @@ data:any
 ): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.TENANT_LIST}`;
   try {
-    let response = await get(apiUrl,data);    
+    let response = await get(apiUrl);    
         return response?.data?.result;
       } catch (error) {
         console.error("Error in Getting tenant List Details", error);
