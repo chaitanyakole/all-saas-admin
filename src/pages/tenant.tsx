@@ -337,7 +337,17 @@ const Tenant: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchTenantList();
+    const timeoutId = setTimeout(() => {
+      // Your function logic here
+
+      fetchTenantList();
+    }, 1000);
+    // get form data for center create
+    // getAddCenterFormData();
+    // getCohortMemberlistData();
+    return () => {
+      clearTimeout(timeoutId);
+    };
   }, [openAddNewCohort, pageLimit, pageOffset, sortBy, filters]);
 
   // const getFormData = async () => {
