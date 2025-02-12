@@ -145,14 +145,19 @@ const ActionIcon: React.FC<ActionCellProps> = ({
   };
   const renderReportsButton = () => {
     if (!buttonStates.reports.visible) return null;
-
+    const userRowData =
+      rowData?.tenantId && !rowData?.userId
+        ? { tenantId: rowData.tenantId }
+        : rowData?.userId
+          ? { userId: rowData.userId }
+          : {};
     return (
       <Tooltip title={t("COMMON.METABASE_REPORTS")}>
         <Box
           onClick={() =>
             router.push({
               pathname: "/dashboard",
-              query: { ...rowData, from: router.pathname },
+              query: { ...userRowData, from: router.pathname },
             })
           }
           sx={{
