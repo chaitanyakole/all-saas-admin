@@ -2,19 +2,23 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
+interface RowData {
+  tenantId?: string;
+}
 const Dashboard = () => {
   const router = useRouter();
-  const { userId } = router.query;
+  const [rowData, setRowData] = useState<RowData | undefined>();
   const [isError, setIsError] = useState(false);
 
   // Validate userId
   useEffect(() => {
-    if (!userId) {
-      setIsError(true);
+    if (router.query) {
+      setRowData(router.query);
     }
-  }, [userId]);
+  }, [router.query]);
+  console.log({ rowData });
 
-  const metabaseUrl = `${process.env.NEXT_PUBLIC_METABASE_URL}${userId}`;
+  const metabaseUrl = `${process.env.NEXT_PUBLIC_METABASE_URL}${rowData?.tenantId}`;
 
   return (
     <div>

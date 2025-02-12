@@ -141,8 +141,9 @@ export const getCohortTableData = (
     // },
     // { key: "roleDefine", titleKey: "TABLE_TITLE.ROLE", width: 130 },
 
-    ...(role == true &&
-    !(filter?.status?.[0] === "inactive" || filter?.status?.[0] === "archived")
+    ...(!(
+      filter?.status?.[0] === "inactive" || filter?.status?.[0] === "archived"
+    )
       ? [
           {
             key: "cohortAdmin",
