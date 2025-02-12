@@ -29,6 +29,7 @@ import {
 } from "@/services/InvitationService";
 import { showToastMessage } from "@/components/Toastify";
 import { useTranslation } from "react-i18next";
+import { useRouter } from "next/router";
 
 // Mock API response (can be replaced with actual API call)
 interface Invitation {
@@ -63,6 +64,7 @@ const InvitationMenu = () => {
   const [notificationCount, setNotificationCount] = useState(0);
   // Menu open state
   const open = Boolean(anchorEl);
+  const router = useRouter();
 
   const fetchInitialInvitations = async () => {
     try {
@@ -71,7 +73,10 @@ const InvitationMenu = () => {
       const received = response.receivedInvitations.filter(
         (inv: Invitation) => inv.invitationStatus === "Pending"
       );
-      const sent = response.sentInvitations;
+
+      const sent = response.sentInvitations.filter(
+        (inv: Invitation) => inv.invitationStatus === "Pending"
+      );
       setSentInvitations(sent);
       setReceivedInvitations(received);
       setNotificationCount(received.length);
@@ -172,18 +177,25 @@ const InvitationMenu = () => {
       // Simulate API call
       console.log("invitation", tenantId, invitationId);
 
-      await updateInvitation({
+      const respose = await updateInvitation({
         invitationId,
         invitationStatus,
         tenantId,
       });
 
-      if (invitationStatus === "Accepted") {
-        showToastMessage(t("COHORTINVITATION.ACCEPTED_SUCCESS"), "success");
+      if (respose.responseCode === 200) {
+        if (invitationStatus === "Accepted") {
+          showToastMessage(t("COHORTINVITATION.ACCEPTED_SUCCESS"), "success");
+          router.push("/cohorts");
+        } else {
+          console.log("response", respose);
+
+          showToastMessage(t("COHORTINVITATION.REJECTED_SUCCESS"), "success");
+        }
+        fetchInitialInvitations();
       } else {
-        showToastMessage(t("COHORTINVITATION.REJECTED_SUCCESS"), "success");
+        showToastMessage(t("COHORTINVITATION.ERROR_UPDATING_REQUEST"), "error");
       }
-      fetchInitialInvitations();
     } catch (err) {
       setError("Failed to update invitation status");
       showToastMessage(t("COHORTINVITATION.ERROR_UPDATING_REQUEST"), "error");
