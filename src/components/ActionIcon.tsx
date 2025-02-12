@@ -1,18 +1,14 @@
 import React from "react";
 import { useTranslation } from "next-i18next";
-import { Box, Typography, Tooltip, useTheme, Button } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Box, Typography, Tooltip, Button } from "@mui/material";
+import { useRouter } from "next/router";
+import Image from "next/image";
+import AssessmentIcon from "@mui/icons-material/Assessment";
 import deleteIcon from "../../public/images/deleteIcon.svg";
 import editIcon from "../../public/images/editIcon.svg";
 import cohortIcon from "../../public/images/apartment.svg";
 import addIcon from "../../public/images/addIcon.svg";
-import Dashboard from "@/pages/dashboard";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import AssessmentIcon from "@mui/icons-material/Assessment"; // MUI report icon
-import ApartmentIcon from "@mui/icons-material/Apartment"; // MUI cohort icon
-import AddIcon from "@mui/icons-material/Add";
+
 interface ActionCellProps {
   onEdit: (rowData: any) => void;
   onDelete: (rowData: any) => void;
@@ -25,6 +21,7 @@ interface ActionCellProps {
   roleButton?: boolean;
   allowEditIcon?: boolean;
   onAdd: (rowData: any) => void;
+  showReports?: boolean;
 }
 
 const ActionIcon: React.FC<ActionCellProps> = ({
@@ -36,22 +33,165 @@ const ActionIcon: React.FC<ActionCellProps> = ({
   roleButton = false,
   addAction = false,
   userAction = false,
-  disable = false,
   allowEditIcon = false,
   reassignType,
+  showReports,
 }) => {
   const { t } = useTranslation();
-  const theme = useTheme<any>();
   const router = useRouter();
 
   const isCohortAdmin = rowData?.userRoleTenantMapping?.code === "cohort_admin";
-  const isLearnersPage = router.pathname === "/learners";
-  const isCohortPage = router.pathname === "/cohorts";
+  const currentPage = router.pathname;
 
-  const showEditDeleteButtons = true;
-  const isActionAllowed = isCohortAdmin && !isLearnersPage;
-  const isAddEnabled = isCohortAdmin && isCohortPage;
-  const isEditDeleteEnabled = isLearnersPage || !isCohortAdmin;
+  const buttonStates = {
+    add: {
+      visible: roleButton || addAction,
+      enabled: !isCohortAdmin || currentPage === "/cohorts",
+    },
+    editDelete: {
+      visible: !roleButton || allowEditIcon,
+      enabled: !isCohortAdmin || currentPage === "/learners",
+    },
+    reassign: {
+      visible: userAction,
+      enabled: !isCohortAdmin || currentPage === "/learners",
+    },
+    reports: {
+      visible: showReports,
+      enabled: true,
+    },
+  };
+
+  const commonButtonStyles = (enabled: boolean) => ({
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    cursor: enabled ? "pointer" : "not-allowed",
+    p: "10px",
+    opacity: enabled ? 1 : 0.5,
+  });
+
+  const renderAddButton = () => {
+    if (!buttonStates.add.visible) return null;
+
+    if (roleButton) {
+      return (
+        <Tooltip title={t("COMMON.ADD")}>
+          <Button
+            onClick={() => buttonStates.add.enabled && onAdd(rowData)}
+            disabled={!buttonStates.add.enabled}
+            sx={{
+              ...commonButtonStyles(buttonStates.add.enabled),
+              backgroundColor: buttonStates.add.enabled ? "#EAF2FF" : "#d3d3d3",
+            }}
+          >
+            <Typography variant="body2" fontFamily="Poppins">
+              {t("COMMON.ADD")}
+            </Typography>
+          </Button>
+        </Tooltip>
+      );
+    }
+
+    return (
+      <Tooltip title={t("COMMON.ADD")}>
+        <Box
+          onClick={() => buttonStates.add.enabled && onAdd(rowData)}
+          sx={{
+            ...commonButtonStyles(buttonStates.add.enabled),
+            backgroundColor: buttonStates.add.enabled ? "#EAF2FF" : "#d3d3d3",
+          }}
+        >
+          <Image src={addIcon} alt="" />
+        </Box>
+      </Tooltip>
+    );
+  };
+
+  const renderEditDeleteButtons = () => {
+    if (!buttonStates.editDelete.visible) return null;
+
+    return (
+      <>
+        <Tooltip title={t("COMMON.EDIT")}>
+          <Box
+            onClick={() => buttonStates.editDelete.enabled && onEdit(rowData)}
+            sx={{
+              ...commonButtonStyles(buttonStates.editDelete.enabled),
+              backgroundColor: buttonStates.editDelete.enabled
+                ? "#E3EAF0"
+                : "#d3d3d3",
+            }}
+          >
+            <Image src={editIcon} alt="" />
+          </Box>
+        </Tooltip>
+
+        <Tooltip title={t("COMMON.DELETE")}>
+          <Box
+            onClick={() => buttonStates.editDelete.enabled && onDelete(rowData)}
+            sx={{
+              ...commonButtonStyles(buttonStates.editDelete.enabled),
+              backgroundColor: buttonStates.editDelete.enabled
+                ? "#EAF2FF"
+                : "#d3d3d3",
+            }}
+          >
+            <Image src={deleteIcon} alt="" />
+          </Box>
+        </Tooltip>
+      </>
+    );
+  };
+  const renderReportsButton = () => {
+    if (!buttonStates.reports.visible) return null;
+    const userRowData =
+      rowData?.tenantId && !rowData?.userId
+        ? { tenantId: rowData.tenantId }
+        : rowData?.userId
+          ? { userId: rowData.userId }
+          : {};
+    return (
+      <Tooltip title={t("COMMON.METABASE_REPORTS")}>
+        <Box
+          onClick={() =>
+            router.push({
+              pathname: "/dashboard",
+              query: { ...userRowData, from: router.pathname },
+            })
+          }
+          sx={{
+            ...commonButtonStyles(true),
+            backgroundColor: "#EAF2FF",
+          }}
+        >
+          <AssessmentIcon />
+        </Box>
+      </Tooltip>
+    );
+  };
+
+  const renderReassignButton = () => {
+    if (!buttonStates.reassign.visible) return null;
+
+    return (
+      <Tooltip title={reassignType}>
+        <Box
+          onClick={() =>
+            buttonStates.reassign.enabled && reassignCohort?.(rowData)
+          }
+          sx={{
+            ...commonButtonStyles(buttonStates.reassign.enabled),
+            backgroundColor: buttonStates.reassign.enabled
+              ? "#E5E5E5"
+              : "#d3d3d3",
+          }}
+        >
+          <Image src={cohortIcon} alt="" />
+        </Box>
+      </Tooltip>
+    );
+  };
 
   return (
     <Box
@@ -62,135 +202,10 @@ const ActionIcon: React.FC<ActionCellProps> = ({
         alignItems: "center",
       }}
     >
-      {roleButton && (
-        <Tooltip title={t("COMMON.ADD")}>
-          <Button
-            onClick={() => {
-              if (!isActionAllowed) onAdd(rowData);
-            }}
-            disabled={isActionAllowed}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              cursor: isActionAllowed ? "not-allowed" : "pointer",
-              backgroundColor: isActionAllowed ? "#d3d3d3" : "#EAF2FF",
-              p: "10px",
-            }}
-          >
-            <Typography variant="body2" fontFamily={"Poppins"}>
-              {t("COMMON.ADD")}
-            </Typography>
-          </Button>
-        </Tooltip>
-      )}
-
-      {addAction && (
-        <Tooltip title={t("COMMON.ADD")}>
-          <Box
-            onClick={() => {
-              if (isAddEnabled) onAdd(rowData);
-            }}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              cursor: isAddEnabled ? "pointer" : "not-allowed",
-              color: isAddEnabled ? "" : theme?.palette?.secondary.contrastText,
-              backgroundColor: isAddEnabled ? "#EAF2FF" : "#d3d3d3",
-              p: "10px",
-              opacity: isAddEnabled ? 1 : 0.5,
-            }}
-          >
-            <Image src={addIcon} alt="" />
-          </Box>
-        </Tooltip>
-      )}
-
-      {(showEditDeleteButtons || allowEditIcon) && (
-        <>
-          <Tooltip title={t("COMMON.EDIT")}>
-            <Box
-              onClick={() => {
-                if (isEditDeleteEnabled) onEdit(rowData);
-              }}
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                cursor: isEditDeleteEnabled ? "pointer" : "not-allowed",
-                backgroundColor: isEditDeleteEnabled ? "#E3EAF0" : "#d3d3d3",
-                p: "10px",
-                opacity: isEditDeleteEnabled ? 1 : 0.5,
-              }}
-            >
-              <Image src={editIcon} alt="" />
-            </Box>
-          </Tooltip>
-
-          <Tooltip title={t("COMMON.DELETE")}>
-            <Box
-              onClick={() => {
-                if (isEditDeleteEnabled) onDelete(rowData);
-              }}
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                cursor: isEditDeleteEnabled ? "pointer" : "not-allowed",
-                backgroundColor: isEditDeleteEnabled ? "#EAF2FF" : "#d3d3d3",
-                p: "10px",
-                opacity: isEditDeleteEnabled ? 1 : 0.5,
-              }}
-            >
-              <Image src={deleteIcon} alt="" />
-            </Box>
-          </Tooltip>
-          <Tooltip title={t("COMMON.METABASE_REPORTS")}>
-            <Box
-              onClick={() => {
-                router.push({
-                  pathname: "/dashboard",
-                  query: rowData,
-                });
-              }}
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                cursor: "pointer",
-                backgroundColor: "#EAF2FF",
-                p: "10px",
-                opacity: 1,
-              }}
-            >
-              <AssessmentIcon />
-            </Box>
-          </Tooltip>
-        </>
-      )}
-
-      {userAction && (
-        <Tooltip title={reassignType}>
-          <Box
-            onClick={() => {
-              if (isEditDeleteEnabled && reassignCohort)
-                reassignCohort(rowData);
-            }}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              cursor: isEditDeleteEnabled ? "pointer" : "not-allowed",
-              backgroundColor: isEditDeleteEnabled ? "#E5E5E5" : "#d3d3d3",
-              p: "10px",
-              opacity: isEditDeleteEnabled ? 1 : 0.5,
-            }}
-          >
-            <Image src={cohortIcon} alt="" />
-          </Box>
-        </Tooltip>
-      )}
+      {renderAddButton()}
+      {renderEditDeleteButtons()}
+      {renderReportsButton()}
+      {renderReassignButton()}
     </Box>
   );
 };

@@ -980,6 +980,7 @@ const Center: React.FC = () => {
             extraActions={extraActions}
             showIcons={true}
             allowEditIcon={true}
+            showReports={false}
             onAdd={handleAdd}
             onEdit={handleEdit}
             onDelete={handleDelete}
