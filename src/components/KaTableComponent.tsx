@@ -50,6 +50,7 @@ interface KaTableComponentProps {
   reassignType?: string;
   handleMemberClick?: any;
   allowEditIcon?: boolean;
+  showReports?: boolean;
 }
 
 const KaTableComponent: React.FC<KaTableComponentProps> = ({
@@ -73,6 +74,7 @@ const KaTableComponent: React.FC<KaTableComponentProps> = ({
   reassignType,
   handleMemberClick,
   allowEditIcon,
+  showReports,
 }) => {
   const [selectedRowIds, setSelectedRowIds] = useState<number[]>([]);
   const { t } = useTranslation();
@@ -103,7 +105,6 @@ const KaTableComponent: React.FC<KaTableComponentProps> = ({
       },
     }),
   };
-
   return (
     <Paper>
       <div className="ka-table-wrapper">
@@ -147,6 +148,7 @@ const KaTableComponent: React.FC<KaTableComponentProps> = ({
                       reassignCohort={reassignCohort}
                       onDelete={onDelete}
                       allowEditIcon={allowEditIcon}
+                      showReports={showReports}
                       // userAction={props.rowData?.userId}
                       disable={props.rowData?.status === Status.ARCHIVED}
                       reassignType={reassignType}
@@ -201,6 +203,12 @@ const KaTableComponent: React.FC<KaTableComponentProps> = ({
                         onClick={() => {
                           addCohortBtnFunc(props.rowData);
                         }}
+                        disabled={
+                          props.rowData?.userRoleTenantMapping?.code !=
+                          "cohort_admin"
+                            ? false
+                            : true
+                        }
                         sx={{
                           display: "flex",
                           flexDirection: "column",
