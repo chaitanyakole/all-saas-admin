@@ -7,10 +7,12 @@ import deleteIcon from "../../public/images/deleteIcon.svg";
 import editIcon from "../../public/images/editIcon.svg";
 import cohortIcon from "../../public/images/apartment.svg";
 import addIcon from "../../public/images/addIcon.svg";
-
+import Dashboard from "@/pages/dashboard";
 import Image from "next/image";
 import { useRouter } from "next/router";
-
+import AssessmentIcon from "@mui/icons-material/Assessment"; // MUI report icon
+import ApartmentIcon from "@mui/icons-material/Apartment"; // MUI cohort icon
+import AddIcon from "@mui/icons-material/Add";
 interface ActionCellProps {
   onEdit: (rowData: any) => void;
   onDelete: (rowData: any) => void;
@@ -44,7 +46,13 @@ const ActionIcon: React.FC<ActionCellProps> = ({
 
   const isCohortAdmin = rowData?.userRoleTenantMapping?.code === "cohort_admin";
   const isLearnersPage = router.pathname === "/learners";
+  const isCohortPage = router.pathname === "/cohorts";
+
+  const showEditDeleteButtons = true;
   const isActionAllowed = isCohortAdmin && !isLearnersPage;
+  const isAddEnabled = isCohortAdmin && isCohortPage;
+  const isEditDeleteEnabled = isLearnersPage || !isCohortAdmin;
+
   return (
     <Box
       sx={{
@@ -52,8 +60,6 @@ const ActionIcon: React.FC<ActionCellProps> = ({
         flexDirection: "row",
         gap: "20px",
         alignItems: "center",
-        pointerEvents: isActionAllowed ? "none" : "auto",
-        opacity: isActionAllowed ? 0.5 : 1,
       }}
     >
       {roleButton && (
@@ -83,40 +89,39 @@ const ActionIcon: React.FC<ActionCellProps> = ({
         <Tooltip title={t("COMMON.ADD")}>
           <Box
             onClick={() => {
-              if (!isActionAllowed) onAdd(rowData);
+              if (isAddEnabled) onAdd(rowData);
             }}
             sx={{
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              cursor: "pointer",
-              color: disable ? theme?.palette?.secondary.contrastText : "",
-              backgroundColor: "#EAF2FF",
+              cursor: isAddEnabled ? "pointer" : "not-allowed",
+              color: isAddEnabled ? "" : theme?.palette?.secondary.contrastText,
+              backgroundColor: isAddEnabled ? "#EAF2FF" : "#d3d3d3",
               p: "10px",
+              opacity: isAddEnabled ? 1 : 0.5,
             }}
           >
             <Image src={addIcon} alt="" />
-            {/* 
-          <Typography variant="body2" fontFamily={"Poppins"}>
-            {t("COMMON.DELETE")}
-          </Typography> */}
           </Box>
         </Tooltip>
       )}
-      {allowEditIcon && (
+
+      {(showEditDeleteButtons || allowEditIcon) && (
         <>
           <Tooltip title={t("COMMON.EDIT")}>
             <Box
               onClick={() => {
-                if (!isActionAllowed) onEdit(rowData);
+                if (isEditDeleteEnabled) onEdit(rowData);
               }}
               sx={{
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                cursor: isActionAllowed ? "not-allowed" : "pointer",
-                backgroundColor: isActionAllowed ? "#d3d3d3" : "#E3EAF0",
+                cursor: isEditDeleteEnabled ? "pointer" : "not-allowed",
+                backgroundColor: isEditDeleteEnabled ? "#E3EAF0" : "#d3d3d3",
                 p: "10px",
+                opacity: isEditDeleteEnabled ? 1 : 0.5,
               }}
             >
               <Image src={editIcon} alt="" />
@@ -126,18 +131,40 @@ const ActionIcon: React.FC<ActionCellProps> = ({
           <Tooltip title={t("COMMON.DELETE")}>
             <Box
               onClick={() => {
-                if (!isActionAllowed) onDelete(rowData);
+                if (isEditDeleteEnabled) onDelete(rowData);
               }}
               sx={{
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                cursor: isActionAllowed ? "not-allowed" : "pointer",
-                backgroundColor: isActionAllowed ? "#d3d3d3" : "#EAF2FF",
+                cursor: isEditDeleteEnabled ? "pointer" : "not-allowed",
+                backgroundColor: isEditDeleteEnabled ? "#EAF2FF" : "#d3d3d3",
                 p: "10px",
+                opacity: isEditDeleteEnabled ? 1 : 0.5,
               }}
             >
               <Image src={deleteIcon} alt="" />
+            </Box>
+          </Tooltip>
+          <Tooltip title={t("COMMON.METABASE_REPORTS")}>
+            <Box
+              onClick={() => {
+                router.push({
+                  pathname: "/dashboard",
+                  query: rowData,
+                });
+              }}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                cursor: "pointer",
+                backgroundColor: "#EAF2FF",
+                p: "10px",
+                opacity: 1,
+              }}
+            >
+              <AssessmentIcon />
             </Box>
           </Tooltip>
         </>
@@ -147,15 +174,17 @@ const ActionIcon: React.FC<ActionCellProps> = ({
         <Tooltip title={reassignType}>
           <Box
             onClick={() => {
-              if (!isActionAllowed && reassignCohort) reassignCohort(rowData);
+              if (isEditDeleteEnabled && reassignCohort)
+                reassignCohort(rowData);
             }}
             sx={{
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              cursor: isActionAllowed ? "not-allowed" : "pointer",
-              backgroundColor: isActionAllowed ? "#d3d3d3" : "#E5E5E5",
+              cursor: isEditDeleteEnabled ? "pointer" : "not-allowed",
+              backgroundColor: isEditDeleteEnabled ? "#E5E5E5" : "#d3d3d3",
               p: "10px",
+              opacity: isEditDeleteEnabled ? 1 : 0.5,
             }}
           >
             <Image src={cohortIcon} alt="" />

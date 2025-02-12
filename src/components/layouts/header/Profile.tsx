@@ -362,7 +362,7 @@ const Profile = () => {
               {adminInfo?.email}
             </Typography>
           </Box>
-          <Box
+          {/* <Box
             sx={{
               display: "flex",
               alignItems: "center",
@@ -376,7 +376,7 @@ const Profile = () => {
             <Typography variant="body1" sx={{ fontSize: "14px" }}>
               Dashboard
             </Typography>
-          </Box>
+          </Box> */}
 
           <Divider sx={{ color: "#D0C5B4" }} />
           <Box sx={{ px: "20px" }}>
