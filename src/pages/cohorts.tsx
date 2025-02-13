@@ -151,7 +151,7 @@ const Center: React.FC = () => {
     name: {
       "ui:widget": "text",
       "ui:placeholder": "Enter your full name",
-      "ui:help": "Full name, numbers, letters and spaces are allowed.",
+      // "ui:help": "Full name, numbers, letters and spaces are allowed.",
     },
     username: {
       "ui:widget": "text",
@@ -231,7 +231,13 @@ const Center: React.FC = () => {
     email: {
       // "ui:widget": "text",
       "ui:placeholder": "Enter your email address",
-      "ui:help": "Enter a valid email address.",
+      // "ui:help": "Enter a valid email address.",
+      // "ui:options": {
+      //   errorsSchema: {
+      //     required: "This field is required",
+      //     pattern: "Enter a valid email address",
+      //   },
+      // },
       // "ui:options": {},
     },
     // dob: {
@@ -453,7 +459,6 @@ const Center: React.FC = () => {
         tenantId: tenantId,
       }));
     } else {
-      console.log("No valid tenants selected");
     }
   };
 
@@ -646,6 +651,16 @@ const Center: React.FC = () => {
   const handleError = (error: any) => {
     setError(error);
   };
+  const handleCohortAdminError = (errors: any) => {
+    if (errors.length > 0) {
+      if (!errors[0].formData?.email) {
+        errors = [
+          errors.find((error: any) => error.name === "required"),
+        ].filter(Boolean);
+      }
+    }
+    return errors;
+  };
   const handleUpdateAction = async (
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
@@ -799,9 +814,11 @@ const Center: React.FC = () => {
         (role: any) => role.code === formData?.role
       );
       const roleId = matchedRole ? matchedRole?.roleId : "";
-
+      const formatName = (names: any) => {
+        return names?.trim().replace(/\s+/g, " ");
+      };
       let obj: UserCreateData = {
-        name: formData?.name.replace(/\s/g, ""),
+        name: formatName(formData?.name),
         mobile: formData?.mobileNo,
         email: formData?.email,
         username: formData?.username.replace(/\s/g, ""),
@@ -925,7 +942,7 @@ const Center: React.FC = () => {
     handleAddUserClick: handleAddUserClick,
     statusValue: statusValue,
     setStatusValue: setStatusValue,
-    showSort: true,
+    showSort: false,
   };
 
   return (
@@ -1149,7 +1166,7 @@ const Center: React.FC = () => {
               uiSchema={cohortAdminUiSchema}
               onSubmit={handleAddCohortAdminAction}
               onChange={handleChangeForm}
-              onError={handleError}
+              onError={handleCohortAdminError}
               widgets={{}}
               showErrorList={false}
               customFields={customFields}

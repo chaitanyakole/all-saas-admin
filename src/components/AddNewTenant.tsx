@@ -86,8 +86,11 @@ const AddNewCenters: React.FC<AddLearnerModalProps> = ({
         showToastMessage("Form data is required", "error");
         return;
       }
+      const formatName = (names: any) => {
+        return names?.trim().replace(/\s+/g, " ");
+      };
       const cohortDetails: CohortDetails = {
-        name: formData?.name.replace(/\s/g, ""),
+        name: formatName(formData?.name),
         domain: formData?.domain ? formData?.domain : " ",
         // status: formData?.status,
       };
