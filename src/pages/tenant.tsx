@@ -651,8 +651,11 @@ const Tenant: React.FC = () => {
         showToastMessage(t(""), "error");
         return;
       }
+      const formatName = (names: any) => {
+        return names?.trim().replace(/\s+/g, " ");
+      };
       let cohortDetails = {
-        name: formData?.name.replace(/\s/g, ""),
+        name: formatName(formData?.name),
         domain: formData?.domain,
         // customFields: customFields,
       };
@@ -683,9 +686,11 @@ const Tenant: React.FC = () => {
     try {
       setLoading(true);
       setConfirmButtonDisable(true);
-
+      const formatName = (names: any) => {
+        return names?.trim().replace(/\s+/g, " ");
+      };
       let obj = {
-        name: formData?.name.replace(/\s/g, ""),
+        name: formatName(formData?.name),
         cohortId: selectedRowData?.cohortId,
         tenantId: selectedRowData?.tenantId,
         status: formData?.status,
@@ -734,9 +739,12 @@ const Tenant: React.FC = () => {
       const tenantAdminRole = response?.result.find(
         (item: any) => item.code === "tenant_admin"
       );
+      const formatName = (names: any) => {
+        return names?.trim().replace(/\s+/g, " ");
+      };
 
       let obj = {
-        name: formData?.name.replace(/\s/g, ""),
+        name: formatName(formData?.name),
         username: formData?.username.replace(/\s/g, ""),
         password: formData?.password,
         mobile: formData?.mobileNo,

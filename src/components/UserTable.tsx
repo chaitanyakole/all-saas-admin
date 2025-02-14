@@ -543,9 +543,7 @@ const UserTable: React.FC<UserTableProps> = ({
         if (filters.name) {
           offset = 0;
         }
-        const tenantId = filters?.tenantId
-          ? filters?.tenantId
-          : listOfTenants?.[0]?.tenantId;
+        const tenantId = filters?.tenantId && filters?.tenantId;
 
         const selectedTenantOrNot = selectedTenant?.[0] === "All";
         const payload = {
@@ -664,11 +662,12 @@ const UserTable: React.FC<UserTableProps> = ({
 
     fetchUserList();
   }, [
-    // pageOffset,
+    pageOffset,
     // submitValue,
     pageLimit,
     sortBy,
     filters,
+    editUserState,
     // parentState,
     // userType,
     // editUserState,
@@ -683,10 +682,13 @@ const UserTable: React.FC<UserTableProps> = ({
     if (selectedNames && selectedCodes) {
       const tenantId = selectedCodes.join(",");
       setSelectedTenant(selectedNames);
-      if (selectedNames?.[0] == "All") {
-        setFilters((prevFilter) => ({
-          ...prevFilter,
-        }));
+
+      if (selectedNames?.[0] === "All") {
+        setFilters((prevFilter) => {
+          const newFilters = { ...prevFilter };
+          delete newFilters.tenantId;
+          return newFilters;
+        });
       } else {
         setFilters((prevFilter) => ({
           ...prevFilter,
@@ -709,7 +711,7 @@ const UserTable: React.FC<UserTableProps> = ({
     value: number
   ) => {
     if (value >= 1 && value <= pageCount) {
-      setPageOffset(value - 1); // Ensure pageOffset is updated correctly
+      setPageOffset(value - 1);
     }
   };
 
@@ -795,9 +797,12 @@ const UserTable: React.FC<UserTableProps> = ({
       //   showToastMessage(t("CENTERS.NO_COHORT_ID_SELECTED"), "error");
       //   return;
       // }
+      const formatName = (names: any) => {
+        return names?.trim().replace(/\s+/g, " ");
+      };
       let cohortDetails = {
         userData: {
-          name: formData?.name.replace(/\s/g, ""),
+          name: formatName(formData?.name),
           role: formData?.role,
           userId: formData?.userId,
           username: formData?.username.replace(/\s/g, ""),

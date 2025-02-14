@@ -12,9 +12,7 @@ function Logout() {
     const userLogout = async () => {
       try {
         await logout();
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     };
     userLogout();
     if (typeof window !== "undefined" && window.localStorage) {

@@ -64,7 +64,6 @@ function App({ Component, pageProps }: AppProps) {
           await registerUser();
         }
         if (keycloak.refreshToken) {
-          console.log("Get keycloak refresh token token", keycloak);
           localStorage.setItem("refreshToken", keycloak.refreshToken);
         }
       } catch (error) {

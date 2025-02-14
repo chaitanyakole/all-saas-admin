@@ -175,8 +175,6 @@ const InvitationMenu = () => {
   ) => {
     try {
       // Simulate API call
-      console.log("invitation", tenantId, invitationId);
-
       const respose = await updateInvitation({
         invitationId,
         invitationStatus,
@@ -188,8 +186,6 @@ const InvitationMenu = () => {
           showToastMessage(t("COHORTINVITATION.ACCEPTED_SUCCESS"), "success");
           router.push("/cohorts");
         } else {
-          console.log("response", respose);
-
           showToastMessage(t("COHORTINVITATION.REJECTED_SUCCESS"), "success");
         }
         fetchInitialInvitations();

@@ -143,6 +143,18 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         delete updatedUiSchema[property]["ui:help"];
       }
 
+      if (property === "mail") {
+        if (error.name === "required") {
+          error.message = submittedButtonStatus
+            ? t("FORM_ERROR_MESSAGES.THIS_IS_REQUIRED_FIELD")
+            : "";
+        } else if (error.name === "format" || error.name === "pattern") {
+          error.message = !submittedButtonStatus
+            ? t("FORM_ERROR_MESSAGES.ENTER_VALID_EMAIL_ADDRESS")
+            : "";
+        }
+        return error;
+      }
       switch (error.name) {
         case "required": {
           error.message = submittedButtonStatus

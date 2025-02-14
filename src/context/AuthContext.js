@@ -43,9 +43,7 @@ export const AuthProvider = ({ children }) => {
       if (refreshToken) {
         await logout(refreshToken);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
     localStorage.removeItem("token");
 
     router.replace("/login");
