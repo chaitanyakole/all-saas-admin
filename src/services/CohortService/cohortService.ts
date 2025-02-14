@@ -1,7 +1,7 @@
 import { CohortMemberList } from "@/utils/Interfaces";
 import { deleteApi, get, patch, post, put } from "../RestClient";
-import config  from "@/utils/urlConstants.json";
-import axios from 'axios';
+import config from "@/utils/urlConstants.json";
+import axios from "axios";
 
 export interface cohortListFilter {
   type: string;
@@ -16,7 +16,7 @@ export interface cohortListData {
   offset?: Number;
   filter?: any;
   status?: any;
-  type?:'cohort' ;
+  type?: "cohort";
 }
 export interface UpdateCohortMemberStatusParams {
   memberStatus: string;
@@ -41,12 +41,12 @@ export const updateCohortUpdate = async (
   const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.COHORT_UPDATE}/${userId}`;
 
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     const response = await axios.put(apiUrl, cohortDetails, {
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        'tenantId': tenantId,
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        tenantId: tenantId,
       },
     });
 
@@ -133,19 +133,16 @@ export const fetchCohortMemberList = async ({
   }
 };
 
-
-
 export const bulkCreateCohortMembers = async (payload: any): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.COHORT_MEMBER_BULK}`;
   try {
     const response = await post(apiUrl, payload);
     return response.data;
   } catch (error) {
-    console.error('Error in bulk creating cohort members', error);
+    console.error("Error in bulk creating cohort members", error);
     throw error;
   }
 };
-
 
 export const updateCohortMemberStatus = async ({
   memberStatus,
@@ -160,21 +157,24 @@ export const updateCohortMemberStatus = async ({
     });
     return response?.data;
   } catch (error) {
-    console.error('error in attendance report api ', error);
+    console.error("error in attendance report api ", error);
     // throw error;
   }
 };
 
-export const cohortCreate = async (data: cohortListData, tenantId: string): Promise<any> => {
+export const cohortCreate = async (
+  data: cohortListData,
+  tenantId: string
+): Promise<any> => {
   let apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.COHORT_CREATE}`;
 
   try {
-    const token=localStorage.getItem('token')
+    const token = localStorage.getItem("token");
     const response = await axios.post(apiUrl, data, {
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type':'application/json',
-        'tenantId': tenantId,  
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        tenantId: tenantId,
       },
     });
     return response?.data;
@@ -190,162 +190,177 @@ export const cohortCreate = async (data: cohortListData, tenantId: string): Prom
   }
 };
 
-export const getTenantLists = async (
-data:any
-): Promise<any> => {
+export const getTenantLists = async (data: any): Promise<any> => {
   const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.TENANT_LIST}`;
   try {
-    let response = await get(apiUrl);    
-        return response?.data?.result;
-      } catch (error) {
-        console.error("Error in Getting tenant List Details", error);
-        return error;
-      }
-       
+    let response = await get(apiUrl);
+    return response?.data?.result;
+  } catch (error) {
+    console.error("Error in Getting tenant List Details", error);
+    return error;
   }
+};
 
+export const deleteCohort = async (
+  option: string,
+  tenantId: string
+): Promise<any> => {
+  const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.COHORT_DELETE}/${option}`;
 
-  export const deleteCohort = async (
-    option: string,
-    tenantId: string
-  ): Promise<any> => {
-    const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.COHORT_DELETE}/${option}`;
-    
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.delete(apiUrl, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          'tenantId': tenantId,
-        },
-        data: {}, 
-      });
-  
-      return response?.data;
-    } catch (error) {
-      console.error("Error deleting cohort", error);
-      throw error;
-    }
-  };
-  export const deleteTenant = async (
-    // status:any,
-    option: string
-  ): Promise<any> => {
-    
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.TENANT_DELETE}?id=${option}`;
-    const requestBody = {};
-    const requestHeaders = {};
-  
-    try {
-      const response = await deleteApi(apiUrl, requestBody, requestHeaders);      
-      return response?.data;
-    } catch (error) {
-      console.error(`Error deleting`, error);
-      return error;
-    }
-  };
-  export const tenantCreate = async (data: cohortListData): Promise<any> => {
-    let apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.TENANT_CREATE}`;
-  
-    try {
-      const response = await post(apiUrl, data);      
-      return response?.data;
-    }catch (error: unknown) {
-      let errorMessage = "An unexpected error occurred.";
-  
-      if (axios.isAxiosError(error) && error.response) {
-        errorMessage = error.response.data?.params?.err || "Error from API.";
-      }
-  
-      console.error("Error in creating tenant:", error);
-      throw new Error(errorMessage);
-    }
-  };
-  export const roleCreate = async (data: cohortListData): Promise<any> => {
-    let apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.ROLE_CREATE}`;
-  
-    try {
-      const response = await post(apiUrl, data);
-      
-      return response?.data;
-    } catch (error) {
-      console.error("Error in Getting cohort List Details", error);
-      return error;
-    }
-  };
-  export const updateTenant = async (
-    userId: string,
-    cohortDetails: any
-  ): Promise<any> => {
-    // const { name, status, type } = cohortDetails;
-    let apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.TENANT_UPDATE}?id=${userId}`;
-  
-    try {
-      const response = await patch(apiUrl, cohortDetails);
-      return response?.data;
-    } catch (error) {
-      console.error("Error in updating cohort details", error);
-      throw error;
-    }
-  };
-  export const rolesList = async (data: cohortListData, tenantId: string): Promise<any> => {
-    let apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.ROLES_LIST}`;
-  
-    try {
-      const token=localStorage.getItem('token')
-      const response = await axios.post(apiUrl, data, {
-        headers: {  'Authorization': `Bearer ${token}`,
-        'Content-Type':'application/json',
-          'tenantId': tenantId,  
-        },
-      });
-      return response?.data;
-    } catch (error) {
-      console.error("Error in Getting Roles List", error);
-      return error;
-    }
-  };
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.delete(apiUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        tenantId: tenantId,
+      },
+      data: {},
+    });
 
-  export const userCreate = async (data: cohortListData, userTenantId: string): Promise<any> => {
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.USER_CREATE}`;
+    return response?.data;
+  } catch (error) {
+    console.error("Error deleting cohort", error);
+    throw error;
+  }
+};
+export const deleteTenant = async (
+  // status:any,
+  option: string
+): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.TENANT_DELETE}?id=${option}`;
+  const requestBody = {};
+  const requestHeaders = {};
 
-    try {
-      const token=localStorage.getItem('token')
-      const headers = {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type':'application/json',
-        'tenantid': userTenantId ,
-      };
-  
-      const response = await axios.post(apiUrl, data, { headers });
-      return response?.data;  
-    } catch (error: unknown) {
-      let errorMessage = "An unexpected error occurred.";
-  
-      if (axios.isAxiosError(error) && error.response) {
-        errorMessage = error.response.data?.params?.err || "Error from API.";
-      }
-  
-      console.error("Error in creating user:", error);
-      throw new Error(errorMessage);
-    }
-  };
-  
+  try {
+    const token = localStorage.getItem("token");
+    // const response = await deleteApi(apiUrl, requestBody, requestHeaders);
+    const response = await axios.delete(apiUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Accept: "application/json, text/plain, */*",
+        tenantId: option,
+      },
+    });
+    return response?.data;
+  } catch (error) {
+    console.error(`Error deleting`, error);
+    return error;
+  }
+};
+export const tenantCreate = async (data: cohortListData): Promise<any> => {
+  let apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.TENANT_CREATE}`;
 
-  export const deleteUser = async (
-    userId: string
-  ): Promise<any> => {
-    
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.USER_DELETE}/${userId}`;
-    const requestBody = {};
-    const requestHeaders = {};
-  
-    try {
-      const response = await deleteApi(apiUrl, requestBody, requestHeaders);      
-      return response?.data;
-    } catch (error) {
-      console.error(`Error deleting`, error);
-      return error;
+  try {
+    const response = await post(apiUrl, data);
+    return response?.data;
+  } catch (error: unknown) {
+    let errorMessage = "An unexpected error occurred.";
+
+    if (axios.isAxiosError(error) && error.response) {
+      errorMessage = error.response.data?.params?.err || "Error from API.";
     }
-  };
+
+    console.error("Error in creating tenant:", error);
+    throw new Error(errorMessage);
+  }
+};
+export const roleCreate = async (data: cohortListData): Promise<any> => {
+  let apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.ROLE_CREATE}`;
+
+  try {
+    const response = await post(apiUrl, data);
+
+    return response?.data;
+  } catch (error) {
+    console.error("Error in Getting cohort List Details", error);
+    return error;
+  }
+};
+export const updateTenant = async (
+  userId: string,
+  cohortDetails: any
+): Promise<any> => {
+  // const { name, status, type } = cohortDetails;
+  let apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.TENANT_UPDATE}?id=${userId}`;
+
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.patch(apiUrl, cohortDetails, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Accept: "application/json, text/plain, */*",
+        tenantId: userId,
+      },
+    });
+    return response?.data;
+  } catch (error) {
+    console.error("Error in updating cohort details", error);
+    throw error;
+  }
+};
+export const rolesList = async (
+  data: cohortListData,
+  tenantId: string
+): Promise<any> => {
+  let apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.ROLES_LIST}`;
+
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.post(apiUrl, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        tenantId: tenantId,
+      },
+    });
+    return response?.data;
+  } catch (error) {
+    console.error("Error in Getting Roles List", error);
+    return error;
+  }
+};
+
+export const userCreate = async (
+  data: cohortListData,
+  userTenantId: string
+): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.USER_CREATE}`;
+
+  try {
+    const token = localStorage.getItem("token");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      tenantid: userTenantId,
+    };
+
+    const response = await axios.post(apiUrl, data, { headers });
+    return response?.data;
+  } catch (error: unknown) {
+    let errorMessage = "An unexpected error occurred.";
+
+    if (axios.isAxiosError(error) && error.response) {
+      errorMessage = error.response.data?.params?.err || "Error from API.";
+    }
+
+    console.error("Error in creating user:", error);
+    throw new Error(errorMessage);
+  }
+};
+
+export const deleteUser = async (userId: string): Promise<any> => {
+  const apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.USER_DELETE}/${userId}`;
+  const requestBody = {};
+  const requestHeaders = {};
+
+  try {
+    const response = await deleteApi(apiUrl, requestBody, requestHeaders);
+    return response?.data;
+  } catch (error) {
+    console.error(`Error deleting`, error);
+    return error;
+  }
+};
