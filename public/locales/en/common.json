@@ -490,9 +490,11 @@
     "INVITED_TO_JOIN_COHORT": "Invited to join cohort",
     "INVITED_BY": "Invited by",
     "REVOKE_INVITATION": "Revoke Invitation",
+    
     "DELETE_CONFIRMATION": "Revoke request of ",
     "CANCEL": "Cancel",
     "REVOKE": "Revoke",
+    "REVOKED_SUCCESS": "Invitation revoked successfully",
     "ACCEPTED_SUCCESS": "Accepted request successfully",
     "REJECTED_SUCCESS": "Rejected request",
     "ERROR_UPDATING_REQUEST": "Error in updating request",

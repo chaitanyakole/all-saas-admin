@@ -185,6 +185,8 @@ const InvitationMenu = () => {
         if (invitationStatus === "Accepted") {
           showToastMessage(t("COHORTINVITATION.ACCEPTED_SUCCESS"), "success");
           router.push("/cohorts");
+        } else if (invitationStatus === "Revoked") {
+          showToastMessage(t("COHORTINVITATION.REVOKED_SUCCESS"), "success");
         } else {
           showToastMessage(t("COHORTINVITATION.REJECTED_SUCCESS"), "success");
         }
@@ -341,18 +343,34 @@ const InvitationMenu = () => {
                       justifyContent="space-between"
                       alignItems="center"
                     >
-                      <Typography variant="body2">
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          width: "65%",
+                          whiteSpace: "normal",
+                          wordWrap: "break-word",
+                          display: "block",
+                        }}
+                      >
                         Invited to <b>{invitation.invitedTo}</b> to join cohort{" "}
                         <b>{invitation.cohortName}</b>
                       </Typography>
 
-                      <Tooltip title="Delete Request">
-                        <IconButton
+                      <Tooltip title="Revoke Invitation">
+                        <Button
                           size="small"
-                          onClick={() => setConfirmDelete(invitation)}
+                          onClick={() =>
+                            updateInvitationStatus(
+                              invitation.tenantId,
+                              invitation.invitationId,
+                              "Revoked"
+                            )
+                          }
+                          variant="outlined"
+                          sx={{ borderRadius: "15px" }}
                         >
-                          <Delete fontSize="small" color="primary" />
-                        </IconButton>
+                          Revoke Invitation
+                        </Button>
                       </Tooltip>
                     </Stack>
                   </CardContent>
@@ -376,7 +394,15 @@ const InvitationMenu = () => {
                       justifyContent="space-between"
                       alignItems="center"
                     >
-                      <Typography variant="body2">
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          width: "75%",
+                          whiteSpace: "normal",
+                          wordWrap: "break-word",
+                          display: "block",
+                        }}
+                      >
                         {t("COHORTINVITATION.INVITED_BY")}{" "}
                         <b>{invitation.invitedBy}</b> to cohort{" "}
                         <b>{invitation.cohortName}</b>
