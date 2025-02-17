@@ -8,7 +8,8 @@ import deleteIcon from "../../public/images/deleteIcon.svg";
 import editIcon from "../../public/images/editIcon.svg";
 import cohortIcon from "../../public/images/apartment.svg";
 import addIcon from "../../public/images/addIcon.svg";
-
+import TimelineIcon from "@mui/icons-material/Timeline";
+import QueryStatsIcon from "@mui/icons-material/QueryStats";
 interface ActionCellProps {
   onEdit: (rowData: any) => void;
   onDelete: (rowData: any) => void;
@@ -22,6 +23,7 @@ interface ActionCellProps {
   allowEditIcon?: boolean;
   onAdd: (rowData: any) => void;
   showReports?: boolean;
+  showLearnerReports?: boolean;
 }
 
 const ActionIcon: React.FC<ActionCellProps> = ({
@@ -36,6 +38,7 @@ const ActionIcon: React.FC<ActionCellProps> = ({
   allowEditIcon = false,
   reassignType,
   showReports,
+  showLearnerReports = false,
 }) => {
   const { t } = useTranslation();
   const router = useRouter();
@@ -58,6 +61,10 @@ const ActionIcon: React.FC<ActionCellProps> = ({
     },
     reports: {
       visible: showReports,
+      enabled: true,
+    },
+    learnerReports: {
+      visible: showLearnerReports,
       enabled: true,
     },
   };
@@ -147,10 +154,11 @@ const ActionIcon: React.FC<ActionCellProps> = ({
     if (!buttonStates.reports.visible) return null;
     const userRowData =
       rowData?.tenantId && !rowData?.userId
-        ? { tenantId: rowData.tenantId }
+        ? { tenantId: rowData.tenantId, dashboardType: "default" }
         : rowData?.userId
-          ? { userId: rowData.userId }
+          ? { userId: rowData.userId, dashboardType: "default" }
           : {};
+
     return (
       <Tooltip title={t("COMMON.METABASE_REPORTS")}>
         <Box
@@ -166,6 +174,62 @@ const ActionIcon: React.FC<ActionCellProps> = ({
           }}
         >
           <AssessmentIcon />
+        </Box>
+      </Tooltip>
+    );
+  };
+  const renderResponseEventReportsButton = () => {
+    if (!buttonStates.learnerReports.visible) return null;
+    const userRowData =
+      rowData?.tenantId && !rowData?.userId
+        ? { tenantId: rowData.tenantId, dashboardType: "responseEvent" }
+        : rowData?.userId
+          ? { userId: rowData.userId, dashboardType: "responseEvent" }
+          : {};
+
+    return (
+      <Tooltip title={t("COMMON.USER_RESPONSE_EVENT")}>
+        <Box
+          onClick={() =>
+            router.push({
+              pathname: "/dashboard",
+              query: { ...userRowData, from: router.pathname },
+            })
+          }
+          sx={{
+            ...commonButtonStyles(true),
+            backgroundColor: "#EAF2FF",
+          }}
+        >
+          <QueryStatsIcon />
+        </Box>
+      </Tooltip>
+    );
+  };
+  const renderUserJourneyReportsButton = () => {
+    if (!buttonStates.learnerReports.visible) return null;
+    const userRowData =
+      rowData?.tenantId && !rowData?.userId
+        ? { tenantId: rowData.tenantId, dashboardType: "userJourney" }
+        : rowData?.userId
+          ? { userId: rowData.userId, dashboardType: "userJourney" }
+          : {};
+
+    return (
+      <Tooltip title={t("COMMON.USER_JOURNEY_REPORT")}>
+        <Box
+          onClick={() =>
+            router.push({
+              pathname: "/dashboard",
+              query: { ...userRowData, from: router.pathname },
+            })
+          }
+          sx={{
+            ...commonButtonStyles(true),
+            backgroundColor: "#EAF2FF",
+          }}
+        >
+          <TimelineIcon />
         </Box>
       </Tooltip>
     );
@@ -206,6 +270,8 @@ const ActionIcon: React.FC<ActionCellProps> = ({
       {renderEditDeleteButtons()}
       {renderReportsButton()}
       {renderReassignButton()}
+      {renderUserJourneyReportsButton()}
+      {renderResponseEventReportsButton()}
     </Box>
   );
 };

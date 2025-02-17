@@ -1,3 +1,4 @@
+import { log } from "console";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
 import { useEffect, useState, useMemo } from "react";
@@ -5,6 +6,7 @@ import { useEffect, useState, useMemo } from "react";
 interface RowData {
   tenantId?: string;
   userId?: string;
+  dashboardType?: string;
 }
 
 const Dashboard = () => {
@@ -21,9 +23,23 @@ const Dashboard = () => {
   const metabaseUrl = useMemo(() => {
     if (router.query.from === "/tenant") {
       return `${process.env.NEXT_PUBLIC_METABASE_URL_TENANTID}${rowData?.tenantId}`;
-    } else if (router.query.from === "/learners") {
+    } else if (
+      router.query.from === "/learners" &&
+      rowData?.dashboardType === "default"
+    ) {
       return `${process.env.NEXT_PUBLIC_METABASE_URL_USERID}${rowData?.userId}`;
+    } else if (
+      router.query.from === "/learners" &&
+      rowData?.dashboardType === "responseEvent"
+    ) {
+      return `${process.env.NEXT_PUBLIC_METABASE_URL_USER_RESPONSE_EVENT}${rowData?.userId}`;
+    } else if (
+      router.query.from === "/learners" &&
+      rowData?.dashboardType === "userJourney"
+    ) {
+      return `${process.env.NEXT_PUBLIC_METABASE_URL_USER_JOURNEY}${rowData?.userId}`;
     }
+
     return "";
   }, [router.query.from, rowData]);
 

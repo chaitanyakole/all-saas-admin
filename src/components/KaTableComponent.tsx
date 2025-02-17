@@ -51,6 +51,7 @@ interface KaTableComponentProps {
   handleMemberClick?: any;
   allowEditIcon?: boolean;
   showReports?: boolean;
+  showLearnerReports?: boolean;
 }
 
 const KaTableComponent: React.FC<KaTableComponentProps> = ({
@@ -75,6 +76,7 @@ const KaTableComponent: React.FC<KaTableComponentProps> = ({
   handleMemberClick,
   allowEditIcon,
   showReports,
+  showLearnerReports,
 }) => {
   const [selectedRowIds, setSelectedRowIds] = useState<number[]>([]);
   const { t } = useTranslation();
@@ -105,6 +107,7 @@ const KaTableComponent: React.FC<KaTableComponentProps> = ({
       },
     }),
   };
+
   return (
     <Paper>
       <div className="ka-table-wrapper">
@@ -149,6 +152,7 @@ const KaTableComponent: React.FC<KaTableComponentProps> = ({
                       onDelete={onDelete}
                       allowEditIcon={allowEditIcon}
                       showReports={showReports}
+                      showLearnerReports={showLearnerReports}
                       // userAction={props.rowData?.userId}
                       disable={props.rowData?.status === Status.ARCHIVED}
                       reassignType={reassignType}
