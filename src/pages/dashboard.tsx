@@ -1,4 +1,3 @@
-import { log } from "console";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
 import { useEffect, useState, useMemo } from "react";
