@@ -150,14 +150,16 @@ const ActionIcon: React.FC<ActionCellProps> = ({
       </>
     );
   };
+  const getUserRowData = (dashboardType: string) => {
+    return rowData?.tenantId && !rowData?.userId
+      ? { tenantId: rowData.tenantId, dashboardType }
+      : rowData?.userId
+        ? { userId: rowData.userId, dashboardType }
+        : {};
+  };
   const renderReportsButton = () => {
     if (!buttonStates.reports.visible) return null;
-    const userRowData =
-      rowData?.tenantId && !rowData?.userId
-        ? { tenantId: rowData.tenantId, dashboardType: "default" }
-        : rowData?.userId
-          ? { userId: rowData.userId, dashboardType: "default" }
-          : {};
+    const userRowData = getUserRowData("default");
 
     return (
       <Tooltip title={t("COMMON.METABASE_REPORTS")}>
@@ -180,12 +182,7 @@ const ActionIcon: React.FC<ActionCellProps> = ({
   };
   const renderResponseEventReportsButton = () => {
     if (!buttonStates.learnerReports.visible) return null;
-    const userRowData =
-      rowData?.tenantId && !rowData?.userId
-        ? { tenantId: rowData.tenantId, dashboardType: "responseEvent" }
-        : rowData?.userId
-          ? { userId: rowData.userId, dashboardType: "responseEvent" }
-          : {};
+    const userRowData = getUserRowData("responseEvent");
 
     return (
       <Tooltip title={t("COMMON.USER_RESPONSE_EVENT")}>
@@ -208,12 +205,7 @@ const ActionIcon: React.FC<ActionCellProps> = ({
   };
   const renderUserJourneyReportsButton = () => {
     if (!buttonStates.learnerReports.visible) return null;
-    const userRowData =
-      rowData?.tenantId && !rowData?.userId
-        ? { tenantId: rowData.tenantId, dashboardType: "userJourney" }
-        : rowData?.userId
-          ? { userId: rowData.userId, dashboardType: "userJourney" }
-          : {};
+    const userRowData = getUserRowData("userJourney");
 
     return (
       <Tooltip title={t("COMMON.USER_JOURNEY_REPORT")}>
