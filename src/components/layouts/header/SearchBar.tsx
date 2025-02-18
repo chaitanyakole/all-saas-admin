@@ -10,15 +10,18 @@ interface SearchBarProps {
   placeholder: string;
 }
 
-const SearchBox = styled(Paper)<{ isSmallScreen: boolean }>(({ theme, isSmallScreen }) => ({
-  padding: "2px 4px",
-  display: "flex",
-  alignItems: "center",
-  width: "100%",
-  maxWidth: isSmallScreen ? 300 : 900,
-  borderRadius: "8px",
-  backgroundColor:"#F0F0F0",
-}));
+const SearchBox = styled(Paper)<{ isSmallScreen: boolean }>(
+  ({ theme, isSmallScreen }) => ({
+    padding: "2px 4px",
+    display: "flex",
+    alignItems: "center",
+    width: "100%",
+    maxWidth: isSmallScreen ? 300 : 900,
+    borderRadius: "8px",
+    backgroundColor: "#EDEDED",
+    boxShadow: "none",
+  })
+);
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   marginLeft: theme.spacing(1),
@@ -29,7 +32,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, placeholder }) => {
   const [keyword, setKeyword] = useState("");
   const { t } = useTranslation();
   const isSmallScreen = useMediaQuery((theme: any) =>
-    theme.breakpoints.down("sm"),
+    theme.breakpoints.down("sm")
   );
 
   const validateKeyword = (keyword: string) => {
@@ -71,11 +74,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, placeholder }) => {
         inputProps={{ "aria-label": "search" }}
       />
       {keyword && (
-        <IconButton
-          type="button"
-          onClick={handleClear}
-          aria-label="clear"
-        >
+        <IconButton type="button" onClick={handleClear} aria-label="clear">
           <CloseIcon />
         </IconButton>
       )}

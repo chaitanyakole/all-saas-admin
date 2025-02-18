@@ -981,28 +981,36 @@ const Center: React.FC = () => {
             <Loader showBackdrop={false} loadingText={t("COMMON.LOADING")} />
           </Box>
         ) : cohortData?.length > 0 ? (
-          <KaTableComponent
-            columns={getCohortTableData(t, isMobile, adminRole, filters)}
-            addAction={filters?.status?.[0] != "inactive" ? true : false}
-            data={cohortData}
-            limit={pageLimit}
-            roleButton
-            offset={pageOffset}
-            addCohortBtnFunc={handleCreateCohortAdmin}
-            paginationEnable={totalCount > Numbers.TEN}
-            PagesSelector={PagesSelector}
-            pagination={pagination}
-            PageSizeSelector={PageSizeSelectorFunction}
-            pageSizes={pageSizeArray}
-            extraActions={extraActions}
-            showIcons={true}
-            allowEditIcon={true}
-            showReports={false}
-            onAdd={handleAdd}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            handleMemberClick={handleMemberClick}
-          />
+          <Box
+            sx={{
+              backgroundColor: "white",
+              padding: "10px",
+              borderRadius: "15px",
+            }}
+          >
+            <KaTableComponent
+              columns={getCohortTableData(t, isMobile, adminRole, filters)}
+              addAction={filters?.status?.[0] != "inactive" ? true : false}
+              data={cohortData}
+              limit={pageLimit}
+              roleButton
+              offset={pageOffset}
+              addCohortBtnFunc={handleCreateCohortAdmin}
+              paginationEnable={totalCount > Numbers.TEN}
+              PagesSelector={PagesSelector}
+              pagination={pagination}
+              PageSizeSelector={PageSizeSelectorFunction}
+              pageSizes={pageSizeArray}
+              extraActions={extraActions}
+              showIcons={true}
+              allowEditIcon={true}
+              showReports={false}
+              onAdd={handleAdd}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              handleMemberClick={handleMemberClick}
+            />
+          </Box>
         ) : (
           <Box
             display="flex"

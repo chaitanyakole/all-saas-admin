@@ -20,7 +20,7 @@ import LogoIcon from "../logo/LogoIcon";
 import Buynow from "./Buynow";
 import Menuitems from "./MenuItems";
 import Image from "next/image";
-import MasterIcon  from '../../../../public/images/database.svg';
+import MasterIcon from "../../../../public/images/database.svg";
 
 const Sidebar = ({
   isMobileSidebarOpen,
@@ -68,22 +68,30 @@ const Sidebar = ({
                   selected={location === item.href}
                   sx={{
                     mb: 1,
-                    
-                    ...(location === item.href && {
-                      color: "black",
-                      backgroundColor: (theme) =>
-                        `${theme.palette.primary.main}!important`,
-                    }),
+                    color: location === item.href ? "white" : "black",
+                    backgroundColor:
+                      location === item.href
+                        ? (theme) => `${theme.palette.primary.main}!important`
+                        : "transparent",
+                    "&:hover": {
+                      backgroundColor: (theme) => theme.palette.primary.light,
+                    },
                   }}
                 >
-             {/* {  item.icon && (<ListItemIcon>
+                  {/* {  item.icon && (<ListItemIcon>
   {item.icon}
 </ListItemIcon>) */}
-<ListItemIcon>
-<Image src={item.icon} alt="" />
-
-</ListItemIcon>
-      <ListItemText>
+                  <ListItemIcon
+                    sx={{
+                      color: location === item.href ? "white" : "black", // Change icon color
+                      "& img": {
+                        filter: location === item.href ? "invert(1)" : "none", // White icon effect
+                      },
+                    }}
+                  >
+                    <Image src={item.icon} alt="" />
+                  </ListItemIcon>
+                  <ListItemText>
                     <Typography variant="h2" sx={{ fontWeight: "700px" }}>
                       {t(item.title)}
                     </Typography>
@@ -102,7 +110,11 @@ const Sidebar = ({
                 <Collapse in={open === index} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
                     {item?.subOptions?.map((subItem) => (
-                      <Tooltip title={t(subItem.title)} placement="right-start" key={subItem.title}>
+                      <Tooltip
+                        title={t(subItem.title)}
+                        placement="right-start"
+                        key={subItem.title}
+                      >
                         <ListItem
                           button
                           key={subItem.title}
@@ -113,10 +125,12 @@ const Sidebar = ({
                           selected={location === subItem.href}
                           sx={{
                             pl: 8,
-                           ml: 2,
+                            ml: 2,
                             mb: 1,
+
                             ...(location === subItem.href && {
-                              color: "black",
+                              color:
+                                location === subItem.href ? "white" : "black",
                               backgroundColor: (theme) =>
                                 `${theme.palette.primary.main}!important`,
                             }),

@@ -291,7 +291,6 @@ export const updateTenant = async (
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
-        Accept: "application/json, text/plain, */*",
         tenantId: userId,
       },
     });

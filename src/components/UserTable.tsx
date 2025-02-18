@@ -909,29 +909,37 @@ const UserTable: React.FC<UserTableProps> = ({
           <Loader showBackdrop={false} loadingText={t("COMMON.LOADING")} />
         </Box>
       ) : data?.length !== 0 && loading === false ? (
-        <KaTableComponent
-          columns={
-            // role === Role.TEAM_LEADER
-            getTLTableColumns(t, isMobile, filters)
-            // : getUserTableColumns(t, isMobile)
-          }
-          data={data}
-          limit={pageLimit}
-          offset={pageOffset}
-          paginationEnable={totalCount > Numbers.TEN}
-          PagesSelector={PagesSelector}
-          PageSizeSelector={PageSizeSelectorFunction}
-          pageSizes={pageSizeArray}
-          extraActions={extraActions}
-          showIcons={true}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          pagination={pagination}
-          allowEditIcon={true}
-          showReports={true}
-          showLearnerReports={true}
-          noDataMessage={data?.length === 0 ? t("COMMON.NO_USER_FOUND") : ""}
-        />
+        <Box
+          sx={{
+            backgroundColor: "white",
+            padding: "10px",
+            borderRadius: "15px",
+          }}
+        >
+          <KaTableComponent
+            columns={
+              // role === Role.TEAM_LEADER
+              getTLTableColumns(t, isMobile, filters)
+              // : getUserTableColumns(t, isMobile)
+            }
+            data={data}
+            limit={pageLimit}
+            offset={pageOffset}
+            paginationEnable={totalCount > Numbers.TEN}
+            PagesSelector={PagesSelector}
+            PageSizeSelector={PageSizeSelectorFunction}
+            pageSizes={pageSizeArray}
+            extraActions={extraActions}
+            showIcons={true}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            pagination={pagination}
+            allowEditIcon={true}
+            showReports={true}
+            showLearnerReports={true}
+            noDataMessage={data?.length === 0 ? t("COMMON.NO_USER_FOUND") : ""}
+          />
+        </Box>
       ) : (
         loading === false &&
         data.length === 0 && (
