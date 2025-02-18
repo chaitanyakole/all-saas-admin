@@ -127,7 +127,7 @@ const MetabaseReportsMenu: React.FC<MetabaseDashboardProps> = ({
 
   return (
     <>
-      <Tooltip title={t("COMMON.ACTIONS")}>
+      <Tooltip title={t("MASTER.ACTIONS")}>
         <IconButton
           onClick={handleClick}
           sx={{
