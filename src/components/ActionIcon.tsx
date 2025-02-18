@@ -3,13 +3,10 @@ import { useTranslation } from "next-i18next";
 import { Box, Typography, Tooltip, Button } from "@mui/material";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import AssessmentIcon from "@mui/icons-material/Assessment";
-import deleteIcon from "../../public/images/deleteIcon.svg";
 import editIcon from "../../public/images/editIcon.svg";
 import cohortIcon from "../../public/images/apartment.svg";
 import addIcon from "../../public/images/addIcon.svg";
-import TimelineIcon from "@mui/icons-material/Timeline";
-import QueryStatsIcon from "@mui/icons-material/QueryStats";
+import MetabaseReportsMenu from "./MetabaseReportMenu";
 interface ActionCellProps {
   onEdit: (rowData: any) => void;
   onDelete: (rowData: any) => void;
@@ -116,7 +113,7 @@ const ActionIcon: React.FC<ActionCellProps> = ({
   };
 
   const renderEditDeleteButtons = () => {
-    if (!buttonStates.editDelete.visible) return null;
+    if (!buttonStates.learnerReports.visible) return null;
 
     return (
       <>
@@ -133,97 +130,7 @@ const ActionIcon: React.FC<ActionCellProps> = ({
             <Image src={editIcon} alt="" />
           </Box>
         </Tooltip>
-
-        <Tooltip title={t("COMMON.DELETE")}>
-          <Box
-            onClick={() => buttonStates.editDelete.enabled && onDelete(rowData)}
-            sx={{
-              ...commonButtonStyles(buttonStates.editDelete.enabled),
-              backgroundColor: buttonStates.editDelete.enabled
-                ? "#EAF2FF"
-                : "#d3d3d3",
-            }}
-          >
-            <Image src={deleteIcon} alt="" />
-          </Box>
-        </Tooltip>
       </>
-    );
-  };
-  const getUserRowData = (dashboardType: string) => {
-    return rowData?.tenantId && !rowData?.userId
-      ? { tenantId: rowData.tenantId, dashboardType }
-      : rowData?.userId
-        ? { userId: rowData.userId, dashboardType }
-        : {};
-  };
-  const renderReportsButton = () => {
-    if (!buttonStates.reports.visible) return null;
-    const userRowData = getUserRowData("default");
-
-    return (
-      <Tooltip title={t("COMMON.METABASE_REPORTS")}>
-        <Box
-          onClick={() =>
-            router.push({
-              pathname: "/dashboard",
-              query: { ...userRowData, from: router.pathname },
-            })
-          }
-          sx={{
-            ...commonButtonStyles(true),
-            backgroundColor: "#EAF2FF",
-          }}
-        >
-          <AssessmentIcon />
-        </Box>
-      </Tooltip>
-    );
-  };
-  const renderResponseEventReportsButton = () => {
-    if (!buttonStates.learnerReports.visible) return null;
-    const userRowData = getUserRowData("responseEvent");
-
-    return (
-      <Tooltip title={t("COMMON.USER_RESPONSE_EVENT")}>
-        <Box
-          onClick={() =>
-            router.push({
-              pathname: "/dashboard",
-              query: { ...userRowData, from: router.pathname },
-            })
-          }
-          sx={{
-            ...commonButtonStyles(true),
-            backgroundColor: "#EAF2FF",
-          }}
-        >
-          <QueryStatsIcon />
-        </Box>
-      </Tooltip>
-    );
-  };
-  const renderUserJourneyReportsButton = () => {
-    if (!buttonStates.learnerReports.visible) return null;
-    const userRowData = getUserRowData("userJourney");
-
-    return (
-      <Tooltip title={t("COMMON.USER_JOURNEY_REPORT")}>
-        <Box
-          onClick={() =>
-            router.push({
-              pathname: "/dashboard",
-              query: { ...userRowData, from: router.pathname },
-            })
-          }
-          sx={{
-            ...commonButtonStyles(true),
-            backgroundColor: "#EAF2FF",
-          }}
-        >
-          <TimelineIcon />
-        </Box>
-      </Tooltip>
     );
   };
 
@@ -260,10 +167,15 @@ const ActionIcon: React.FC<ActionCellProps> = ({
     >
       {renderAddButton()}
       {renderEditDeleteButtons()}
-      {renderReportsButton()}
+
       {renderReassignButton()}
-      {renderUserJourneyReportsButton()}
-      {renderResponseEventReportsButton()}
+
+      <MetabaseReportsMenu
+        buttonStates={buttonStates}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        rowData={rowData}
+      />
     </Box>
   );
 };
