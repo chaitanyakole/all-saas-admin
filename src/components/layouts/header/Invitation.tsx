@@ -208,8 +208,8 @@ const InvitationMenu = () => {
           spacing={2}
           sx={{
             position: "fixed",
-            top: 16,
-            left: "50%",
+            top: "6%",
+            left: "60%",
             transform: "translateX(-50%)",
             zIndex: 1400,
             width: "100%",
@@ -397,7 +397,7 @@ const InvitationMenu = () => {
                       <Typography
                         variant="body2"
                         sx={{
-                          width: "75%",
+                          width: "65%",
                           whiteSpace: "normal",
                           wordWrap: "break-word",
                           display: "block",

@@ -668,6 +668,7 @@ const UserTable: React.FC<UserTableProps> = ({
     sortBy,
     filters,
     editUserState,
+    deleteUserState,
     // parentState,
     // userType,
     // editUserState,
