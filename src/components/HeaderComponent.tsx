@@ -5,6 +5,7 @@ import {
   Button,
   FormControl,
   MenuItem,
+  Typography,
   useMediaQuery,
 } from "@mui/material";
 import Select from "@mui/material/Select";
@@ -362,8 +363,8 @@ const HeaderComponent = ({
       sx={{
         display: "flex",
         flexDirection: "column",
-        gap: isMobile ? "8px" : "16px",
-        padding: isMobile ? "8px" : "16px",
+        gap: isMobile ? "2px" : "16px",
+        padding: isMobile ? "none" : "16px",
         backgroundColor: theme.palette.secondary["100"],
         borderRadius: "8px",
       }}
@@ -373,30 +374,52 @@ const HeaderComponent = ({
           {userType}
         </Typography>
       )} */}
-
-      {showTenantCohortDropDown && (
-        <AreaSelection
-          tenants={transformArray(tenants)}
-          cohorts={transformArray(cohorts)}
-          selectedTenant={selectedTenant}
-          selectedCohort={selectedCohort}
-          handleTenantChange={handleTenantChange}
-          handleCohortChange={handleCohortChange}
-          isMobile={isMobile}
-          tenantDefaultValue={tenantDefaultValue}
-          cohortDefaultValue={cohortDefaultValue}
-          userType={userType}
-          isMediumScreen={isMediumScreen}
-          inModal={false}
-          isTenantShow={isTenantShow}
-          isCohortShow={isCohortShow}
-        />
-      )}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 2,
+          justifyContent: "space-between",
+        }}
+      >
+        {userType && <Typography variant="h1">{userType}</Typography>}
+        {showAddNew && (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              borderRadius: "20px",
+              border: "1px solid #1E1B16",
+              boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+              padding: "2px 10px",
+              height: "32px",
+              width: isMobile ? "auto" : "160px",
+            }}
+          >
+            <Button
+              startIcon={<AddIcon sx={{ fontSize: "20px" }} />}
+              sx={{
+                textTransform: "none",
+                color: theme.palette.primary["100"],
+                fontSize: "13px",
+                padding: "4px 8px",
+                minHeight: 0,
+                width: "100%",
+              }}
+              onClick={handleAddUserClick}
+            >
+              {t("COMMON.ADD_NEW")}
+            </Button>
+          </Box>
+        )}
+      </Box>
 
       <Box
         sx={{
           backgroundColor: "white",
-          paddingTop: "20px",
+          paddingTop: "15px",
+          borderRadius: "10px",
         }}
       >
         {showFilter && (
@@ -424,25 +447,6 @@ const HeaderComponent = ({
                 }
                 value={Status.ACTIVE}
               />
-              {/* Uncomment this section if you need the INACTIVE tab
-      <Tab
-        label={
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              color:
-                statusValue === Status.INACTIVE
-                  ? theme.palette.primary["100"]
-                  : "inherit",
-            }}
-          >
-            {t("COMMON.INACTIVE")}
-          </Box>
-        }
-        value={Status.INACTIVE}
-      />
-      */}
               {statusInactive && (
                 <Tab
                   label={
@@ -489,54 +493,44 @@ const HeaderComponent = ({
           sx={{
             display: "flex",
             flexDirection: isMobile || isMediumScreen ? "column" : "row",
+            alignItems: "center",
             gap: isMobile || isMediumScreen ? "8px" : "5%",
-            marginTop: showSearch ? "20px" : "10px",
-            p: showSearch ? "1%" : "1%",
+            marginTop: showSearch ? "10px" : "none",
+            px: "1%",
+            flexWrap: "nowwrap",
           }}
         >
           {showSearch && (
-            <Box sx={{ flex: 1, paddingLeft: "16px", paddingRight: "16px" }}>
+            <Box sx={{ width: isMobile ? "auto" : "60%" }}>
               <SearchBar
                 onSearch={handleSearch}
                 placeholder={searchPlaceHolder}
               />
             </Box>
           )}
-          {showAddNew && (
-            <Box
-              display={"flex"}
-              gap={1}
-              alignItems={"center"}
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                // height: "40px",
-                width: isMobile ? "70%" : "200px",
-                borderRadius: "20px",
-                border: "1px solid #1E1B16",
-                //  mt: isMobile ? "10px" : "16px",
-                boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
-                mr: "10px",
-                ml: isMobile ? "50px" : isMediumScreen ? "10px" : undefined,
-                mt: isMobile ? "10px" : isMediumScreen ? "10px" : undefined,
-              }}
-            >
-              <Button
-                //  variant="contained"
-                startIcon={<AddIcon />}
-                sx={{
-                  textTransform: "none",
-                  fontSize: "14px",
-                  color: theme.palette.primary["100"],
-                }}
-                onClick={handleAddUserClick}
-              >
-                {t("COMMON.ADD_NEW")}
-              </Button>
+
+          {showTenantCohortDropDown && (
+            <Box sx={{ flex: 1, minWidth: isMobile ? "300px" : "40%" }}>
+              <AreaSelection
+                tenants={transformArray(tenants)}
+                cohorts={transformArray(cohorts)}
+                selectedTenant={selectedTenant}
+                selectedCohort={selectedCohort}
+                handleTenantChange={handleTenantChange}
+                handleCohortChange={handleCohortChange}
+                isMobile={isMobile}
+                tenantDefaultValue={tenantDefaultValue}
+                cohortDefaultValue={cohortDefaultValue}
+                userType={userType}
+                isMediumScreen={isMediumScreen}
+                inModal={false}
+                isTenantShow={isTenantShow}
+                isCohortShow={isCohortShow}
+              />
             </Box>
           )}
         </Box>
+
         {showSort && (
           <Box
             sx={{

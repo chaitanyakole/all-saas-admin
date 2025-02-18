@@ -99,14 +99,6 @@ const AreaSelection: React.FC<DropdownBoxProps> = ({
         },
       }}
     >
-      {userType && !reAssignModal && (
-        <Box>
-          <Typography marginTop="20px" variant="h1">
-            {userType}
-          </Typography>
-        </Box>
-      )}
-
       <Box
         sx={{
           width: inModal ? "100%" : "90%",

@@ -346,7 +346,7 @@ const Profile = () => {
           >
             <PhoneIcon sx={{ marginRight: "10px" }} />
             <Typography variant="body1" sx={{ fontSize: "14px" }}>
-              {adminInfo?.mobile}
+              {adminInfo?.mobile || "NA"}
             </Typography>
           </Box>
           <Box
@@ -359,7 +359,7 @@ const Profile = () => {
           >
             <MailIcon sx={{ marginRight: "10px" }} />
             <Typography variant="body1" sx={{ fontSize: "14px" }}>
-              {adminInfo?.email}
+              {adminInfo?.email || "NA"}
             </Typography>
           </Box>
           {/* <Box

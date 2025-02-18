@@ -73,6 +73,7 @@ const Header = ({ sx, customClass, toggleMobileSidebar, position }: any) => {
             display: {
               lg: "none",
               xs: "flex",
+              color: "white",
             },
           }}
         >

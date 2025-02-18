@@ -1133,28 +1133,36 @@ const Tenant: React.FC = () => {
             <Loader showBackdrop={false} loadingText={t("COMMON.LOADING")} />
           </Box>
         ) : cohortData?.length > 0 ? (
-          <KaTableComponent
-            columns={getTenantTableData(t, isMobile, adminRole)}
-            addAction={true}
-            addBtnFunc={handleCreateTenantAdmin}
-            data={cohortData}
-            limit={pageLimit}
-            roleButton
-            offset={pageOffset}
-            paginationEnable={false}
-            PagesSelector={PagesSelector}
-            pagination={pagination}
-            PageSizeSelector={PageSizeSelectorFunction}
-            pageSizes={pageSizeArray}
-            extraActions={extraActions}
-            showIcons={true}
-            allowEditIcon={true}
-            showReports={true}
-            onEdit={handleEdit}
-            onAdd={handleAdd}
-            onDelete={handleDelete}
-            handleMemberClick={handleMemberClick}
-          />
+          <Box
+            sx={{
+              backgroundColor: "white",
+              padding: "15px",
+              borderRadius: "15px",
+            }}
+          >
+            <KaTableComponent
+              columns={getTenantTableData(t, isMobile, adminRole)}
+              addAction={true}
+              addBtnFunc={handleCreateTenantAdmin}
+              data={cohortData}
+              limit={pageLimit}
+              roleButton
+              offset={pageOffset}
+              paginationEnable={false}
+              PagesSelector={PagesSelector}
+              pagination={pagination}
+              PageSizeSelector={PageSizeSelectorFunction}
+              pageSizes={pageSizeArray}
+              extraActions={extraActions}
+              showIcons={true}
+              allowEditIcon={true}
+              showReports={true}
+              onEdit={handleEdit}
+              onAdd={handleAdd}
+              onDelete={handleDelete}
+              handleMemberClick={handleMemberClick}
+            />
+          </Box>
         ) : (
           <Box
             display="flex"
