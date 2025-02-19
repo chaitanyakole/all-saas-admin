@@ -1,6 +1,5 @@
 import Keycloak from "keycloak-js";
 
-
 const keycloakInstance =
   typeof window !== "undefined"
     ? new Keycloak({
@@ -10,17 +9,19 @@ const keycloakInstance =
       })
     : null;
 export const logout = async () => {
-  try {    
-    if (keycloakInstance) {      
+  try {
+    if (keycloakInstance) {
       await keycloakInstance.logout({
         redirectUri: window.location.origin + "/login",
       });
       localStorage.clear();
       sessionStorage.clear();
-      document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });        
-      
+      document.cookie.split(";").forEach(function (c) {
+        document.cookie = c
+          .replace(/^ +/, "")
+          .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+      });
     }
-
   } catch (error) {
     console.error("Logout failed:", error);
   }

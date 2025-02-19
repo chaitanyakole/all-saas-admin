@@ -684,18 +684,19 @@ const UserTable: React.FC<UserTableProps> = ({
       const tenantId = selectedCodes.join(",");
       setSelectedTenant(selectedNames);
 
-      if (selectedNames?.[0] === "All") {
-        setFilters((prevFilter) => {
-          const newFilters = { ...prevFilter };
+      setSelectedCohort([]);
+      setFilters((prevFilter) => {
+        const newFilters = { ...prevFilter };
+
+        if (selectedNames?.[0] === "All") {
           delete newFilters.tenantId;
-          return newFilters;
-        });
-      } else {
-        setFilters((prevFilter) => ({
-          ...prevFilter,
-          tenantId: tenantId,
-        }));
-      }
+        } else {
+          newFilters.tenantId = tenantId;
+        }
+        delete newFilters.cohortId;
+
+        return newFilters;
+      });
     } else {
       console.log("No valid tenants selected");
     }
@@ -847,10 +848,15 @@ const UserTable: React.FC<UserTableProps> = ({
       setSelectedCohort(selectedNames);
       setFilters((prevFilter) => ({
         ...prevFilter,
-        cohortId: cohortId,
+        cohortId: selectedNames?.[0] === "All" ? undefined : cohortId,
       }));
     } else {
       console.log("No valid cohort selected");
+      setFilters((prevFilter) => {
+        const newFilters = { ...prevFilter };
+        delete newFilters.cohortId;
+        return newFilters;
+      });
     }
   };
 

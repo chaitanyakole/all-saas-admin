@@ -10,7 +10,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   trailingSlash: false,
-  reactStrictMode: true,
+  reactStrictMode: false,
   i18n: nextI18nextConfig.i18n,
   // async rewrites() {
   //   return [
