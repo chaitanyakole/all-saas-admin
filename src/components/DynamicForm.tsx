@@ -132,152 +132,169 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
 
     let updatedUiSchema: UiSchema = { ...uiSchema };
 
-    return errors?.map((error: any) => {
-      const property = error.property ? error.property.substring(1) : ""; // Check if error.property exists
+    return errors
+      ?.map((error: any) => {
+        const property = error.property ? error.property : "";
 
-      if (!property) {
-        return error;
-      }
-
-      if (updatedUiSchema[property] && updatedUiSchema[property]["ui:help"]) {
-        delete updatedUiSchema[property]["ui:help"];
-      }
-
-      if (property === "mail") {
-        if (error.name === "required") {
-          error.message = submittedButtonStatus
-            ? t("FORM_ERROR_MESSAGES.THIS_IS_REQUIRED_FIELD")
-            : "";
-        } else if (error.name === "format" || error.name === "pattern") {
-          error.message = !submittedButtonStatus
-            ? t("FORM_ERROR_MESSAGES.ENTER_VALID_EMAIL_ADDRESS")
-            : "";
+        if (!property) {
+          return error;
         }
-        return error;
-      }
-      switch (error.name) {
-        case "required": {
-          error.message = submittedButtonStatus
-            ? t("FORM_ERROR_MESSAGES.THIS_IS_REQUIRED_FIELD")
-            : "";
-          break;
+
+        const isFieldRequired = schema.required?.includes(property);
+
+        if (!isFieldRequired) {
+          error.message = "";
+          return null;
         }
-        case "maximum": {
-          if (schema.properties?.[property]?.validation?.includes("numeric")) {
-            if (property === "age") {
-              error.message = t(
-                "FORM_ERROR_MESSAGES.MAX_LENGTH_DIGITS_ERROR_AGE",
-                {
-                  maxLength: schema.properties?.[property]?.maxLength,
-                }
-              );
-            }
+
+        if (updatedUiSchema[property] && updatedUiSchema[property]["ui:help"]) {
+          delete updatedUiSchema[property]["ui:help"];
+        }
+
+        if (property === "mail") {
+          if (error.name === "required") {
+            error.message = submittedButtonStatus
+              ? t("FORM_ERROR_MESSAGES.THIS_IS_REQUIRED_FIELD")
+              : "";
+          } else if (error.name === "format" || error.name === "pattern") {
+            error.message = !submittedButtonStatus
+              ? t("FORM_ERROR_MESSAGES.ENTER_VALID_EMAIL_ADDRESS")
+              : "";
           }
-          break;
+          return error;
         }
-        case "minimum": {
-          if (schema.properties?.[property]?.validation?.includes("numeric")) {
-            error.message = t("FORM_ERROR_MESSAGES.MIN_LENGTH_DIGITS_ERROR", {
-              minLength: schema.properties?.[property]?.minLength,
-            });
-            if (property === "age") {
-              error.message = t(
-                "FORM_ERROR_MESSAGES.MIN_LENGTH_DIGITS_ERROR_AGE",
-                {
-                  minLength: schema.properties?.[property]?.minLength,
-                }
-              );
-            }
-          }
-          break;
-        }
-        case "pattern": {
-          const pattern = error?.params?.pattern;
 
-          const shouldSkipDefaultValidation =
-            schema.properties?.[property]?.skipDefaultValidation;
-          if (shouldSkipDefaultValidation) {
-            error.message = "";
+        switch (error.name) {
+          case "required": {
+            error.message = submittedButtonStatus
+              ? t("FORM_ERROR_MESSAGES.THIS_IS_REQUIRED_FIELD")
+              : "";
             break;
           }
+          case "maximum": {
+            if (
+              schema.properties?.[property]?.validation?.includes("numeric")
+            ) {
+              if (property === "age") {
+                error.message = t(
+                  "FORM_ERROR_MESSAGES.MAX_LENGTH_DIGITS_ERROR_AGE",
+                  {
+                    maxLength: schema.properties?.[property]?.maxLength,
+                  }
+                );
+              }
+            }
+            break;
+          }
+          case "minimum": {
+            if (
+              schema.properties?.[property]?.validation?.includes("numeric")
+            ) {
+              error.message = t("FORM_ERROR_MESSAGES.MIN_LENGTH_DIGITS_ERROR", {
+                minLength: schema.properties?.[property]?.minLength,
+              });
+              if (property === "age") {
+                error.message = t(
+                  "FORM_ERROR_MESSAGES.MIN_LENGTH_DIGITS_ERROR_AGE",
+                  {
+                    minLength: schema.properties?.[property]?.minLength,
+                  }
+                );
+              }
+            }
+            break;
+          }
+          case "pattern": {
+            const pattern = error?.params?.pattern;
 
-          switch (pattern) {
-            case "^[a-zA-Z][a-zA-Z ]*[a-zA-Z]$": {
-              error.message = t(
-                "FORM_ERROR_MESSAGES.NUMBER_AND_SPECIAL_CHARACTERS_NOT_ALLOWED"
-              );
+            const shouldSkipDefaultValidation =
+              schema.properties?.[property]?.skipDefaultValidation;
+            if (shouldSkipDefaultValidation) {
+              error.message = "";
               break;
             }
-            case "^[6-9]\\d{9}$": {
-              const validations = schema.properties?.[property]?.validation;
-              if (
-                validations?.includes("mobile") ||
-                validations?.includes("mobileNo")
-              ) {
+
+            switch (pattern) {
+              case "^[a-zA-Z][a-zA-Z ]*[a-zA-Z]$": {
                 error.message = t(
-                  "FORM_ERROR_MESSAGES.ENTER_VALID_MOBILE_NUMBER"
+                  "FORM_ERROR_MESSAGES.NUMBER_AND_SPECIAL_CHARACTERS_NOT_ALLOWED"
                 );
-              } else if (validations?.includes(".age")) {
-                error.message = t("age must be valid");
-              } else {
+                break;
+              }
+              case "^[6-9]\\d{9}$": {
+                const validations = schema.properties?.[property]?.validation;
+                if (
+                  validations?.includes("mobile") ||
+                  validations?.includes("mobileNo")
+                ) {
+                  error.message = t(
+                    "FORM_ERROR_MESSAGES.ENTER_VALID_MOBILE_NUMBER"
+                  );
+                } else if (validations?.includes(".age")) {
+                  error.message = t("age must be valid");
+                } else {
+                  error.message = t(
+                    "FORM_ERROR_MESSAGES.CHARACTERS_AND_SPECIAL_CHARACTERS_NOT_ALLOWED"
+                  );
+                }
+                break;
+              }
+
+              case "^d{10}$": {
                 error.message = t(
                   "FORM_ERROR_MESSAGES.CHARACTERS_AND_SPECIAL_CHARACTERS_NOT_ALLOWED"
                 );
+                break;
               }
-              break;
-            }
-
-            case "^d{10}$": {
-              error.message = t(
-                "FORM_ERROR_MESSAGES.CHARACTERS_AND_SPECIAL_CHARACTERS_NOT_ALLOWED"
-              );
-              break;
-            }
-            default: {
-              const validRange = currentYearPattern.test(pattern);
-              if (!validRange) {
-                error.message = t("FORM_ERROR_MESSAGES.ENTER_VALID_DATA");
+              default: {
+                const validRange = currentYearPattern.test(pattern);
+                if (!validRange) {
+                  error.message = t("FORM_ERROR_MESSAGES.ENTER_VALID_DATA");
+                }
+                break;
               }
-              break;
+            }
+            break;
+          }
+          case "minLength": {
+            if (
+              schema.properties?.[property]?.validation?.includes("numeric")
+            ) {
+              error.message = t("FORM_ERROR_MESSAGES.MIN_LENGTH_DIGITS_ERROR", {
+                minLength: schema.properties?.[property]?.minLength,
+              });
+            }
+            break;
+          }
+          case "maxLength": {
+            if (
+              schema.properties?.[property]?.validation?.includes("numeric")
+            ) {
+              error.message = t("FORM_ERROR_MESSAGES.MAX_LENGTH_DIGITS_ERROR", {
+                maxLength: schema.properties?.[property]?.maxLength,
+              });
+            }
+            break;
+          }
+          case "format": {
+            const format = error?.params?.format;
+            switch (format) {
+              case "email": {
+                error.message = t("");
+                break;
+              }
             }
           }
-          break;
         }
-        case "minLength": {
-          if (schema.properties?.[property]?.validation?.includes("numeric")) {
-            error.message = t("FORM_ERROR_MESSAGES.MIN_LENGTH_DIGITS_ERROR", {
-              minLength: schema.properties?.[property]?.minLength,
-            });
-          }
-          break;
-        }
-        case "maxLength": {
-          if (schema.properties?.[property]?.validation?.includes("numeric")) {
-            error.message = t("FORM_ERROR_MESSAGES.MAX_LENGTH_DIGITS_ERROR", {
-              maxLength: schema.properties?.[property]?.maxLength,
-            });
-          }
-          break;
-        }
-        case "format": {
-          const format = error?.params?.format;
-          switch (format) {
-            case "email": {
-              error.message = t("");
-              break;
-            }
-          }
-        }
-      }
 
-      if (!error.message && updatedUiSchema[property]) {
-        error.message = updatedUiSchema[property]["ui:help"];
-      }
+        if (!error.message && updatedUiSchema[property]) {
+          error.message = updatedUiSchema[property]["ui:help"];
+        }
 
-      return error;
-    });
+        return error;
+      })
+      .filter(Boolean);
   };
-
   useEffect(() => {
     setSubmittedButtonStatus(false);
   }, []);
