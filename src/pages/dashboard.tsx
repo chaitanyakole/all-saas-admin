@@ -1,6 +1,6 @@
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 
 interface RowData {
   tenantId?: string;
@@ -10,8 +10,10 @@ interface RowData {
 
 const Dashboard = () => {
   const router = useRouter();
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const [rowData, setRowData] = useState<RowData | undefined>();
   const [isError, setIsError] = useState(false);
+  const [iframeHeight, setIframeHeight] = useState("800px");
 
   useEffect(() => {
     if (router.query) {
@@ -42,6 +44,21 @@ const Dashboard = () => {
     return "";
   }, [router.query.from, rowData]);
 
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== process.env.NEXT_PUBLIC_METABASE_URL) return;
+      const newHeight = event.data?.height;
+      if (newHeight) {
+        setIframeHeight(`${newHeight}px`);
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, []);
+
   return (
     <div>
       {isError ? (
@@ -50,9 +67,10 @@ const Dashboard = () => {
         </p>
       ) : (
         <iframe
+          ref={iframeRef}
           src={metabaseUrl}
           width="100%"
-          height="600px"
+          height={iframeHeight}
           style={{ border: "none" }}
           onError={() => setIsError(true)}
           title="metabase-dashboard"
