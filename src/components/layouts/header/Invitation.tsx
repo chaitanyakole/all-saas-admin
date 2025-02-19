@@ -297,11 +297,12 @@ const InvitationMenu = () => {
             maxHeight: "80vh",
             mt: "32px",
             position: "fixed",
+            display: "flex",
+            flexDirection: "column",
           },
         }}
       >
-        <Box sx={{ p: 2 }}>
-          {/* Error and Success Alerts */}
+        <Box sx={{ p: 2, flexShrink: 0 }}>
           {error && (
             <Alert severity="error" sx={{ mb: 1 }}>
               {error}
@@ -315,21 +316,33 @@ const InvitationMenu = () => {
 
           <Divider sx={{ my: 1 }} />
 
-          {/* Tabs */}
           <Tabs
             value={tabValue}
             onChange={(_, newValue) => setTabValue(newValue)}
             variant="fullWidth"
-            sx={{ mb: 2 }}
+            sx={{
+              flexShrink: 0,
+              position: "sticky",
+              top: 0,
+              backgroundColor: "white",
+              zIndex: 1,
+            }}
           >
             <Tab label={t("COHORTINVITATION.SENT")} />
             <Tab label={t("COHORTINVITATION.RECEIVED")} />
           </Tabs>
+        </Box>
 
-          {/* Sent Invitations */}
-
+        <Box
+          sx={{
+            flexGrow: 1,
+            overflowY: "auto",
+            maxHeight: "calc(80vh - 120px)",
+            pr: 1,
+          }}
+        >
           {tabValue === 0 && (
-            <Stack spacing={1} sx={{ maxHeight: "400px", overflow: "auto" }}>
+            <Stack spacing={1}>
               {sentInvitations.length === 0 && (
                 <Typography sx={{ textAlign: "center" }}>
                   {t("COHORTINVITATION.NO_PENDING_REQUESTS_SENT")}
@@ -369,7 +382,7 @@ const InvitationMenu = () => {
                           variant="outlined"
                           sx={{ borderRadius: "15px" }}
                         >
-                          Revoke Invitation
+                          Revoke
                         </Button>
                       </Tooltip>
                     </Stack>
@@ -378,10 +391,10 @@ const InvitationMenu = () => {
               ))}
             </Stack>
           )}
-          {/* Received Invitations */}
+
           {tabValue === 1 && (
-            <Stack spacing={1} sx={{ maxHeight: "400px", overflow: "auto" }}>
-              {notificationCount === 0 && (
+            <Stack spacing={1}>
+              {receivedInvitations.length === 0 && (
                 <Typography sx={{ textAlign: "center" }}>
                   {t("COHORTINVITATION.NO_PENDING_INVITATIONS")}
                 </Typography>
@@ -452,6 +465,7 @@ const InvitationMenu = () => {
           )}
         </Box>
       </Menu>
+
       {/* Delete Confirmation Dialog */}
       <Dialog open={!!confirmDelete} onClose={() => setConfirmDelete(null)}>
         <DialogTitle>Delete Invitation</DialogTitle>
