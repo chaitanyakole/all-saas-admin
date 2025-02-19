@@ -95,7 +95,8 @@ const Tenant: React.FC = () => {
   const [confirmButtonDisable, setConfirmButtonDisable] =
     React.useState<boolean>(false);
   const [inputName, setInputName] = React.useState<string>("");
-  const [loading, setLoading] = useState<boolean | undefined>(undefined);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [dataFetched, setDataFetched] = useState<boolean>(false);
   const [userId, setUserId] = useState("");
   const [schema] = React.useState(tenantSchema);
   const [cohortSchema] = React.useState(cohortSchemajson);
@@ -330,9 +331,11 @@ const Tenant: React.FC = () => {
         setCohortData([]);
       }
 
+      setDataFetched(true);
       setLoading(false);
     } catch (error) {
       setCohortData([]);
+      setDataFetched(true);
       setLoading(false);
       console.error("Error fetching tenant list:", error);
     }
@@ -340,13 +343,9 @@ const Tenant: React.FC = () => {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      // Your function logic here
-
       fetchTenantList();
     }, 1000);
-    // get form data for center create
-    // getAddCenterFormData();
-    // getCohortMemberlistData();
+
     return () => {
       clearTimeout(timeoutId);
     };
@@ -1132,7 +1131,7 @@ const Tenant: React.FC = () => {
           >
             <Loader showBackdrop={false} loadingText={t("COMMON.LOADING")} />
           </Box>
-        ) : cohortData?.length > 0 ? (
+        ) : dataFetched && cohortData?.length > 0 ? (
           <Box
             sx={{
               backgroundColor: "white",

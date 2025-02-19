@@ -21,35 +21,44 @@ import { useRouter } from "next/router";
 
 function App({ Component, pageProps }: AppProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const hasFetchedUserDetails = useRef(false);
+  const authInitialized = useRef(false);
+  const userDetailsFetched = useRef(false);
   const router = useRouter();
-
-  // Analytics initialization
   useEffect(() => {
     telemetryFactory.init();
+    // Analytics initialization would go here too if needed
+    // if (!window.GA_INITIALIZED) {
+    //   initGA(`G-6NVMB20J4Z`);
+    //   window.GA_INITIALIZED = true;
+    // }
   }, []);
 
-  // useEffect(() => {
-  //   if (!window.GA_INITIALIZED) {
-  //     initGA(`G-6NVMB20J4Z`);
-  //     window.GA_INITIALIZED = true;
-  //   }
-  // }, []);
-
-  // Keycloak initialization
   useEffect(() => {
-    const initializeKeycloak = async () => {
-      try {
-        if (router.pathname === "/super-admin-login")
-          return localStorage.setItem("superAdminLoggedIn", "true");
-        const superAdminLoggedIn =
-          localStorage.getItem("superAdminLoggedIn") === "true";
-        if (superAdminLoggedIn) {
-          setIsAuthenticated(false);
-          return;
-        }
-        if (!keycloak || keycloak.authenticated) return;
+    if (authInitialized.current) return;
 
+    const handleAuth = async () => {
+      authInitialized.current = true;
+      if (router.pathname === "/super-admin-login") {
+        localStorage.setItem("superAdminLoggedIn", "true");
+        return;
+      }
+      const superAdminLoggedIn =
+        localStorage.getItem("superAdminLoggedIn") === "true";
+      if (superAdminLoggedIn) {
+        setIsAuthenticated(false);
+        return;
+      }
+
+      if (!keycloak) {
+        console.log("Keycloak instance not available");
+        return;
+      }
+
+      if (keycloak.authenticated) {
+        setIsAuthenticated(true);
+        return;
+      }
+      try {
         const redirectUri = `${window.location.origin}/tenant`;
         const authenticated = await keycloak.init({
           onLoad: "login-required",
@@ -71,14 +80,15 @@ function App({ Component, pageProps }: AppProps) {
       }
     };
 
-    initializeKeycloak();
-  }, [router.pathname, keycloak]);
+    handleAuth();
+  }, [router.isReady]);
 
   useEffect(() => {
-    if (!isAuthenticated || hasFetchedUserDetails.current) return;
+    if (!isAuthenticated || userDetailsFetched.current) return;
 
     const fetchUserDetails = async () => {
       try {
+        userDetailsFetched.current = true;
         const userResponse = await getUserId();
         if (!userResponse) return;
         localStorage.setItem("userId", userResponse.userId || "");
@@ -91,8 +101,6 @@ function App({ Component, pageProps }: AppProps) {
           const response = await getUserDetailsInfo(userResponse.userId, true);
           localStorage.setItem("adminInfo", JSON.stringify(response?.userData));
         }
-
-        hasFetchedUserDetails.current = true;
       } catch (error) {
         console.error("Error fetching user details:", error);
       }
