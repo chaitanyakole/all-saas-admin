@@ -10,20 +10,6 @@
       "type": "string",
       "validation": []
     },
-    "mobileNo": {
-      "title": "Mobile Number",
-      "fieldId": null,
-      "type": "string",
-      "pattern": "^[6-9]\\d{9}$",
-      "validation": ["mobile"]
-    },
-    "email": {
-      "title": "Email Address",
-      "type": "string",
-      "format": "email",
-      "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$",
-      "validation": ["required"]
-    },
     "username": {
       "title": "Username",
       "fieldId": null,
