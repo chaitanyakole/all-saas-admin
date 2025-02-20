@@ -248,7 +248,7 @@ const Center: React.FC = () => {
   };
 
   const [filters, setFilters] = useState<cohortFilterDetails>({
-    type: CohortTypes.COHORT,
+    type: "cohort",
     // states: "",
     status: [statusValue],
     // districts: "",
@@ -336,25 +336,29 @@ const Center: React.FC = () => {
         filters: filters,
       };
 
-      // Call getCohortList API
       const resp = await getCohortList(data);
 
       if (resp) {
         const result = resp?.results;
 
-        // Map response data to required format
-        const resultData = result?.map((item: any) => ({
-          name: item?.name,
-          type: item?.type === "cohort" ? "Cohort" : item?.type,
-          status: item?.status,
-          tenantId: item?.tenantId,
-          updatedBy: item?.updatedBy,
-          createdBy: item?.createdBy,
-          createdAt: item?.createdAt,
-          updatedAt: item?.updatedAt,
-          cohortId: item?.cohortId,
-          userRoleTenantMapping: { code: item?.role },
-        }));
+        const resultData = result?.map((item: any) => {
+          const matchingTenant = listOfTenants.find(
+            (tenant: any) => tenant?.tenantId === item?.tenantId
+          );
+          return {
+            name: item?.name,
+            type: item?.type === "cohort" ? "Cohort" : item?.type,
+            status: item?.status,
+            tenantId: item?.tenantId,
+            tenantName: matchingTenant?.name || "Unknown Tenant",
+            updatedBy: item?.updatedBy,
+            createdBy: item?.createdBy,
+            createdAt: item?.createdAt,
+            updatedAt: item?.updatedAt,
+            cohortId: item?.cohortId,
+            userRoleTenantMapping: { code: item?.role },
+          };
+        });
 
         setCohortData(resultData || []);
         const totalCount = resp?.count;
@@ -401,6 +405,7 @@ const Center: React.FC = () => {
     filters.states,
     filters.status,
     createCenterStatus,
+    listOfTenants,
   ]);
 
   // handle functions
@@ -931,7 +936,7 @@ const Center: React.FC = () => {
     isTenantShow: true,
     selectedSort: selectedSort,
     selectedFilter: selectedFilter,
-    statusArchived: true,
+    statusArchived: false,
     statusInactive: true,
     selectedTenant: selectedTenant,
     handleTenantChange: handleTenantChange,

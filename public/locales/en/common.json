@@ -146,8 +146,8 @@
     "SEND_INVITATION_TO_NEW_ADMIN": "Send Invitation to new cohort admin",
     "SEND_INVITATION": "Send Invitation",
     "METABASE_REPORTS": "Metabase Report",
-    "USER_JOURNEY_REPORT":"User Journey Report",
-    "USER_RESPONSE_EVENT":"User Response Event Report"
+    "USER_JOURNEY_REPORT": "User Journey Report",
+    "USER_RESPONSE_EVENT": "User Response Event Report"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -439,7 +439,8 @@
     "DOMAIN": "Domain",
     "CREATE_TENANT_ADMIN": "Create Tenant Admin",
     "CREATE_COHORT_ADMIN": "Create Cohort Admin",
-    "USERID": "UserId"
+    "USERID": "UserId",
+    "TENANT_NAME": "Tenant Name"
   },
   "WORKSPACE": {
     "EDITOR_WORKSPACE": "Editor Workspace",
@@ -492,7 +493,7 @@
     "INVITED_TO_JOIN_COHORT": "Invited to join cohort",
     "INVITED_BY": "Invited by",
     "REVOKE_INVITATION": "Revoke Invitation",
-    
+
     "DELETE_CONFIRMATION": "Revoke request of ",
     "CANCEL": "Cancel",
     "REVOKE": "Revoke",
