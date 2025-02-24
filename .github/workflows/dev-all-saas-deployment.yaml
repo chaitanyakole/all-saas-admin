@@ -7,7 +7,7 @@ on:
 jobs:
   ALL-SAAS-ADMIN:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - name: Deploy Stack
         uses: appleboy/ssh-action@master
