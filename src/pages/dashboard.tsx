@@ -1,9 +1,8 @@
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
 import { useEffect, useState, useMemo, useRef } from "react";
-import Button from "@mui/material/Button";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { Box, Tooltip } from "@mui/material";
+import { Tooltip } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 
 interface RowData {
