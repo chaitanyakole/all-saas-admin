@@ -944,6 +944,7 @@ const UserTable: React.FC<UserTableProps> = ({
             allowEditIcon={true}
             showReports={true}
             showLearnerReports={true}
+            showResetPassword={true}
             noDataMessage={data?.length === 0 ? t("COMMON.NO_USER_FOUND") : ""}
           />
         </Box>

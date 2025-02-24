@@ -147,7 +147,12 @@
     "SEND_INVITATION": "Send Invitation",
     "METABASE_REPORTS": "Metabase Report",
     "USER_JOURNEY_REPORT": "User Journey Report",
-    "USER_RESPONSE_EVENT": "User Response Event Report"
+    "USER_RESPONSE_EVENT": "User Response Event Report",
+    "RESET_PASSWORD": "Reset Password",
+    "NEW_PASSWORD": "New Password",
+    "CONFIRM_PASSWORD": "Confirm Password",
+    "PASSWORD_RESET_SUCCESSFUL": "Password Reset Successful!",
+    "PASSWORD_RESET_FAILED": "Password Reset Failed. Please try again."
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
@@ -504,5 +509,9 @@
     "INVITATION_DELETED_SUCCESS": "Invitation deleted successfully",
     "INVITATION_DELETED_ERROR": "Failed to delete invitation",
     "FETCH_INVITATIONS_ERROR": "Failed to fetch invitations"
+  },
+  "AUTH": {
+    "RESET_PASSWORD": "Reset Password",
+    "RESET_PASSWORD_INSTRUCTIONS": ""
   }
 }

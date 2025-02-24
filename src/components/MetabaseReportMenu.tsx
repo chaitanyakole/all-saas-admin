@@ -6,6 +6,7 @@ import TimelineIcon from "@mui/icons-material/Timeline";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import LockResetIcon from "@mui/icons-material/LockReset";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 
@@ -13,25 +14,29 @@ interface ButtonState {
   visible: boolean | undefined;
   enabled: boolean | undefined;
 }
+
 interface ButtonStates {
   add: ButtonState;
   editDelete: ButtonState;
   reassign: ButtonState;
   reports: ButtonState;
   learnerReports: ButtonState;
+  resetPassword: ButtonState;
 }
+
 interface MetabaseDashboardProps {
   onEdit: (rowData: any) => void;
   onDelete: (rowData: any) => void;
+  onResetPassword?: (rowData: any) => void;
   rowData: any;
   buttonStates: ButtonStates;
 }
-// Interface for individual button state
 
 const MetabaseReportsMenu: React.FC<MetabaseDashboardProps> = ({
   buttonStates,
   onEdit,
   onDelete,
+  onResetPassword,
   rowData,
 }) => {
   const { t } = useTranslation();
@@ -46,6 +51,7 @@ const MetabaseReportsMenu: React.FC<MetabaseDashboardProps> = ({
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   const getUserRowData = (dashboardType: string) => {
     return rowData?.tenantId && !rowData?.userId
       ? { tenantId: rowData.tenantId, dashboardType }
@@ -53,6 +59,7 @@ const MetabaseReportsMenu: React.FC<MetabaseDashboardProps> = ({
         ? { userId: rowData.userId, dashboardType }
         : {};
   };
+
   const handleNavigation = (type: string) => {
     const userRowData: object = getUserRowData(type);
     router.push({
@@ -72,6 +79,13 @@ const MetabaseReportsMenu: React.FC<MetabaseDashboardProps> = ({
   const handleDelete = () => {
     if (buttonStates.editDelete.enabled) {
       onDelete(rowData);
+      handleClose();
+    }
+  };
+
+  const handleResetPassword = () => {
+    if (buttonStates.resetPassword?.enabled && onResetPassword) {
+      onResetPassword(rowData);
       handleClose();
     }
   };
@@ -108,6 +122,13 @@ const MetabaseReportsMenu: React.FC<MetabaseDashboardProps> = ({
       icon: <EditOutlinedIcon />,
       onClick: handleEdit,
       disabled: !buttonStates.editDelete.enabled,
+    },
+    {
+      visible: buttonStates.resetPassword?.visible,
+      title: t("COMMON.RESET_PASSWORD"),
+      icon: <LockResetIcon />,
+      onClick: handleResetPassword,
+      disabled: !buttonStates.resetPassword?.enabled,
     },
     {
       visible: buttonStates.editDelete.visible,
@@ -168,7 +189,7 @@ const MetabaseReportsMenu: React.FC<MetabaseDashboardProps> = ({
 
         {/* Add divider if both report and action items are visible */}
         {reportMenuItems.some((item) => item.visible) &&
-          actionMenuItems.some((item) => item.visible)}
+          actionMenuItems.some((item) => item.visible) && <Divider />}
 
         {actionMenuItems.map(
           (item, index) =>
