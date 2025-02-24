@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "next-i18next";
 import { Box, Typography, Tooltip, Button } from "@mui/material";
 import { useRouter } from "next/router";
@@ -7,6 +7,8 @@ import editIcon from "../../public/images/editIcon.svg";
 import cohortIcon from "../../public/images/apartment.svg";
 import addIcon from "../../public/images/addIcon.svg";
 import MetabaseReportsMenu from "./MetabaseReportMenu";
+import { ResetPasswordModal } from "./ResetPassword";
+
 interface ActionCellProps {
   onEdit: (rowData: any) => void;
   onDelete: (rowData: any) => void;
@@ -21,6 +23,7 @@ interface ActionCellProps {
   onAdd: (rowData: any) => void;
   showReports?: boolean;
   showLearnerReports?: boolean;
+  showResetPassword?: boolean;
 }
 
 const ActionIcon: React.FC<ActionCellProps> = ({
@@ -36,10 +39,12 @@ const ActionIcon: React.FC<ActionCellProps> = ({
   reassignType,
   showReports,
   showLearnerReports = false,
+  showResetPassword = false,
 }) => {
   const { t } = useTranslation();
   const router = useRouter();
-
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
   const isCohortAdmin = rowData?.userRoleTenantMapping?.code === "cohort_admin";
   const currentPage = router.pathname;
 
@@ -64,6 +69,20 @@ const ActionIcon: React.FC<ActionCellProps> = ({
       visible: showLearnerReports,
       enabled: true,
     },
+    resetPassword: {
+      visible: showResetPassword,
+      enabled: true,
+    },
+  };
+
+  const handleResetPassword = (userData: any) => {
+    setSelectedUser(userData);
+    setIsResetModalOpen(true);
+  };
+
+  const handleCloseResetModal = () => {
+    setIsResetModalOpen(false);
+    setSelectedUser(null);
   };
 
   const commonButtonStyles = (enabled: boolean) => ({
@@ -116,21 +135,19 @@ const ActionIcon: React.FC<ActionCellProps> = ({
     if (!buttonStates.learnerReports.visible) return null;
 
     return (
-      <>
-        <Tooltip title={t("COMMON.EDIT")}>
-          <Box
-            onClick={() => buttonStates.editDelete.enabled && onEdit(rowData)}
-            sx={{
-              ...commonButtonStyles(buttonStates.editDelete.enabled),
-              backgroundColor: buttonStates.editDelete.enabled
-                ? "#E3EAF0"
-                : "#d3d3d3",
-            }}
-          >
-            <Image src={editIcon} alt="" />
-          </Box>
-        </Tooltip>
-      </>
+      <Tooltip title={t("COMMON.EDIT")}>
+        <Box
+          onClick={() => buttonStates.editDelete.enabled && onEdit(rowData)}
+          sx={{
+            ...commonButtonStyles(buttonStates.editDelete.enabled),
+            backgroundColor: buttonStates.editDelete.enabled
+              ? "#E3EAF0"
+              : "#d3d3d3",
+          }}
+        >
+          <Image src={editIcon} alt="" />
+        </Box>
+      </Tooltip>
     );
   };
 
@@ -167,14 +184,20 @@ const ActionIcon: React.FC<ActionCellProps> = ({
     >
       {renderAddButton()}
       {renderEditDeleteButtons()}
-
       {renderReassignButton()}
 
       <MetabaseReportsMenu
         buttonStates={buttonStates}
         onEdit={onEdit}
         onDelete={onDelete}
+        onResetPassword={handleResetPassword}
         rowData={rowData}
+      />
+
+      <ResetPasswordModal
+        open={isResetModalOpen}
+        onClose={handleCloseResetModal}
+        userData={selectedUser}
       />
     </Box>
   );

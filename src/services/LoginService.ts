@@ -1,3 +1,4 @@
+import axios from "axios";
 import { get, post } from "./RestClient";
 import config from "@/utils/urlConstants.json";
 interface LoginParams {
@@ -66,5 +67,33 @@ export const getUserId = async (): Promise<any> => {
   } catch (error) {
     console.error("error in fetching user details", error);
     throw error;
+  }
+};
+
+export const resetPassword = async (
+  UserData: any,
+  tenantId: any
+): Promise<any> => {
+  let apiUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/${config.URLS.LEARNER_FORGOT_PASSWORD}`;
+
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.post(apiUrl, UserData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        tenantId: tenantId,
+      },
+    });
+    return response?.data;
+  } catch (error: unknown) {
+    let errorMessage = "An unexpected error occurred.";
+
+    if (axios.isAxiosError(error) && error.response) {
+      errorMessage = error.response.data?.params?.errmsg || "Error from API.";
+    }
+
+    console.error("Error in creating cohort:", error);
+    throw new Error(errorMessage);
   }
 };

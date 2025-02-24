@@ -52,6 +52,8 @@ interface KaTableComponentProps {
   allowEditIcon?: boolean;
   showReports?: boolean;
   showLearnerReports?: boolean;
+  showResetPassword?: boolean;
+  showForghandleForgotPasswordClickotPassword?: void;
 }
 
 const KaTableComponent: React.FC<KaTableComponentProps> = ({
@@ -77,6 +79,7 @@ const KaTableComponent: React.FC<KaTableComponentProps> = ({
   allowEditIcon,
   showReports,
   showLearnerReports,
+  showResetPassword,
 }) => {
   const [selectedRowIds, setSelectedRowIds] = useState<number[]>([]);
   const { t } = useTranslation();
@@ -152,6 +155,7 @@ const KaTableComponent: React.FC<KaTableComponentProps> = ({
                       onDelete={onDelete}
                       allowEditIcon={allowEditIcon}
                       showReports={showReports}
+                      showResetPassword={showResetPassword}
                       showLearnerReports={showLearnerReports}
                       // userAction={props.rowData?.userId}
                       disable={props.rowData?.status === Status.ARCHIVED}
