@@ -95,10 +95,11 @@ const ImportCsv = () => {
       const response = await getTargetedSolutions({
         subject: tstore?.taxonomySubject,
         class: tstore?.taxonomyGrade,
-        state: tstore?.state,
+        // state: tstore?.state,
         board: tstore?.board,
-        type: tstore?.taxonomyType,
+        // type: tstore?.taxonomyType,
         medium: tstore?.taxonomyMedium,
+        courseType: tstore?.courseType,
       });
 
       const courseData = response?.result?.data[0];
@@ -135,10 +136,11 @@ const ImportCsv = () => {
       const updatedResponse = await getTargetedSolutions({
         subject: tstore?.taxonomySubject,
         class: tstore?.taxonomyGrade,
-        state: tstore?.state,
+        // state: tstore?.state,
         board: tstore?.board,
-        type: tstore?.taxonomyType,
+        // type: tstore?.taxonomyType,
         medium: tstore?.taxonomyMedium,
+        courseType: tstore?.courseType,
       });
       setLoading(false);
       return updatedResponse.result.data[0]._id;
@@ -156,7 +158,6 @@ const ImportCsv = () => {
       });
       setUserProjectDetails(userProjectDetailsResponse?.result?.tasks);
       if (userProjectDetails?.length) {
-       
       }
       setLoading(false);
     } catch (error) {
@@ -193,20 +194,19 @@ const ImportCsv = () => {
 
   const handleDownloadCSV = () => {
     const link = document.createElement("a");
-    link.href = "/Sample.csv"; 
+    link.href = "/Sample.csv";
     link.download = "Sample.csv";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
-  
 
   const handleUpload = async () => {
     if (selectedFile) {
       const metaData: CoursePlannerMetaData = {
         subject: tstore?.taxonomySubject,
         class: tstore?.taxonomyGrade,
-        state: tstore?.state,
+        // state: tstore?.state,
         board: tstore?.board,
         type: tstore?.taxonomyType,
         medium: tstore?.taxonomyMedium,
