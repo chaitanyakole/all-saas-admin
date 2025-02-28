@@ -40,6 +40,7 @@ import { getTenantLists } from "@/services/CohortService/cohortService";
 import cohortSchemajson from "./cohortSchema.json";
 import userJsonSchema from "./tenantAdminSchema.json";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import PasswordCreate from "../components/CreatePassword";
 
 type cohortFilterDetails = {
   type?: string;
@@ -150,7 +151,7 @@ const Tenant: React.FC = () => {
       "ui:help": "Username must be at least 3 characters long.",
     },
     password: {
-      "ui:widget": "password",
+      "ui:widget": PasswordCreate,
       "ui:placeholder": "Enter a secure password",
       "ui:help":
         "Password must be at least 8 characters long and contain one uppercase letter, one lowercase letter, one number, and one special character.",

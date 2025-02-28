@@ -39,6 +39,7 @@ import userJsonSchema from "./userSchema.json";
 import cohortASchema from "./cohortAdminSchema.json";
 import updateCohortSchema from "./cohortUpdateSchema.json";
 import { sendRequest } from "@/services/InvitationService";
+import PasswordCreate from "../components/CreatePassword";
 
 type cohortFilterDetails = {
   type?: string;
@@ -156,13 +157,11 @@ const Center: React.FC = () => {
     username: {
       "ui:widget": "text",
       "ui:placeholder": "Enter your username",
-      "ui:help": "Username must be at least 3 characters long.",
+      // "ui:help": "Username must be at least 3 characters long.",
     },
     password: {
-      "ui:widget": "password",
+      "ui:widget": PasswordCreate,
       "ui:placeholder": "Enter a secure password",
-      "ui:help":
-        "Password must be at least 8 characters long and contain one uppercase letter, one lowercase letter, one number, and one special character.",
     },
     role: {
       "ui:widget": "select",
