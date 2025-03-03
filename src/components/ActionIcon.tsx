@@ -53,7 +53,7 @@ const ActionIcon: React.FC<ActionCellProps> = ({
   showReports,
   showLearnerReports = false,
   showResetPassword = false,
-  handleBulkUpload,
+  handleBulkUpload = () => {},
 }) => {
   const { t } = useTranslation();
   const router = useRouter();

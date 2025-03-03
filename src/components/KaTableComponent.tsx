@@ -54,7 +54,7 @@ interface KaTableComponentProps {
   showLearnerReports?: boolean;
   showResetPassword?: boolean;
   showForghandleForgotPasswordClickotPassword?: void;
-  handleBulkUpload?: (rowData: any) => void;
+  handleBulkUpload?: any;
 }
 
 const KaTableComponent: React.FC<KaTableComponentProps> = ({
@@ -82,7 +82,6 @@ const KaTableComponent: React.FC<KaTableComponentProps> = ({
   showLearnerReports,
   showResetPassword,
   handleBulkUpload,
-  showBulkUpload = false,
 }) => {
   const [selectedRowIds, setSelectedRowIds] = useState<number[]>([]);
   const { t } = useTranslation();
@@ -163,7 +162,6 @@ const KaTableComponent: React.FC<KaTableComponentProps> = ({
                       // userAction={props.rowData?.userId}
                       disable={props.rowData?.status === Status.ARCHIVED}
                       reassignType={reassignType}
-                      showBulkUpload={showBulkUpload}
                       handleBulkUpload={handleBulkUpload}
                     />
                   );
