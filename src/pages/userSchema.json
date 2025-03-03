@@ -26,6 +26,7 @@
       }
     },
     "password": {
+      "title": "Password",
       "type": "string",
       "description": "Your password needs to include both uppercase & lowercase letters, a number, and a special character. Must be at least 8 characters long.",
       "ui:widget": "password",
