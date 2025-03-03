@@ -99,6 +99,7 @@ const Center: React.FC = () => {
   const [isEditForm, setIsEditForm] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState<any>("");
   const [Addmodalopen, setAddmodalopen] = React.useState(false);
+  const [bulkUploadModalopen, setBulkUploadModalopen] = React.useState(false);
   const [updateBtnDisabled, setUpdateBtnDisabled] = React.useState(true);
   const [addFormData, setAddFormData] = useState({});
   const [addBtnDisabled, setAddBtnDisabled] = useState(true);
@@ -106,6 +107,8 @@ const Center: React.FC = () => {
   const [error, setError] = useState<any>([]);
   const [isCreateCohortAdminModalOpen, setIsCreateCohortAdminModalOpen] =
     useState(false);
+  const [fileName] = useState("");
+  const [fileSelected] = useState(false);
 
   const setSubmittedButtonStatus = useSubmittedButtonStore(
     (state: any) => state.setSubmittedButtonStatus
@@ -631,6 +634,10 @@ const Center: React.FC = () => {
     setAddmodalopen(true);
     setLoading(false);
   };
+  const handleBulkUpload = (rowData: any) => {
+    setSelectedRowData({ ...rowData });
+    setBulkUploadModalopen(true);
+  };
 
   // add  extra buttons
   const extraActions: any = [
@@ -793,6 +800,9 @@ const Center: React.FC = () => {
     setAddmodalopen(false);
     setAddBtnDisabled(true);
     setAddFormData({});
+  };
+  const handleBulkAddModal = () => {
+    setBulkUploadModalopen(false);
   };
 
   const handleAddAction = async (data: any) => {
@@ -1014,6 +1024,7 @@ const Center: React.FC = () => {
               onEdit={handleEdit}
               onDelete={handleDelete}
               handleMemberClick={handleMemberClick}
+              handleBulkUpload={handleBulkUpload}
             />
           </Box>
         ) : (
@@ -1165,6 +1176,39 @@ const Center: React.FC = () => {
               </Box>
             </DynamicForm>
           )}
+        </SimpleModal>
+        <SimpleModal
+          open={bulkUploadModalopen}
+          onClose={handleBulkAddModal}
+          showFooter={false}
+          modalTitle={t("COMMON.ADD_MULTIPLE_USERS")}
+        >
+          <Box>
+            <input
+              accept=".csv"
+              style={{ display: "none" }}
+              id="csv-file-upload"
+              type="file"
+              onChange={() => "file upload"}
+            />
+            <label htmlFor="csv-file-upload">
+              <Button
+                sx={{ color: "white" }}
+                variant="contained"
+                component="span"
+                startIcon={fileSelected}
+                color={fileSelected ? "success" : "primary"}
+              >
+                {fileSelected ? "CSV Selected" : "Upload CSV"}
+              </Button>
+            </label>
+
+            {fileSelected && (
+              <Typography variant="body2" sx={{ mt: 1 }}>
+                Selected file: {fileName}
+              </Typography>
+            )}
+          </Box>
         </SimpleModal>
 
         <SimpleModal
