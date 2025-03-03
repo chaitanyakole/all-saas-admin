@@ -113,13 +113,13 @@ const ActionIcon: React.FC<ActionCellProps> = ({
   const addMenuItems = [
     {
       id: 1,
-      name: "Add Single user",
+      name: t("COMMON.ADD_SINGLE_USER"),
       icon: <PersonAddAltSharpIcon fontSize="small" />,
       action: () => onAdd(rowData),
     },
     {
       id: 2,
-      name: "Add User in bulk",
+      name: t("COMMON.ADD_MULTIPLE_USERS"),
       icon: <GroupAddSharpIcon fontSize="small" />,
       action: () => handleBulkUpload(rowData),
     },

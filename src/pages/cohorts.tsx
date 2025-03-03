@@ -1180,7 +1180,7 @@ const Center: React.FC = () => {
           open={bulkUploadModalopen}
           onClose={handleBulkAddModal}
           showFooter={false}
-          modalTitle={"Add multiple users"}
+          modalTitle={t("COMMON.ADD_MULTIPLE_USERS")}
         >
           <Box>
             <input
@@ -1192,6 +1192,7 @@ const Center: React.FC = () => {
             />
             <label htmlFor="csv-file-upload">
               <Button
+                sx={{ color: "white" }}
                 variant="contained"
                 component="span"
                 startIcon={fileSelected}

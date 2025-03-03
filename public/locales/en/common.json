@@ -153,7 +153,9 @@
     "CONFIRM_PASSWORD": "Confirm Password",
     "PASSWORD_RESET_SUCCESSFUL": "Password Reset Successful!",
     "PASSWORD_RESET_FAILED": "Password Reset Failed. Please try again.",
-    "ENTER_VALID_PASSWORD": "Enter Valid Password"
+    "ENTER_VALID_PASSWORD": "Enter Valid Password",
+    "ADD_SINGLE_USER":"Add Single user",
+    "ADD_MULTIPLE_USERS":"Add Multiple users"
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
