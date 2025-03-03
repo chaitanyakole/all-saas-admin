@@ -107,8 +107,8 @@ const Center: React.FC = () => {
   const [error, setError] = useState<any>([]);
   const [isCreateCohortAdminModalOpen, setIsCreateCohortAdminModalOpen] =
     useState(false);
-  const [fileName, setFileName] = useState("");
-  const [fileSelected, setFileSelected] = useState(false);
+  const [fileName] = useState("");
+  const [fileSelected] = useState(false);
 
   const setSubmittedButtonStatus = useSubmittedButtonStore(
     (state: any) => state.setSubmittedButtonStatus
