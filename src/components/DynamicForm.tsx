@@ -34,6 +34,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   const [changedFormData, setChangedFormData] = useState({});
   const [isGetUserName, setIsGetUserName] = useState<boolean>(false);
   const [storedSuggestions, setStoredSuggestions] = useState<string[]>([]);
+  const [liveValidate, setLiveValidate] = useState(false);
   const submittedButtonStatus = useSubmittedButtonStore(
     (state: any) => state.submittedButtonStatus
   );
@@ -77,6 +78,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     event: IChangeEvent<any, RJSFSchema, any>,
     formEvent: React.FormEvent<any>
   ) => {
+    setLiveValidate(true);
     if (isProgramFields) {
       event.formData = changedFormData;
     }
@@ -228,7 +230,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
               );
               break;
             }
-            case "/^(?=.*[a-z])(?=.*[A-Z])(?=.*d).{8,}$/": {
+            case '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$': {
               error.message = t("COMMON.ENTER_VALID_PASSWORD");
               break;
             }
@@ -329,7 +331,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         onChange={handleChange}
         onSubmit={handleSubmit}
         validator={validator}
-        liveValidate
+        liveValidate={liveValidate}
         showErrorList={false}
         widgets={widgets}
         noHtml5Validate

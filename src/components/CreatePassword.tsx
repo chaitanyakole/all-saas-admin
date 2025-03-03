@@ -28,9 +28,9 @@ const PasswordFields: React.FC<PasswordFieldsProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme<any>();
-  const [password, setPassword] = useState("");
-  const [oldPassword, setOldPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [oldPassword, setOldPassword] = useState<string>("");
   const [passwordError, setPasswordError] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
   const [oldPasswordError, setOldPasswordError] = useState(false);
@@ -43,7 +43,7 @@ const PasswordFields: React.FC<PasswordFieldsProps> = ({
   });
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+    const value = e.target.value || "";
     setPassword(value);
     setShowValidationMessages(!!value);
     validatePassword(value);
@@ -65,7 +65,7 @@ const PasswordFields: React.FC<PasswordFieldsProps> = ({
   };
 
   const handleOldPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+    const value = e.target.value || "";
     setOldPassword(value);
     if (oldPasswordError) {
       setOldPasswordError(false);
@@ -84,7 +84,7 @@ const PasswordFields: React.FC<PasswordFieldsProps> = ({
   const handleConfirmPasswordChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const value = e.target.value;
+    const value = e.target.value || "";
     setConfirmPassword(value);
     setConfirmPasswordError(value !== password);
     updateParentForm(oldPassword, password, value);
@@ -117,18 +117,20 @@ const PasswordFields: React.FC<PasswordFieldsProps> = ({
       !passwordError &&
       !confirmPasswordError &&
       !samePasswordError &&
-      newPwd &&
-      confirmPwd &&
+      typeof newPwd === "string" &&
+      typeof confirmPwd === "string" &&
+      newPwd.trim().length > 0 &&
+      confirmPwd.trim().length > 0 &&
       (!editPassword || (editPassword && oldPwd));
 
     const data: any = {
-      password: newPwd,
-      confirmPassword: confirmPwd,
+      password: newPwd || "", // Ensure it's a string
+      confirmPassword: confirmPwd || "", // Ensure it's a string
       isValid: isFormValid,
     };
 
     if (editPassword) {
-      data["oldPassword"] = oldPwd;
+      data["oldPassword"] = oldPwd || ""; // Ensure it's a string
     }
 
     onChange(data);

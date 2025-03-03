@@ -8,6 +8,7 @@
       "title": "Full Name",
       "fieldId": null,
       "type": "string",
+      "description": "Full name, numbers, letters and spaces are allowed.",
       "validation": []
     },
     "username": {

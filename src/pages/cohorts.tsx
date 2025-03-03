@@ -160,7 +160,7 @@ const Center: React.FC = () => {
       // "ui:help": "Username must be at least 3 characters long.",
     },
     password: {
-      "ui:widget": PasswordCreate,
+      "ui:widget": "password",
       "ui:placeholder": "Enter a secure password",
     },
     role: {
@@ -796,6 +796,7 @@ const Center: React.FC = () => {
   };
 
   const handleAddAction = async (data: any) => {
+    console.log("logged");
     setLoading(true);
     const formData = data?.formData;
     try {
@@ -804,7 +805,7 @@ const Center: React.FC = () => {
       interface UserCreateData {
         name: string;
         username: string;
-        password: string;
+        password: any;
         mobile: string;
         email: string;
         tenantCohortRoleMapping: Array<{
