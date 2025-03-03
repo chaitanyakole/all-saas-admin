@@ -8,6 +8,7 @@
       "title": "Full Name",
       "fieldId": null,
       "type": "string",
+      "description": "Full name, numbers, letters and spaces are allowed.",
       "validation": []
     },
     "username": {
@@ -25,6 +26,7 @@
       }
     },
     "password": {
+      "title": "Password",
       "type": "string",
       "description": "Your password needs to include both uppercase & lowercase letters, a number, and a special character. Must be at least 8 characters long.",
       "ui:widget": "password",
