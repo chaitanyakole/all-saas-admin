@@ -690,6 +690,11 @@ const Center: React.FC = () => {
     setUploadFailed(false);
 
     try {
+      const cohortAdminRole: any = roleList?.result.find(
+        (item: any) => item.code === "learner"
+      );
+      console.log({ cohortAdminRole });
+
       const fileInput = document.getElementById(
         "csv-file-upload"
       ) as HTMLInputElement;
@@ -699,7 +704,7 @@ const Center: React.FC = () => {
       formData.append("csvFile", uploadFile, uploadFile.name);
       formData.append("tenantId", selectedRowData?.tenantId);
       formData.append("cohortId", selectedRowData?.cohortId);
-      formData.append("roleId", "1ee94d26-5643-44a4-aaba-b85bab35d5a8");
+      formData.append("roleId", cohortAdminRole.roleId);
 
       const response = await bulkUpload(formData);
       await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -989,7 +994,7 @@ const Center: React.FC = () => {
       setRolelist(response);
     };
     fetchData();
-  }, [isCreateCohortAdminModalOpen, Addmodalopen]);
+  }, [isCreateCohortAdminModalOpen, bulkUploadModalopen, Addmodalopen]);
   const handleAddCohortAdminAction = async (
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
