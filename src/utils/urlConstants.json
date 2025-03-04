@@ -39,6 +39,7 @@
     "UPDATE_INVITATIONS_STATUS": "invitation/update?id=",
     "SEND_INVITATION_REQUEST": "invitation/sendinvite",
     "DELETE_INVITATION_REQUEST": "",
-    "LEARNER_FORGOT_PASSWORD": "learner-forgot-password"
+    "LEARNER_FORGOT_PASSWORD": "learner-forgot-password",
+    "BULK_CREATE": "bulk-create"
   }
 }
