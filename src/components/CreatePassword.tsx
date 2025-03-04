@@ -15,8 +15,7 @@ const PasswordCreate = (props: WidgetProps) => {
     readonly,
     autofocus,
     required,
-    schema,
-    uiSchema,
+
     rawErrors = [],
   } = props;
 
@@ -32,7 +31,6 @@ const PasswordCreate = (props: WidgetProps) => {
 
   // Check if there are validation errors
   const hasError = rawErrors && rawErrors.length > 0;
-  const errorMessage = hasError ? rawErrors[0] : null;
 
   return (
     <TextField
