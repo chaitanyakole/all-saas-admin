@@ -15,11 +15,16 @@ import {
   userCreate,
 } from "@/services/CohortService/cohortService";
 import { CohortTypes, Numbers, SORT, Status } from "@/utils/app.constant";
-
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ConfirmationModal from "@/components/ConfirmationModal";
-import { Box, Button, Typography, useMediaQuery } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  useMediaQuery,
+  CircularProgress,
+} from "@mui/material";
 import Loader from "@/components/Loader";
 import { customFields } from "@/components/GeneratedSchemas";
 import { showToastMessage } from "@/components/Toastify";
@@ -40,7 +45,21 @@ import cohortASchema from "./cohortAdminSchema.json";
 import updateCohortSchema from "./cohortUpdateSchema.json";
 import { sendRequest } from "@/services/InvitationService";
 import PasswordCreate from "../components/CreatePassword";
+import { bulkUpload } from "@/services/UploadService";
+import { tenantId } from "../../app.config";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ErrorIcon from "@mui/icons-material/Error";
 
+interface UploadResult {
+  registered: number;
+  failed: number;
+  alreadyRegistered: number;
+  failedRecords?: Array<{
+    record: string;
+    reason: string;
+  }>;
+}
 type cohortFilterDetails = {
   type?: string;
   status?: any;
@@ -107,8 +126,13 @@ const Center: React.FC = () => {
   const [error, setError] = useState<any>([]);
   const [isCreateCohortAdminModalOpen, setIsCreateCohortAdminModalOpen] =
     useState(false);
-  const [fileName] = useState("");
-  const [fileSelected] = useState(false);
+  const [fileName, setFileName] = useState<string>("");
+  const [fileSelected, setFileSelected] = useState<boolean>(false);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [uploadComplete, setUploadComplete] = useState<boolean>(false);
+  const [uploadFailed, setUploadFailed] = useState<boolean>(false);
+  const [uploadResult, setUploadResult] = useState<UploadResult | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const setSubmittedButtonStatus = useSubmittedButtonStore(
     (state: any) => state.setSubmittedButtonStatus
@@ -163,7 +187,7 @@ const Center: React.FC = () => {
       // "ui:help": "Username must be at least 3 characters long.",
     },
     password: {
-      "ui:widget": PasswordCreate,
+      "ui:widget": "password",
       "ui:placeholder": "Enter a secure password",
     },
     role: {
@@ -634,11 +658,88 @@ const Center: React.FC = () => {
     setAddmodalopen(true);
     setLoading(false);
   };
-  const handleBulkUpload = (rowData: any) => {
+  const handleBulkAddModal = () => {
+    setBulkUploadModalopen(false);
+    setFileSelected(false);
+    setFileName("");
+    setIsUploading(false);
+    setUploadComplete(false);
+    setUploadFailed(false);
+    setUploadResult(null);
+    setErrorMessage("");
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const file = event.target.files[0];
+      setFileName(file.name);
+      setFileSelected(true);
+
+      // reset states when new file is upload
+      setUploadComplete(false);
+      setUploadFailed(false);
+      setUploadResult(null);
+      setErrorMessage("");
+    }
+  };
+  const handleUpload = async () => {
+    if (!fileSelected || !selectedRowData) return;
+
+    setIsUploading(true);
+    setUploadComplete(false);
+    setUploadFailed(false);
+
+    try {
+      const cohortAdminRole: any = roleList?.result.find(
+        (item: any) => item.code === "learner"
+      );
+      console.log({ cohortAdminRole });
+
+      const fileInput = document.getElementById(
+        "csv-file-upload"
+      ) as HTMLInputElement;
+      const uploadFile = fileInput?.files?.[0];
+      if (!uploadFile) throw new Error("No file selected");
+      const formData = new FormData();
+      formData.append("csvFile", uploadFile, uploadFile.name);
+      formData.append("tenantId", selectedRowData?.tenantId);
+      formData.append("cohortId", selectedRowData?.cohortId);
+      formData.append("roleId", cohortAdminRole.roleId);
+
+      const response = await bulkUpload(formData);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      if (response?.responseCode === 200) {
+        const formattedResponse = {
+          registered: response.result.success || 0,
+          failed: response.result.failed || 0,
+          alreadyRegistered: 0,
+          failedRecords:
+            response.result.failedDetails?.map((item: any) => ({
+              record: item?.record,
+              reason: item?.error,
+            })) || [],
+        };
+        setUploadResult(formattedResponse);
+        setUploadComplete(true);
+      } else {
+        setUploadComplete(false);
+      }
+      // Set the upload result
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      setUploadFailed(true);
+      setErrorMessage(
+        error instanceof Error ? error.message : "Unknown error occurred"
+      );
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleBulkUpload = async (rowData: any) => {
     setSelectedRowData({ ...rowData });
     setBulkUploadModalopen(true);
   };
-
   // add  extra buttons
   const extraActions: any = [
     { name: t("COMMON.ADD"), onClick: handleAdd, icon: AddIcon },
@@ -801,9 +902,9 @@ const Center: React.FC = () => {
     setAddBtnDisabled(true);
     setAddFormData({});
   };
-  const handleBulkAddModal = () => {
-    setBulkUploadModalopen(false);
-  };
+  // const handleBulkAddModal = () => {
+  //   setBulkUploadModalopen(false);
+  // };
 
   const handleAddAction = async (data: any) => {
     setLoading(true);
@@ -814,7 +915,7 @@ const Center: React.FC = () => {
       interface UserCreateData {
         name: string;
         username: string;
-        password: string;
+        password: any;
         mobile: string;
         email: string;
         tenantCohortRoleMapping: Array<{
@@ -893,7 +994,7 @@ const Center: React.FC = () => {
       setRolelist(response);
     };
     fetchData();
-  }, [isCreateCohortAdminModalOpen, Addmodalopen]);
+  }, [isCreateCohortAdminModalOpen, bulkUploadModalopen, Addmodalopen]);
   const handleAddCohortAdminAction = async (
     data: IChangeEvent<any, RJSFSchema, any>,
     event: React.FormEvent<any>
@@ -1182,30 +1283,136 @@ const Center: React.FC = () => {
           showFooter={false}
           modalTitle={t("COMMON.ADD_MULTIPLE_USERS")}
         >
-          <Box>
-            <input
-              accept=".csv"
-              style={{ display: "none" }}
-              id="csv-file-upload"
-              type="file"
-              onChange={() => "file upload"}
-            />
-            <label htmlFor="csv-file-upload">
-              <Button
-                sx={{ color: "white" }}
-                variant="contained"
-                component="span"
-                startIcon={fileSelected}
-                color={fileSelected ? "success" : "primary"}
-              >
-                {fileSelected ? "CSV Selected" : "Upload CSV"}
-              </Button>
-            </label>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <Box>
+              <input
+                accept=".csv"
+                style={{ display: "none" }}
+                id="csv-file-upload"
+                type="file"
+                onChange={handleFileChange}
+                disabled={isUploading}
+              />
+              <label htmlFor="csv-file-upload">
+                <Button
+                  sx={{ color: "white", marginRight: 2 }}
+                  variant="contained"
+                  component="span"
+                  startIcon={<CloudUploadIcon />}
+                  color={fileSelected ? "success" : "primary"}
+                  disabled={isUploading}
+                >
+                  {fileSelected ? "CSV Selected" : "Select CSV"}
+                </Button>
+              </label>
+
+              {fileSelected &&
+                !isUploading &&
+                !uploadComplete &&
+                !uploadFailed && (
+                  <Button
+                    sx={{ color: "white" }}
+                    variant="contained"
+                    onClick={handleUpload}
+                    color="primary"
+                  >
+                    Upload
+                  </Button>
+                )}
+
+              {isUploading && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled
+                  startIcon={<CircularProgress size={20} color="inherit" />}
+                >
+                  Uploading...
+                </Button>
+              )}
+
+              {uploadComplete && (
+                <Button
+                  variant="contained"
+                  color="success"
+                  startIcon={<CheckCircleIcon />}
+                  disabled
+                >
+                  Upload Complete
+                </Button>
+              )}
+
+              {uploadFailed && (
+                <Button
+                  variant="contained"
+                  color="error"
+                  startIcon={<ErrorIcon />}
+                  disabled
+                >
+                  Upload Failed
+                </Button>
+              )}
+            </Box>
 
             {fileSelected && (
-              <Typography variant="body2" sx={{ mt: 1 }}>
-                Selected file: {fileName}
-              </Typography>
+              <Typography variant="body2">Selected file: {fileName}</Typography>
+            )}
+
+            {uploadComplete && uploadResult && (
+              <Box
+                sx={{
+                  mt: 2,
+                  p: 2,
+                  border: "1px solid #e0e0e0",
+                  borderRadius: 1,
+                }}
+              >
+                <Typography variant="h6" gutterBottom>
+                  Upload Summary
+                </Typography>
+                <Typography color="success.main">
+                  ✓ Successfully registered: {uploadResult.registered}
+                </Typography>
+                <Typography color="error.main">
+                  ✗ Failed to register: {uploadResult.failed}
+                </Typography>
+                {/* <Typography color="info.main">
+                  ℹ Already registered: {uploadResult.alreadyRegistered}
+                </Typography> */}
+
+                {uploadResult.failed > 0 && uploadResult.failedRecords && (
+                  <Box sx={{ mt: 2 }}>
+                    <Typography variant="subtitle2" gutterBottom>
+                      Failed Records Details:
+                    </Typography>
+                    {uploadResult.failedRecords.map((record, index) => (
+                      <Typography
+                        key={index}
+                        variant="body2"
+                        color="error.main"
+                      >
+                        Username : {record?.record}- {record.reason}
+                      </Typography>
+                    ))}
+                  </Box>
+                )}
+              </Box>
+            )}
+
+            {uploadFailed && (
+              <Box
+                sx={{
+                  mt: 2,
+                  p: 2,
+                  border: "1px solid #e0e0e0",
+                  borderRadius: 1,
+                  bgcolor: "#fff4f4",
+                }}
+              >
+                <Typography color="error" variant="body1">
+                  Upload failed: {errorMessage}
+                </Typography>
+              </Box>
             )}
           </Box>
         </SimpleModal>
