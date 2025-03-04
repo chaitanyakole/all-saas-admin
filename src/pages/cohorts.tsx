@@ -1386,7 +1386,7 @@ const Center: React.FC = () => {
                         variant="body2"
                         color="error.main"
                       >
-                        Username :{record?.record}- {record.reason}
+                        Username : {record?.record}- {record.reason}
                       </Typography>
                     ))}
                   </Box>
