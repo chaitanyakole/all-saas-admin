@@ -187,7 +187,7 @@ const Center: React.FC = () => {
       // "ui:help": "Username must be at least 3 characters long.",
     },
     password: {
-      "ui:widget": "password",
+      "ui:widget": PasswordCreate,
       "ui:placeholder": "Enter a secure password",
     },
     role: {
