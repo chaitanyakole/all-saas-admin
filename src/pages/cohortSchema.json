@@ -23,8 +23,7 @@
       "type": "string",
       "oneOf": [
         { "const": "active", "title": "Active" },
-        { "const": "inactive", "title": "Inactive" },
-        { "const": "archived", "title": "Archived" }
+        { "const": "inactive", "title": "Inactive" }
       ],
       "default": "active",
       "readOnly": true,

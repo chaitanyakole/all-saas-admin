@@ -23,8 +23,7 @@
       "type": "string",
       "oneOf": [
         { "const": "active", "title": "Active" },
-        { "const": "inactive", "title": "Inactive" },
-        { "const": "archived", "title": "Archived" }
+        { "const": "inactive", "title": "Inactive" }
       ],
       "validation": [],
       "description": "The current status of the cohort, this field is read-only."
