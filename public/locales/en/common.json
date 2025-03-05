@@ -151,11 +151,25 @@
     "RESET_PASSWORD": "Reset Password",
     "NEW_PASSWORD": "New Password",
     "CONFIRM_PASSWORD": "Confirm Password",
-    "PASSWORD_RESET_SUCCESSFUL": "Password Reset Successful!",
-    "PASSWORD_RESET_FAILED": "Password Reset Failed. Please try again.",
     "ENTER_VALID_PASSWORD": "Enter Valid Password",
-    "ADD_SINGLE_USER":"Add Single user",
-    "ADD_MULTIPLE_USERS":"Add Multiple users"
+    "ADD_SINGLE_USER": "Add Single user",
+    "ADD_MULTIPLE_USERS": "Add Multiple users",
+    "PASSWORD_RESET_SUCCESSFUL": "Password has been reset successfully.",
+    "PASSWORD_RESET_FAILED": "Failed to reset password. Please try again.",
+    "UNEXPECTED_ERROR": "An unexpected error occurred. Please try again later.",
+    "RESET_PASSWORD_FOR_USER": "Reset password for user:",
+    "PASSWORDS_DO_NOT_MATCH": "Passwords do not match.",
+    "PASSWORD_LENGTH_ERROR": "Password must be at least 8 characters long.",
+    "PASSWORD_UPPERCASE_ERROR": "Password must contain at least one uppercase letter.",
+    "PASSWORD_LOWERCASE_ERROR": "Password must contain at least one lowercase letter.",
+    "PASSWORD_NUMBER_ERROR": "Password must contain at least one number.",
+    "PASSWORD_SPECIAL_CHAR_ERROR": "Password must contain at least one special character.",
+    "PASSWORD_COMPLEXITY_REQUIREMENTS": "Password must: \n- Be at least 8 characters long\n- Contain uppercase and lowercase letters\n- Include a number\n- Include a special character"
+  },
+  "HINT": {
+    "PASSWORD_STRENGTH": {
+      "GENERAL": "Tip: Create a strong, unique password to protect your account."
+    }
   },
   "LOGIN_PAGE": {
     "USERNAME": "Username",
